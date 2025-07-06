@@ -50,7 +50,7 @@ const QuotationForm: React.FC<QuotationFormProps> = ({ onSubmit, initialData }) 
   const loadProducts = async () => {
     try {
       const productsData = await apiClient.getProducts();
-      setProducts(productsData);
+      setProducts(Array.isArray(productsData) ? productsData : []);
     } catch (error) {
       console.error('Failed to load products:', error);
       // Products API might not be implemented, show empty list

@@ -23,9 +23,10 @@ const QuotationManager = () => {
     
     try {
       const result = await apiClient.getQuotations(searchTerm || undefined);
-      setQuotations(result);
+      setQuotations(Array.isArray(result) ? result : []);
     } catch (error: any) {
       console.error('Failed to fetch quotations:', error);
+      setQuotations([]); // Set to empty array on error
       if (error.message?.includes('fetch') || error.message?.includes('API Error: 404')) {
         setApiError('Quotations API is not yet implemented in the backend. This feature will be available once the backend developer implements the quotations endpoints.');
       } else {

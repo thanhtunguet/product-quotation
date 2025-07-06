@@ -27,11 +27,14 @@ const ProductManager = () => {
         apiClient.brands.getAll(),
         apiClient.manufacturers.getAll(),
       ]);
-      setCategories(categoriesData);
-      setBrands(brandsData);
-      setManufacturers(manufacturersData);
+      setCategories(Array.isArray(categoriesData) ? categoriesData : []);
+      setBrands(Array.isArray(brandsData) ? brandsData : []);
+      setManufacturers(Array.isArray(manufacturersData) ? manufacturersData : []);
     } catch (error) {
       console.error('Failed to fetch master data:', error);
+      setCategories([]);
+      setBrands([]);
+      setManufacturers([]);
     }
   };
 
@@ -41,9 +44,10 @@ const ProductManager = () => {
     
     try {
       const result = await apiClient.getProducts(searchTerm || undefined);
-      setProducts(result);
+      setProducts(Array.isArray(result) ? result : []);
     } catch (error: any) {
       console.error('Failed to fetch products:', error);
+      setProducts([]); // Set to empty array on error
       if (error.message?.includes('fetch') || error.message?.includes('API Error: 404')) {
         setApiError('Products API is not yet implemented in the backend. This feature will be available once the backend developer implements the products endpoints.');
       } else {
