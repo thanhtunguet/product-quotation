@@ -7,7 +7,7 @@ import Layout from './components/common/Layout';
 import Dashboard from './pages/Dashboard';
 import ProductsPage from './pages/ProductsPage';
 import QuotationsPage from './pages/QuotationsPage';
-import MasterDataRoutes from './pages/MasterDataRoutes';
+import MasterDataPage from './pages/MasterDataPage';
 import ProductForm from './components/products/ProductForm';
 import QuotationForm from './components/quotations/QuotationForm';
 
@@ -24,7 +24,7 @@ const App = () => {
             <Route path="quotations" element={<QuotationsPage />} />
             <Route path="quotations/new" element={<QuotationForm />} />
             <Route path="quotations/:id/edit" element={<QuotationForm />} />
-            <Route path="master-data/*" element={<MasterDataRoutes />} />
+            <Route path="master-data" element={<MasterDataPage />} />
           </Route>
         </Routes>
       </BrowserRouter>
