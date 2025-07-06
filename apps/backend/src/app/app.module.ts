@@ -7,6 +7,15 @@ import * as entities from '../entities';
 import { CategoriesModule } from '../modules/categories/categories.module';
 import { BrandsModule } from '../modules/brands/brands.module';
 import { ManufacturersModule } from '../modules/manufacturers/manufacturers.module';
+import { ColorsModule } from '../modules/colors/colors.module';
+import { MaterialsModule } from '../modules/materials/materials.module';
+import { SizesModule } from '../modules/sizes/sizes.module';
+import { ProductAttributesModule } from '../modules/product-attributes/product-attributes.module';
+import { ProductsModule } from '../modules/products/products.module';
+import { QuotationsModule } from '../modules/quotations/quotations.module';
+import { ProductTypesModule } from '../modules/product-types/product-types.module';
+import { ManufacturingMethodsModule } from '../modules/manufacturing-methods/manufacturing-methods.module';
+import { PackagingTypesModule } from '../modules/packaging-types/packaging-types.module';
 
 @Module({
   imports: [
@@ -27,6 +36,15 @@ import { ManufacturersModule } from '../modules/manufacturers/manufacturers.modu
     CategoriesModule,
     BrandsModule,
     ManufacturersModule,
+    ColorsModule,
+    MaterialsModule,
+    SizesModule,
+    ProductAttributesModule,
+    ProductsModule,
+    QuotationsModule,
+    ProductTypesModule,
+    ManufacturingMethodsModule,
+    PackagingTypesModule,
   ],
   controllers: [AppController],
   providers: [AppService],
