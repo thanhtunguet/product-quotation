@@ -270,7 +270,7 @@ const QuotationForm: React.FC<QuotationFormProps> = ({ onSubmit, initialData }) 
                   style={{ width: '100%' }}
                   showSearch
                   filterOption={(input, option) =>
-                    option?.children?.toString().toLowerCase().includes(input.toLowerCase())
+                    option?.children?.toString().toLowerCase().includes(input.toLowerCase()) ?? false
                   }
                 >
                   {products.map(product => (
@@ -284,7 +284,7 @@ const QuotationForm: React.FC<QuotationFormProps> = ({ onSubmit, initialData }) 
                 <InputNumber
                   placeholder="Qty"
                   value={quantity}
-                  onChange={setQuantity}
+                  onChange={(value) => setQuantity(value || 1)}
                   min={1}
                   style={{ width: '100%' }}
                 />
@@ -293,7 +293,7 @@ const QuotationForm: React.FC<QuotationFormProps> = ({ onSubmit, initialData }) 
                 <InputNumber
                   placeholder="Unit Price"
                   value={unitPrice}
-                  onChange={setUnitPrice}
+                  onChange={(value) => setUnitPrice(value || 0)}
                   min={0}
                   step={0.01}
                   precision={2}
@@ -319,7 +319,7 @@ const QuotationForm: React.FC<QuotationFormProps> = ({ onSubmit, initialData }) 
           dataSource={quotationItems}
           columns={itemColumns}
           pagination={false}
-          rowKey={(_, index) => index?.toString() || '0'}
+          rowKey={(record, index) => `${record.productId}-${index}`}
           summary={() => (
             <Table.Summary.Row>
               <Table.Summary.Cell index={0} colSpan={3}>
