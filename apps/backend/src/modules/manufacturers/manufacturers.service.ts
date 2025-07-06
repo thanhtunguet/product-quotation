@@ -1,14 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Manufacturer } from '../../entities/manufacturer.entity';
+import { Manufacturers } from '../../entities';
 import { MasterDataService } from '../master-data.service';
 
 @Injectable()
-export class ManufacturersService extends MasterDataService<Manufacturer> {
+export class ManufacturersService extends MasterDataService<Manufacturers> {
   constructor(
-    @InjectRepository(Manufacturer)
-    repository: Repository<Manufacturer>,
+    @InjectRepository(Manufacturers)
+    repository: Repository<Manufacturers>,
   ) {
     super(repository);
   }

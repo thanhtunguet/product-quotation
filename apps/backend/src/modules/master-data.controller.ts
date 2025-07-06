@@ -1,7 +1,7 @@
 import { Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
 import { ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { MasterDataService } from './master-data.service';
-import { MasterDataEntity } from '../entities/master-data.entity';
+import { MasterDataEntity } from '../entities/base.interface';
 import { CreateMasterDataDto, UpdateMasterDataDto } from '../dto/master-data.dto';
 
 export abstract class MasterDataController<T extends MasterDataEntity> {

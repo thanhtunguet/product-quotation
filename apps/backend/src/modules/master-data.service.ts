@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { Repository, FindManyOptions } from 'typeorm';
-import { MasterDataEntity } from '../entities/master-data.entity';
+import { MasterDataEntity } from '../entities/base.interface';
 import { CreateMasterDataDto, UpdateMasterDataDto } from '../dto/master-data.dto';
 
 @Injectable()
@@ -14,14 +14,14 @@ export abstract class MasterDataService<T extends MasterDataEntity> {
 
   async findAll(options?: FindManyOptions<T>): Promise<T[]> {
     return await this.repository.find({
-      where: { isActive: true } as any,
+      where: { isActive: true } as FindManyOptions<T>['where'],
       ...options,
     });
   }
 
   async findOne(id: number): Promise<T> {
     const entity = await this.repository.findOne({
-      where: { id, isActive: true } as any,
+      where: { id, isActive: true } as FindManyOptions<T>['where'],
     });
     if (!entity) {
       throw new NotFoundException(`Entity with ID ${id} not found`);
@@ -36,13 +36,13 @@ export abstract class MasterDataService<T extends MasterDataEntity> {
   }
 
   async remove(id: number): Promise<void> {
-    const entity = await this.findOne(id);
+    await this.findOne(id);
     await this.repository.softDelete(id);
   }
 
   async findByCode(code: string): Promise<T | null> {
     return await this.repository.findOne({
-      where: { code, isActive: true } as any,
+      where: { code, isActive: true } as FindManyOptions<T>['where'],
     });
   }
 

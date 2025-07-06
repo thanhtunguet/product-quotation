@@ -3,13 +3,18 @@
   "compilerOptions": {
     "outDir": "dist",
     "module": "commonjs",
-    "types": ["node"],
+    "types": [
+      "node"
+    ],
     "rootDir": "src",
     "moduleResolution": "node",
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
-    "tsBuildInfoFile": "dist/tsconfig.app.tsbuildinfo"
+    "tsBuildInfoFile": "dist/tsconfig.app.tsbuildinfo",
+    "strictPropertyInitialization": false
   },
-  "include": ["src/**/*.ts"],
+  "include": [
+    "src/**/*.ts"
+  ],
   "exclude": []
 }

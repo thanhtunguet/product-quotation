@@ -1,29 +1,29 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Category } from '../../entities/category.entity';
+import { Categories } from '../../entities';
 import { CreateCategoryDto, UpdateCategoryDto } from '../../dto/category.dto';
 
 @Injectable()
 export class CategoriesService {
   constructor(
-    @InjectRepository(Category)
-    private readonly categoryRepository: Repository<Category>,
+    @InjectRepository(Categories)
+    private readonly categoryRepository: Repository<Categories>,
   ) {}
 
-  async create(createCategoryDto: CreateCategoryDto): Promise<Category> {
+  async create(createCategoryDto: CreateCategoryDto): Promise<Categories> {
     const category = this.categoryRepository.create(createCategoryDto);
     return await this.categoryRepository.save(category);
   }
 
-  async findAll(): Promise<Category[]> {
+  async findAll(): Promise<Categories[]> {
     return await this.categoryRepository.find({
       where: { isActive: true },
       relations: ['parent', 'children'],
     });
   }
 
-  async findTree(): Promise<Category[]> {
+  async findTree(): Promise<Categories[]> {
     return await this.categoryRepository
       .createQueryBuilder('category')
       .leftJoinAndSelect('category.children', 'children')
@@ -32,7 +32,7 @@ export class CategoriesService {
       .getMany();
   }
 
-  async findOne(id: number): Promise<Category> {
+  async findOne(id: number): Promise<Categories> {
     const category = await this.categoryRepository.findOne({
       where: { id, isActive: true },
       relations: ['parent', 'children'],
@@ -43,25 +43,25 @@ export class CategoriesService {
     return category;
   }
 
-  async update(id: number, updateCategoryDto: UpdateCategoryDto): Promise<Category> {
+  async update(id: number, updateCategoryDto: UpdateCategoryDto): Promise<Categories> {
     const category = await this.findOne(id);
     Object.assign(category, updateCategoryDto);
     return await this.categoryRepository.save(category);
   }
 
   async remove(id: number): Promise<void> {
-    const category = await this.findOne(id);
+    await this.findOne(id);
     await this.categoryRepository.softDelete(id);
   }
 
-  async findByCode(code: string): Promise<Category | null> {
+  async findByCode(code: string): Promise<Categories | null> {
     return await this.categoryRepository.findOne({
       where: { code, isActive: true },
       relations: ['parent', 'children'],
     });
   }
 
-  async search(term: string): Promise<Category[]> {
+  async search(term: string): Promise<Categories[]> {
     return await this.categoryRepository
       .createQueryBuilder('category')
       .where('category.isActive = true')

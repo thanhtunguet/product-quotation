@@ -1,17 +1,29 @@
-export * from './base.entity';
-export * from './master-data.entity';
-export * from './category.entity';
-export * from './brand.entity';
-export * from './manufacturer.entity';
-export * from './material.entity';
-export * from './manufacturing-method.entity';
-export * from './color.entity';
-export * from './size.entity';
-export * from './product-type.entity';
-export * from './packaging-type.entity';
-export * from './product-attribute.entity';
-export * from './product-attribute-value.entity';
-export * from './product.entity';
-export * from './product-dynamic-attribute.entity';
-export * from './quotation.entity';
-export * from './quotation-item.entity';
+export { Brands } from './Brands';
+
+export { Categories } from './Categories';
+
+export { Colors } from './Colors';
+
+export { Manufacturers } from './Manufacturers';
+
+export { ManufacturingMethods } from './ManufacturingMethods';
+
+export { Materials } from './Materials';
+
+export { PackagingTypes } from './PackagingTypes';
+
+export { ProductAttributeValues } from './ProductAttributeValues';
+
+export { ProductAttributes } from './ProductAttributes';
+
+export { ProductDynamicAttributes } from './ProductDynamicAttributes';
+
+export { ProductTypes } from './ProductTypes';
+
+export { Products } from './Products';
+
+export { QuotationItems } from './QuotationItems';
+
+export { Quotations } from './Quotations';
+
+export { Sizes } from './Sizes';

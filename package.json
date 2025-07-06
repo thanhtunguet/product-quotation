@@ -72,6 +72,7 @@
     "jest-environment-jsdom": "^29.7.0",
     "jiti": "2.4.2",
     "jsdom": "~22.1.0",
+    "node-directory-indexing": "^0.0.7",
     "nx": "21.2.2",
     "postcss": "8.4.38",
     "prettier": "^2.6.2",
