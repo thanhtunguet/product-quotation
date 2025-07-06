@@ -1,0 +1,10 @@
+{
+  "name": "@product-quotation/product-quotation-e2e",
+  "version": "0.0.1",
+  "private": true,
+  "nx": {
+    "implicitDependencies": [
+      "@product-quotation/product-quotation"
+    ]
+  }
+}
