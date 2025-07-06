@@ -1,22 +1,20 @@
 
-import React from 'react';
-import { Typography, Tabs } from 'antd';
-import { 
-  TagOutlined, 
-  ApartmentOutlined, 
-  ShopOutlined, 
-  BgColorsOutlined,
-  ToolOutlined,
-  BorderOutlined,
+import {
+  ApartmentOutlined,
   AppstoreOutlined,
-  InboxOutlined,
+  BgColorsOutlined,
   BuildOutlined,
-  ExpandOutlined 
+  ExpandOutlined,
+  InboxOutlined,
+  ShopOutlined,
+  TagOutlined,
+  ToolOutlined
 } from '@ant-design/icons';
+import { Tabs, Typography } from 'antd';
 import BrandManager from '../components/master-data/BrandManager';
 import CategoryManager from '../components/master-data/CategoryManager';
-import ManufacturerManager from '../components/master-data/ManufacturerManager';
 import GenericMasterDataManager from '../components/master-data/GenericMasterDataManager';
+import ManufacturerManager from '../components/master-data/ManufacturerManager';
 
 const { Title } = Typography;
 

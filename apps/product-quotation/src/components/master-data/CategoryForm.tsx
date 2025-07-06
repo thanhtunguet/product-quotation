@@ -1,6 +1,6 @@
+import { Button, Form, Input, Select, Space, Switch } from 'antd';
 import React, { useEffect } from 'react';
-import { Form, Input, Button, Switch, Space, Select, TreeSelect } from 'antd';
-import { CreateCategoryDto, UpdateCategoryDto, Category } from '../../services/api-client';
+import { Category, CreateCategoryDto, UpdateCategoryDto } from '../../services/api-client';
 
 interface CategoryFormProps {
   onSubmit: (data: CreateCategoryDto | UpdateCategoryDto) => void;
@@ -29,16 +29,6 @@ const CategoryForm: React.FC<CategoryFormProps> = ({ onSubmit, initialData, cate
       parentId: values.parentId || undefined,
     };
     onSubmit(data);
-  };
-
-  const transformToTreeData = (categories: Category[]): any[] => {
-    return categories
-      .filter(cat => cat.id !== initialData?.id) // Exclude current category to prevent self-referencing
-      .map(cat => ({
-        value: cat.id,
-        title: cat.name,
-        key: cat.id,
-      }));
   };
 
   return (

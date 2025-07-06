@@ -1,7 +1,7 @@
 
-import React, { useState, useEffect } from 'react';
-import { Tree, Table, Button, Modal, Typography, Space, Tag, message, Tabs, Card, Row, Col, Select, Popconfirm } from 'antd';
-import { PlusOutlined, EditOutlined, DeleteOutlined, ApartmentOutlined, UnorderedListOutlined, ReloadOutlined } from '@ant-design/icons';
+import { ApartmentOutlined, DeleteOutlined, EditOutlined, PlusOutlined, ReloadOutlined, UnorderedListOutlined } from '@ant-design/icons';
+import { Button, Card, message, Modal, Popconfirm, Space, Table, Tabs, Tag, Tree, Typography } from 'antd';
+import { useEffect, useState } from 'react';
 import { apiClient, Category, CreateCategoryDto, UpdateCategoryDto } from '../../services/api-client';
 import CategoryForm from './CategoryForm';
 
@@ -13,7 +13,6 @@ const CategoryManager = () => {
   const [loading, setLoading] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [editingCategory, setEditingCategory] = useState<Category | null>(null);
-  const [viewMode, setViewMode] = useState<'tree' | 'table'>('tree');
 
   const fetchCategories = async () => {
     setLoading(true);
@@ -172,7 +171,7 @@ const CategoryManager = () => {
     {
       title: 'Actions',
       key: 'actions',
-      render: (_, record: Category) => (
+      render: (_: any, record: Category) => (
         <Space>
           <Button
             icon={<EditOutlined />}
@@ -222,7 +221,6 @@ const CategoryManager = () => {
               treeData={transformToAntdTree(treeData)}
               showLine
               defaultExpandAll
-              loading={loading}
               style={{ padding: '16px 0' }}
             />
           )}
@@ -297,7 +295,10 @@ const CategoryManager = () => {
         width={600}
       >
         <CategoryForm 
-          onSubmit={editingCategory ? handleUpdate : handleCreate}
+          onSubmit={editingCategory ? 
+            (data: CreateCategoryDto | UpdateCategoryDto) => handleUpdate(data as UpdateCategoryDto) : 
+            (data: CreateCategoryDto | UpdateCategoryDto) => handleCreate(data as CreateCategoryDto)
+          }
           initialData={editingCategory}
           categories={categories}
         />
