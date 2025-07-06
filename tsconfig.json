@@ -8,6 +8,9 @@
     },
     {
       "path": "./apps/product-quotation"
+    },
+    {
+      "path": "./apps/backend"
     }
   ]
 }

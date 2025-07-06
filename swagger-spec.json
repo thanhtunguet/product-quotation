@@ -1,0 +1,940 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Product Quotation API",
+    "description": "The Product Quotation API description",
+    "version": "1.0",
+    "contact": {}
+  },
+  "tags": [
+    {
+      "name": "app",
+      "description": ""
+    },
+    {
+      "name": "categories",
+      "description": ""
+    },
+    {
+      "name": "brands",
+      "description": ""
+    },
+    {
+      "name": "manufacturers",
+      "description": ""
+    },
+    {
+      "name": "materials",
+      "description": ""
+    },
+    {
+      "name": "manufacturing-methods",
+      "description": ""
+    },
+    {
+      "name": "colors",
+      "description": ""
+    },
+    {
+      "name": "sizes",
+      "description": ""
+    },
+    {
+      "name": "product-types",
+      "description": ""
+    },
+    {
+      "name": "packaging-types",
+      "description": ""
+    },
+    {
+      "name": "product-attributes",
+      "description": ""
+    },
+    {
+      "name": "products",
+      "description": ""
+    },
+    {
+      "name": "quotations",
+      "description": ""
+    }
+  ],
+  "servers": [
+    {
+      "url": "http://localhost:3000/api"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "bearer": {
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "type": "http"
+      }
+    },
+    "schemas": {
+      "BaseEntity": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "deletedAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "createdBy": {
+            "type": "number"
+          },
+          "updatedBy": {
+            "type": "number"
+          }
+        },
+        "required": ["id", "createdAt", "updatedAt"]
+      },
+      "CreateMasterDataDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "maxLength": 255
+          },
+          "code": {
+            "type": "string",
+            "maxLength": 100
+          },
+          "description": {
+            "type": "string"
+          },
+          "isActive": {
+            "type": "boolean",
+            "default": true
+          }
+        },
+        "required": ["name", "code"]
+      },
+      "UpdateMasterDataDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "maxLength": 255
+          },
+          "code": {
+            "type": "string",
+            "maxLength": 100
+          },
+          "description": {
+            "type": "string"
+          },
+          "isActive": {
+            "type": "boolean"
+          }
+        }
+      },
+      "CreateCategoryDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "maxLength": 255
+          },
+          "code": {
+            "type": "string",
+            "maxLength": 100
+          },
+          "description": {
+            "type": "string"
+          },
+          "parentId": {
+            "type": "number"
+          },
+          "isActive": {
+            "type": "boolean",
+            "default": true
+          }
+        },
+        "required": ["name", "code"]
+      },
+      "UpdateCategoryDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "maxLength": 255
+          },
+          "code": {
+            "type": "string",
+            "maxLength": 100
+          },
+          "description": {
+            "type": "string"
+          },
+          "parentId": {
+            "type": "number"
+          },
+          "isActive": {
+            "type": "boolean"
+          }
+        }
+      },
+      "Category": {
+        "allOf": [
+          {"$ref": "#/components/schemas/BaseEntity"},
+          {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "code": {
+                "type": "string"
+              },
+              "description": {
+                "type": "string"
+              },
+              "parentId": {
+                "type": "number"
+              },
+              "isActive": {
+                "type": "boolean",
+                "default": true
+              },
+              "parent": {
+                "$ref": "#/components/schemas/Category"
+              },
+              "children": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/Category"
+                }
+              }
+            },
+            "required": ["name", "code", "isActive"]
+          }
+        ]
+      },
+      "Brand": {
+        "allOf": [
+          {"$ref": "#/components/schemas/BaseEntity"},
+          {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "code": {
+                "type": "string"
+              },
+              "description": {
+                "type": "string"
+              },
+              "isActive": {
+                "type": "boolean",
+                "default": true
+              }
+            },
+            "required": ["name", "code", "isActive"]
+          }
+        ]
+      },
+      "Manufacturer": {
+        "allOf": [
+          {"$ref": "#/components/schemas/BaseEntity"},
+          {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "code": {
+                "type": "string"
+              },
+              "description": {
+                "type": "string"
+              },
+              "isActive": {
+                "type": "boolean",
+                "default": true
+              }
+            },
+            "required": ["name", "code", "isActive"]
+          }
+        ]
+      },
+      "CreateColorDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "maxLength": 255
+          },
+          "code": {
+            "type": "string",
+            "maxLength": 100
+          },
+          "description": {
+            "type": "string"
+          },
+          "hexCode": {
+            "type": "string",
+            "pattern": "^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$"
+          },
+          "isActive": {
+            "type": "boolean",
+            "default": true
+          }
+        },
+        "required": ["name", "code"]
+      },
+      "ProductDynamicAttributeDto": {
+        "type": "object",
+        "properties": {
+          "attributeId": {
+            "type": "number"
+          },
+          "textValue": {
+            "type": "string"
+          },
+          "numberValue": {
+            "type": "number"
+          }
+        },
+        "required": ["attributeId"]
+      },
+      "CreateProductDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "maxLength": 255
+          },
+          "code": {
+            "type": "string",
+            "maxLength": 100
+          },
+          "sku": {
+            "type": "string",
+            "maxLength": 100
+          },
+          "categoryId": {
+            "type": "number"
+          },
+          "brandId": {
+            "type": "number"
+          },
+          "manufacturerId": {
+            "type": "number"
+          },
+          "materialId": {
+            "type": "number"
+          },
+          "manufacturingMethodId": {
+            "type": "number"
+          },
+          "colorId": {
+            "type": "number"
+          },
+          "sizeId": {
+            "type": "number"
+          },
+          "productTypeId": {
+            "type": "number"
+          },
+          "packagingTypeId": {
+            "type": "number"
+          },
+          "imageUrl": {
+            "type": "string",
+            "maxLength": 1000
+          },
+          "description": {
+            "type": "string"
+          },
+          "basePrice": {
+            "type": "number",
+            "default": 0.0
+          },
+          "isActive": {
+            "type": "boolean",
+            "default": true
+          },
+          "dynamicAttributes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProductDynamicAttributeDto"
+            }
+          }
+        },
+        "required": ["name", "code", "categoryId"]
+      },
+      "QuotationItemDto": {
+        "type": "object",
+        "properties": {
+          "productId": {
+            "type": "number"
+          },
+          "quantity": {
+            "type": "number"
+          },
+          "unitPrice": {
+            "type": "number"
+          },
+          "notes": {
+            "type": "string"
+          }
+        },
+        "required": ["productId", "quantity", "unitPrice"]
+      },
+      "CreateQuotationDto": {
+        "type": "object",
+        "properties": {
+          "customerName": {
+            "type": "string",
+            "maxLength": 255
+          },
+          "companyName": {
+            "type": "string",
+            "maxLength": 255
+          },
+          "phoneNumber": {
+            "type": "string",
+            "maxLength": 50
+          },
+          "quotationDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "validUntil": {
+            "type": "string",
+            "format": "date"
+          },
+          "notes": {
+            "type": "string"
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/QuotationItemDto"
+            }
+          }
+        },
+        "required": ["customerName", "phoneNumber", "quotationDate", "items"]
+      }
+    }
+  },
+  "paths": {
+    "/": {
+      "get": {
+        "operationId": "AppController_getHello",
+        "summary": "",
+        "tags": ["app"],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/categories": {
+      "post": {
+        "operationId": "CategoriesController_create",
+        "summary": "Create a new category",
+        "tags": ["categories"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateCategoryDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "The category has been successfully created.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Category"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "operationId": "CategoriesController_findAll",
+        "summary": "Get all categories",
+        "tags": ["categories"],
+        "parameters": [
+          {
+            "name": "search",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Return all categories.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Category"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/categories/tree": {
+      "get": {
+        "operationId": "CategoriesController_findTree",
+        "summary": "Get category tree structure",
+        "tags": ["categories"],
+        "responses": {
+          "200": {
+            "description": "Return category tree.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Category"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/categories/{id}": {
+      "get": {
+        "operationId": "CategoriesController_findOne",
+        "summary": "Get category by ID",
+        "tags": ["categories"],
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Return the category.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Category"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Category not found."
+          }
+        }
+      },
+      "patch": {
+        "operationId": "CategoriesController_update",
+        "summary": "Update category",
+        "tags": ["categories"],
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateCategoryDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The category has been successfully updated.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Category"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Category not found."
+          }
+        }
+      },
+      "delete": {
+        "operationId": "CategoriesController_remove",
+        "summary": "Delete category",
+        "tags": ["categories"],
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The category has been successfully deleted."
+          },
+          "404": {
+            "description": "Category not found."
+          }
+        }
+      }
+    },
+    "/brands": {
+      "post": {
+        "operationId": "BrandsController_create",
+        "summary": "Create a new entity",
+        "tags": ["brands"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateMasterDataDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "The entity has been successfully created.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Brand"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "operationId": "BrandsController_findAll",
+        "summary": "Get all entities",
+        "tags": ["brands"],
+        "parameters": [
+          {
+            "name": "search",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Return all entities.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Brand"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/brands/{id}": {
+      "get": {
+        "operationId": "BrandsController_findOne",
+        "summary": "Get entity by ID",
+        "tags": ["brands"],
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Return the entity.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Brand"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Entity not found."
+          }
+        }
+      },
+      "patch": {
+        "operationId": "BrandsController_update",
+        "summary": "Update entity",
+        "tags": ["brands"],
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateMasterDataDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The entity has been successfully updated.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Brand"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Entity not found."
+          }
+        }
+      },
+      "delete": {
+        "operationId": "BrandsController_remove",
+        "summary": "Delete entity",
+        "tags": ["brands"],
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The entity has been successfully deleted."
+          },
+          "404": {
+            "description": "Entity not found."
+          }
+        }
+      }
+    },
+    "/manufacturers": {
+      "post": {
+        "operationId": "ManufacturersController_create",
+        "summary": "Create a new entity",
+        "tags": ["manufacturers"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateMasterDataDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "The entity has been successfully created.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Manufacturer"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "operationId": "ManufacturersController_findAll",
+        "summary": "Get all entities",
+        "tags": ["manufacturers"],
+        "parameters": [
+          {
+            "name": "search",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Return all entities.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Manufacturer"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/manufacturers/{id}": {
+      "get": {
+        "operationId": "ManufacturersController_findOne",
+        "summary": "Get entity by ID",
+        "tags": ["manufacturers"],
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Return the entity.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Manufacturer"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Entity not found."
+          }
+        }
+      },
+      "patch": {
+        "operationId": "ManufacturersController_update",
+        "summary": "Update entity",
+        "tags": ["manufacturers"],
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateMasterDataDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The entity has been successfully updated.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Manufacturer"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Entity not found."
+          }
+        }
+      },
+      "delete": {
+        "operationId": "ManufacturersController_remove",
+        "summary": "Delete entity",
+        "tags": ["manufacturers"],
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The entity has been successfully deleted."
+          },
+          "404": {
+            "description": "Entity not found."
+          }
+        }
+      }
+    }
+  }
+}
