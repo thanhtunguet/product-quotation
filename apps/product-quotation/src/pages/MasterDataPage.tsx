@@ -26,7 +26,7 @@ const MasterDataPage = () => {
       key: 'brands',
       label: (
         <span>
-          <TagOutlined />
+          <TagOutlined style={{ marginRight: 8 }} />
           Brands
         </span>
       ),
@@ -36,7 +36,7 @@ const MasterDataPage = () => {
       key: 'categories',
       label: (
         <span>
-          <ApartmentOutlined />
+          <ApartmentOutlined style={{ marginRight: 8 }} />
           Categories
         </span>
       ),
@@ -46,7 +46,7 @@ const MasterDataPage = () => {
       key: 'manufacturers',
       label: (
         <span>
-          <ShopOutlined />
+          <ShopOutlined style={{ marginRight: 8 }} />
           Manufacturers
         </span>
       ),
@@ -56,7 +56,7 @@ const MasterDataPage = () => {
       key: 'materials',
       label: (
         <span>
-          <BuildOutlined />
+          <BuildOutlined style={{ marginRight: 8 }} />
           Materials
         </span>
       ),
@@ -70,7 +70,7 @@ const MasterDataPage = () => {
       key: 'manufacturing-methods',
       label: (
         <span>
-          <ToolOutlined />
+          <ToolOutlined style={{ marginRight: 8 }} />
           Methods
         </span>
       ),
@@ -84,7 +84,7 @@ const MasterDataPage = () => {
       key: 'colors',
       label: (
         <span>
-          <BgColorsOutlined />
+          <BgColorsOutlined style={{ marginRight: 8 }} />
           Colors
         </span>
       ),
@@ -99,7 +99,7 @@ const MasterDataPage = () => {
       key: 'sizes',
       label: (
         <span>
-          <ExpandOutlined />
+          <ExpandOutlined style={{ marginRight: 8 }} />
           Sizes
         </span>
       ),
@@ -113,7 +113,7 @@ const MasterDataPage = () => {
       key: 'product-types',
       label: (
         <span>
-          <AppstoreOutlined />
+          <AppstoreOutlined style={{ marginRight: 8 }} />
           Types
         </span>
       ),
@@ -127,7 +127,7 @@ const MasterDataPage = () => {
       key: 'packaging-types',
       label: (
         <span>
-          <InboxOutlined />
+          <InboxOutlined style={{ marginRight: 8 }} />
           Packaging
         </span>
       ),

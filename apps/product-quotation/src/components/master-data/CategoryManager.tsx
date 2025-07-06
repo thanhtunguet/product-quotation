@@ -89,10 +89,16 @@ const CategoryManager = () => {
   const transformToAntdTree = (categories: Category[]): any[] => {
     return categories.map(cat => ({
       title: (
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <span>{cat.name}</span>
-          <Space>
-            <Tag color={cat.isActive ? 'green' : 'red'}>
+        <div style={{ 
+          display: 'flex', 
+          justifyContent: 'space-between', 
+          alignItems: 'center',
+          padding: '4px 8px',
+          minHeight: '32px'
+        }}>
+          <span style={{ fontSize: '14px', fontWeight: 500 }}>{cat.name}</span>
+          <Space size="small">
+            <Tag color={cat.isActive ? 'green' : 'red'} style={{ margin: 0 }}>
               {cat.isActive ? 'Active' : 'Inactive'}
             </Tag>
             <Button
@@ -103,6 +109,7 @@ const CategoryManager = () => {
               }}
               type="link"
               size="small"
+              style={{ padding: '4px' }}
             />
             <Popconfirm
               title="Are you sure you want to delete this category?"
@@ -119,6 +126,7 @@ const CategoryManager = () => {
                 type="link"
                 size="small"
                 danger
+                style={{ padding: '4px' }}
               />
             </Popconfirm>
           </Space>
@@ -199,12 +207,12 @@ const CategoryManager = () => {
       key: 'tree',
       label: (
         <span>
-          <ApartmentOutlined />
+          <ApartmentOutlined style={{ marginRight: 8 }} />
           Tree View
         </span>
       ),
       children: (
-        <Card>
+        <Card style={{ minHeight: '400px' }}>
           {treeData.length === 0 && !loading ? (
             <div style={{ textAlign: 'center', padding: '40px', color: '#999' }}>
               <p>No categories found. Click "Add Category" to create your first category.</p>
@@ -215,6 +223,7 @@ const CategoryManager = () => {
               showLine
               defaultExpandAll
               loading={loading}
+              style={{ padding: '16px 0' }}
             />
           )}
         </Card>
@@ -224,7 +233,7 @@ const CategoryManager = () => {
       key: 'table',
       label: (
         <span>
-          <UnorderedListOutlined />
+          <UnorderedListOutlined style={{ marginRight: 8 }} />
           Table View
         </span>
       ),
@@ -234,12 +243,19 @@ const CategoryManager = () => {
           columns={tableColumns}
           loading={loading}
           rowKey="id"
-          pagination={{ pageSize: 10 }}
+          pagination={{ 
+            pageSize: 10,
+            showSizeChanger: true,
+            showQuickJumper: true,
+            showTotal: (total, range) => `${range[0]}-${range[1]} of ${total} items`
+          }}
           locale={{
             emptyText: categories.length === 0 && !loading ? 
               'No categories found. Click "Add Category" to create your first category.' : 
               'No data'
           }}
+          style={{ marginTop: '16px' }}
+          size="middle"
         />
       ),
     },
