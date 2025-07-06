@@ -2,7 +2,7 @@ import { Column, Entity, Index, PrimaryGeneratedColumn, ManyToOne, OneToMany, Jo
 
 @Index("IDX_77d7eff8a7aaa05457a12b8007", ["code"], { unique: true })
 @Index("IDX_9a6f051e66982b5f0318981bca", ["parentId"], {})
-@Entity("categories", { schema: "product_quotation" })
+@Entity("Categories", { schema: "product_quotation" })
 export class Categories {
   @PrimaryGeneratedColumn({ type: "int", name: "id" })
   id: number;

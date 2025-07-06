@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Tree, Table, Button, Modal, Typography, Space, Tag, message, Tabs, Card, Row, Col, Select, Popconfirm } from 'antd';
-import { PlusOutlined, EditOutlined, DeleteOutlined, ApartmentOutlined, UnorderedListOutlined } from '@ant-design/icons';
+import { PlusOutlined, EditOutlined, DeleteOutlined, ApartmentOutlined, UnorderedListOutlined, ReloadOutlined } from '@ant-design/icons';
 import { apiClient, Category, CreateCategoryDto, UpdateCategoryDto } from '../../services/api-client';
 import CategoryForm from './CategoryForm';
 
@@ -22,10 +22,13 @@ const CategoryManager = () => {
         apiClient.getCategories(),
         apiClient.getCategoryTree()
       ]);
-      setCategories(flatData);
-      setTreeData(treeData);
-    } catch (error) {
-      message.error('Failed to fetch categories');
+      setCategories(Array.isArray(flatData) ? flatData : []);
+      setTreeData(Array.isArray(treeData) ? treeData : []);
+    } catch (error: any) {
+      console.error('Failed to fetch categories:', error);
+      setCategories([]);
+      setTreeData([]);
+      message.error(`Failed to fetch categories: ${error.message || 'Unknown error'}`);
     } finally {
       setLoading(false);
     }
@@ -41,8 +44,9 @@ const CategoryManager = () => {
       await fetchCategories();
       setIsModalVisible(false);
       message.success('Category created successfully');
-    } catch (error) {
-      message.error('Failed to create category');
+    } catch (error: any) {
+      console.error('Failed to create category:', error);
+      message.error(`Failed to create category: ${error.message || 'Unknown error'}`);
     }
   };
 
@@ -55,8 +59,9 @@ const CategoryManager = () => {
       setIsModalVisible(false);
       setEditingCategory(null);
       message.success('Category updated successfully');
-    } catch (error) {
-      message.error('Failed to update category');
+    } catch (error: any) {
+      console.error('Failed to update category:', error);
+      message.error(`Failed to update category: ${error.message || 'Unknown error'}`);
     }
   };
 
@@ -65,8 +70,9 @@ const CategoryManager = () => {
       await apiClient.deleteCategory(id);
       await fetchCategories();
       message.success('Category deleted successfully');
-    } catch (error) {
-      message.error('Failed to delete category');
+    } catch (error: any) {
+      console.error('Failed to delete category:', error);
+      message.error(`Failed to delete category: ${error.message || 'Unknown error'}`);
     }
   };
 
@@ -199,12 +205,18 @@ const CategoryManager = () => {
       ),
       children: (
         <Card>
-          <Tree
-            treeData={transformToAntdTree(treeData)}
-            showLine
-            defaultExpandAll
-            loading={loading}
-          />
+          {treeData.length === 0 && !loading ? (
+            <div style={{ textAlign: 'center', padding: '40px', color: '#999' }}>
+              <p>No categories found. Click "Add Category" to create your first category.</p>
+            </div>
+          ) : (
+            <Tree
+              treeData={transformToAntdTree(treeData)}
+              showLine
+              defaultExpandAll
+              loading={loading}
+            />
+          )}
         </Card>
       ),
     },
@@ -223,6 +235,11 @@ const CategoryManager = () => {
           loading={loading}
           rowKey="id"
           pagination={{ pageSize: 10 }}
+          locale={{
+            emptyText: categories.length === 0 && !loading ? 
+              'No categories found. Click "Add Category" to create your first category.' : 
+              'No data'
+          }}
         />
       ),
     },
@@ -232,13 +249,22 @@ const CategoryManager = () => {
     <div>
       <div style={{ marginBottom: 16, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <Title level={3}>Category Management</Title>
-        <Button 
-          type="primary" 
-          icon={<PlusOutlined />}
-          onClick={() => setIsModalVisible(true)}
-        >
-          Add Category
-        </Button>
+        <Space>
+          <Button 
+            icon={<ReloadOutlined />}
+            onClick={fetchCategories}
+            loading={loading}
+          >
+            Refresh
+          </Button>
+          <Button 
+            type="primary" 
+            icon={<PlusOutlined />}
+            onClick={() => setIsModalVisible(true)}
+          >
+            Add Category
+          </Button>
+        </Space>
       </div>
       
       <Tabs
