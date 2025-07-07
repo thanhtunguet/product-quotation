@@ -226,6 +226,7 @@ export interface QuotationItemDto {
 }
 
 export interface CreateQuotationDto {
+  quotationNumber?: string;
   customerName: string;
   companyName?: string;
   phoneNumber: string;

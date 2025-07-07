@@ -159,8 +159,15 @@ const QuotationManager = () => {
       title: t('quotations.totalAmount'),
       dataIndex: 'totalAmount',
       key: 'totalAmount',
-      render: (amount: number) => `$${amount?.toFixed(2) || '0.00'}`,
-      sorter: (a: Quotation, b: Quotation) => (a.totalAmount || 0) - (b.totalAmount || 0),
+      render: (amount: number | string) => {
+        const numAmount = typeof amount === 'string' ? parseFloat(amount) : amount;
+        return `$${(numAmount || 0).toFixed(2)}`;
+      },
+      sorter: (a: Quotation, b: Quotation) => {
+        const aAmount = typeof a.totalAmount === 'string' ? parseFloat(a.totalAmount) : a.totalAmount;
+        const bAmount = typeof b.totalAmount === 'string' ? parseFloat(b.totalAmount) : b.totalAmount;
+        return (aAmount || 0) - (bAmount || 0);
+      },
     },
     {
       title: t('quotations.status'),

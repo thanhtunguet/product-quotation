@@ -1,7 +1,7 @@
 
 import React, { useEffect, useState } from 'react';
-import { Form, Input, Button, Space, DatePicker, Card, Row, Col, Table, message } from 'antd';
-import { PlusOutlined, DeleteOutlined } from '@ant-design/icons';
+import { Form, Input, Button, Space, DatePicker, Card, Row, Col, Table, message, InputNumber } from 'antd';
+import { PlusOutlined, DeleteOutlined, MinusOutlined } from '@ant-design/icons';
 import { CreateQuotationDto, Quotation, QuotationItemDto, Product, apiClient } from '../../services/api-client';
 import { useTranslation } from 'react-i18next';
 import moment from 'moment';
@@ -73,8 +73,33 @@ const QuotationForm: React.FC<QuotationFormProps> = ({ onSubmit, initialData }) 
     );
   };
 
+  const updateItemQuantity = (index: number, quantity: number) => {
+    setQuotationItems(prev => 
+      prev.map((item, i) => i === index ? { ...item, quantity: Math.max(1, quantity) } : item)
+    );
+  };
+
+  const updateItemPrice = (index: number, unitPrice: number) => {
+    setQuotationItems(prev => 
+      prev.map((item, i) => i === index ? { ...item, unitPrice: Math.max(0, unitPrice) } : item)
+    );
+  };
+
   const calculateTotal = () => {
     return quotationItems.reduce((total, item) => total + (item.quantity * item.unitPrice), 0);
+  };
+
+  const generateQuotationNumber = () => {
+    // Generate quotation number in format: QT-YYYYMMDD-HHMMSS
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const day = String(now.getDate()).padStart(2, '0');
+    const hours = String(now.getHours()).padStart(2, '0');
+    const minutes = String(now.getMinutes()).padStart(2, '0');
+    const seconds = String(now.getSeconds()).padStart(2, '0');
+    
+    return `QT-${year}${month}${day}-${hours}${minutes}${seconds}`;
   };
 
   const handleSubmit = async (values: any) => {
@@ -87,6 +112,7 @@ const QuotationForm: React.FC<QuotationFormProps> = ({ onSubmit, initialData }) 
       }
 
       const quotationData: CreateQuotationDto = {
+        quotationNumber: initialData ? undefined : generateQuotationNumber(), // Only generate for new quotations
         customerName: values.customerName,
         companyName: values.companyName || undefined,
         phoneNumber: values.phoneNumber,
@@ -118,14 +144,50 @@ const QuotationForm: React.FC<QuotationFormProps> = ({ onSubmit, initialData }) 
       title: t('common.quantity'),
       dataIndex: 'quantity',
       key: 'quantity',
-      width: 100,
+      width: 140,
+      render: (quantity: number, _: any, index: number) => (
+        <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+          <Button
+            size="small"
+            icon={<MinusOutlined />}
+            onClick={() => updateItemQuantity(index, quantity - 1)}
+            disabled={quantity <= 1}
+            style={{ width: '24px', height: '24px', padding: 0 }}
+          />
+          <InputNumber
+            value={quantity}
+            onChange={(value) => updateItemQuantity(index, value || 1)}
+            min={1}
+            style={{ width: '60px', textAlign: 'center' }}
+            size="small"
+            controls={false}
+          />
+          <Button
+            size="small"
+            icon={<PlusOutlined />}
+            onClick={() => updateItemQuantity(index, quantity + 1)}
+            style={{ width: '24px', height: '24px', padding: 0 }}
+          />
+        </div>
+      ),
     },
     {
       title: t('common.unitPrice'),
       dataIndex: 'unitPrice',
       key: 'unitPrice',
       width: 120,
-      render: (price: number) => `$${price.toFixed(2)}`,
+      render: (price: number, _: any, index: number) => (
+        <InputNumber
+          value={price}
+          onChange={(value) => updateItemPrice(index, value || 0)}
+          min={0}
+          step={0.01}
+          precision={2}
+          style={{ width: '100%' }}
+          size="small"
+          addonBefore="$"
+        />
+      ),
     },
     {
       title: t('common.total'),
