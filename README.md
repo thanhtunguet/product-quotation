@@ -1,14 +1,98 @@
-# ProductQuotation
+# Product Quotation System
 
-<a alt="Nx logo" href="https://nx.dev" target="_blank" rel="noreferrer"><img src="https://raw.githubusercontent.com/nrwl/nx/master/images/nx-logo.png" width="45"></a>
+A comprehensive business quotation management system built with NestJS (backend) and React (frontend), featuring professional PDF generation, multi-language support, and complete Docker deployment.
 
-✨ Your new, shiny [Nx workspace](https://nx.dev) is almost ready ✨.
+## 🌟 Features
 
-[Learn more about this workspace setup and its capabilities](https://nx.dev/getting-started/tutorials/react-monorepo-tutorial?utm_source=nx_project&amp;utm_medium=readme&amp;utm_campaign=nx_projects) or run `npx nx graph` to visually explore what was created. Now, let's get you up to speed!
+- **📋 Quotation Management**: Create, edit, and manage business quotations
+- **🏢 Master Data**: Categories, brands, manufacturers, materials, colors, sizes
+- **📄 PDF Export**: Professional business quotations with company branding
+- **🌐 Multi-language**: English and Vietnamese support
+- **🔄 Excel Import/Export**: Bulk product management
+- **🐳 Docker Ready**: Complete containerization with Docker Hub integration
+- **🔒 Security**: Built-in authentication and authorization
+- **📱 Responsive**: Mobile-friendly interface
 
-## Finish your CI setup
+## 🚀 Quick Start with Docker
 
-[Click here to finish setting up your workspace!](https://cloud.nx.app/connect/eqgtZ5OMrC)
+### Pull from Docker Hub
+
+```bash
+# Pull the latest images
+docker pull your-username/product-quotation-backend:latest
+docker pull your-username/product-quotation-frontend:latest
+
+# Or use docker-compose (recommended)
+curl -O https://raw.githubusercontent.com/your-username/product-quotation/main/docker-compose.yml
+docker-compose up -d
+```
+
+### Access the Application
+
+- **Frontend**: http://localhost (Nginx)
+- **Backend API**: http://localhost:3000 (NestJS)
+- **API Documentation**: http://localhost:3000/api (Swagger)
+
+## 🐳 Docker Deployment
+
+### GitHub Actions + Docker Hub
+
+This repository includes comprehensive GitHub Actions workflows that automatically build and push Docker images to Docker Hub.
+
+#### Setup Instructions
+
+1. **Configure Secrets**: Add these to your GitHub repository secrets:
+   - `DOCKERHUB_USERNAME`: Your Docker Hub username
+   - `DOCKERHUB_TOKEN`: Docker Hub access token
+
+2. **Automatic Building**: Images are built automatically on:
+   - Push to `main` or `develop` branches
+   - Creating releases (with version tags)
+   - Pull requests (build-only, no push)
+
+3. **Multi-Architecture**: Images support both `linux/amd64` and `linux/arm64`
+
+📚 **[Complete Docker Setup Guide](.github/DOCKER_SETUP.md)**
+
+### Production Deployment
+
+```bash
+# Download deployment artifacts from GitHub releases
+wget https://github.com/your-username/product-quotation/releases/latest/download/deployment-artifacts.zip
+unzip deployment-artifacts.zip
+
+# Configure environment
+cp .env.production.template .env.production
+# Edit .env.production with your settings
+
+# Deploy
+chmod +x deploy.sh
+./deploy.sh latest
+```
+
+### Docker Images
+
+| Component | Docker Hub Repository | Description |
+|-----------|----------------------|-------------|
+| Backend | `your-username/product-quotation-backend` | NestJS API server |
+| Frontend | `your-username/product-quotation-frontend` | React SPA with Nginx |
+
+### Available Tags
+
+- `latest` - Latest stable release
+- `develop` - Development branch builds  
+- `v1.0.0` - Specific version releases
+- `main` - Main branch builds
+
+## 🛠️ Development Setup
+
+### Prerequisites
+
+- Node.js 22+ 
+- Docker & Docker Compose
+- MySQL 8.0+ (for local development)
+
+### Local Development
 
 
 ## Run tasks
