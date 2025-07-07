@@ -24,6 +24,9 @@
     "sizes": "Sizes",
     "types": "Types",
     "packaging": "Packaging",
+    "brandManagement": "Brand Management",
+    "categoryManagement": "Category Management",
+    "manufacturerManagement": "Manufacturer Management",
     "materialManagement": "Material Management",
     "methodManagement": "Manufacturing Method Management",
     "colorManagement": "Color Management",
@@ -147,6 +150,7 @@
     "export": "Export",
     "import": "Import",
     "print": "Print",
+    "close": "Close",
     "pdf": "PDF",
     "color": "Color",
     "noColor": "No color",
@@ -230,5 +234,28 @@
   "api": {
     "notImplemented": "API Not Implemented",
     "notImplementedMessage": "{{title}} API is not yet implemented in the backend"
+  },
+  "excel": {
+    "importTitle": "Import Products from Excel",
+    "importExcel": "Import Excel",
+    "downloadTemplate": "Download Template",
+    "templateDownloaded": "Template downloaded successfully",
+    "downloadError": "Failed to download template",
+    "uploadFile": "Upload Excel File",
+    "uploadText": "Click or drag file to this area to upload",
+    "uploadHint": "Support for Excel files (.xlsx, .xls)",
+    "importing": "Importing products...",
+    "importSuccess": "{{count}} products imported successfully",
+    "importPartialSuccess": "{{success}} products imported, {{error}} failed",
+    "importError": "Failed to import products",
+    "importResults": "Import Results",
+    "totalRows": "Total Rows",
+    "successCount": "Successfully Imported",
+    "errorCount": "Failed to Import",
+    "validationErrors": "Validation Errors",
+    "step1": "Step 1: Download Template",
+    "step2": "Step 2: Upload Completed File",
+    "downloadTemplateDescription": "Download the Excel template with sample data and master data reference sheets.",
+    "uploadFileDescription": "Upload your completed Excel file with product data."
   }
 }

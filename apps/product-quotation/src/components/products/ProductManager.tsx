@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
 import { Table, Button, Modal, Typography, Space, Tag, message, Popconfirm, Alert, Card, Input } from 'antd';
-import { PlusOutlined, EditOutlined, DeleteOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
+import { PlusOutlined, EditOutlined, DeleteOutlined, ExclamationCircleOutlined, FileExcelOutlined, DownloadOutlined } from '@ant-design/icons';
 import { apiClient, Product, CreateProductDto, Category, Brand, Manufacturer } from '../../services/api-client';
 import ProductForm from './ProductForm';
+import { ExcelImportModal } from './ExcelImportModal';
 import { useTranslation } from 'react-i18next';
 
 const { Title } = Typography;
@@ -16,6 +17,7 @@ const ProductManager = () => {
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [apiError, setApiError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
+  const [isExcelImportModalVisible, setIsExcelImportModalVisible] = useState(false);
 
   // Master data for dropdowns
   const [categories, setCategories] = useState<Category[]>([]);
@@ -161,8 +163,15 @@ const ProductManager = () => {
       title: t('common.price'),
       dataIndex: 'basePrice',
       key: 'basePrice',
-      render: (price: number) => `$${price?.toFixed(2) || '0.00'}`,
-      sorter: (a: Product, b: Product) => (a.basePrice || 0) - (b.basePrice || 0),
+      render: (price: string | number) => {
+        const numPrice = typeof price === 'string' ? parseFloat(price) : price;
+        return `$${(numPrice || 0).toFixed(2)}`;
+      },
+      sorter: (a: Product, b: Product) => {
+        const priceA = typeof a.basePrice === 'string' ? parseFloat(a.basePrice) : (a.basePrice || 0);
+        const priceB = typeof b.basePrice === 'string' ? parseFloat(b.basePrice) : (b.basePrice || 0);
+        return priceA - priceB;
+      },
     },
     {
       title: t('common.status'),
@@ -270,6 +279,12 @@ const ProductManager = () => {
             onChange={(e) => !e.target.value && setSearchTerm('')}
           />
           <Button 
+            icon={<FileExcelOutlined />}
+            onClick={() => setIsExcelImportModalVisible(true)}
+          >
+            {t('excel.importExcel')}
+          </Button>
+          <Button 
             type="primary" 
             icon={<PlusOutlined />}
             onClick={() => setIsModalVisible(true)}
@@ -309,6 +324,15 @@ const ProductManager = () => {
           manufacturers={manufacturers}
         />
       </Modal>
+
+      <ExcelImportModal
+        visible={isExcelImportModalVisible}
+        onClose={() => setIsExcelImportModalVisible(false)}
+        onImportSuccess={() => {
+          setIsExcelImportModalVisible(false);
+          fetchProducts();
+        }}
+      />
     </div>
   );
 };

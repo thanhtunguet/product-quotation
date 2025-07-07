@@ -9,14 +9,24 @@ import {
   ParseIntPipe,
   Query,
   DefaultValuePipe,
+  UseInterceptors,
+  UploadedFile,
+  Res,
 } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse, ApiQuery } from '@nestjs/swagger';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { ApiTags, ApiOperation, ApiResponse, ApiQuery, ApiConsumes, ApiBody } from '@nestjs/swagger';
+import { Response } from 'express';
 import { ProductsService, CreateProductDto, UpdateProductDto } from './products.service';
+import { ExcelService } from './excel/excel.service';
+import { ExcelImportResultDto } from './excel/excel.dto';
 
 @ApiTags('products')
 @Controller('products')
 export class ProductsController {
-  constructor(private readonly productsService: ProductsService) {}
+  constructor(
+    private readonly productsService: ProductsService,
+    private readonly excelService: ExcelService,
+  ) {}
 
   @Post()
   @ApiOperation({ summary: 'Create a new product' })
@@ -26,15 +36,22 @@ export class ProductsController {
   }
 
   @Get()
-  @ApiOperation({ summary: 'Get all products with pagination' })
+  @ApiOperation({ summary: 'Get all products with optional search' })
   @ApiResponse({ status: 200, description: 'List of products' })
+  @ApiQuery({ name: 'search', required: false, type: String, description: 'Search term' })
   @ApiQuery({ name: 'page', required: false, type: Number, description: 'Page number' })
   @ApiQuery({ name: 'limit', required: false, type: Number, description: 'Items per page' })
-  findAll(
+  async findAll(
+    @Query('search') search?: string,
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
-    @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number,
+    @Query('limit', new DefaultValuePipe(100), ParseIntPipe) limit: number,
   ) {
-    return this.productsService.findAll(page, limit);
+    if (search) {
+      const result = await this.productsService.search(search, page, limit);
+      return result.products;
+    }
+    const result = await this.productsService.findAll(page, limit);
+    return result.products;
   }
 
   @Get('search')
@@ -105,5 +122,46 @@ export class ProductsController {
   @ApiResponse({ status: 404, description: 'Product not found' })
   remove(@Param('id', ParseIntPipe) id: number) {
     return this.productsService.remove(id);
+  }
+
+  @Get('excel/template')
+  @ApiOperation({ summary: 'Download Excel import template' })
+  @ApiResponse({ status: 200, description: 'Excel template downloaded successfully' })
+  async downloadTemplate(@Res() res: Response) {
+    const buffer = await this.excelService.generateTemplate();
+    
+    res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+    res.setHeader('Content-Disposition', 'attachment; filename="product-import-template.xlsx"');
+    res.send(buffer);
+  }
+
+  @Post('excel/import')
+  @ApiOperation({ summary: 'Import products from Excel file' })
+  @ApiResponse({ status: 200, description: 'Products imported successfully', type: ExcelImportResultDto })
+  @ApiResponse({ status: 400, description: 'Invalid file or data' })
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        file: {
+          type: 'string',
+          format: 'binary',
+        },
+      },
+    },
+  })
+  @UseInterceptors(FileInterceptor('file'))
+  async importProducts(@UploadedFile() file: Express.Multer.File): Promise<ExcelImportResultDto> {
+    if (!file) {
+      throw new Error('No file uploaded');
+    }
+
+    if (!file.mimetype.includes('spreadsheet') && !file.mimetype.includes('excel')) {
+      throw new Error('Invalid file type. Please upload an Excel file.');
+    }
+
+    const products = await this.excelService.parseExcelFile(file.buffer);
+    return await this.excelService.importProducts(products);
   }
 }

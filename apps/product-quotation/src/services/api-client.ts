@@ -108,6 +108,20 @@ export interface CreateProductAttributeDto {
   isActive?: boolean;
 }
 
+// Excel Import Types
+export interface ExcelImportResultDto {
+  totalRows: number;
+  successCount: number;
+  errorCount: number;
+  errors: Array<{
+    row: number;
+    field: string;
+    message: string;
+    value: any;
+  }>;
+  createdProductIds: number[];
+}
+
 // Product Types
 export interface ProductDynamicAttributeDto {
   attributeId: number;
@@ -130,7 +144,7 @@ export interface Product extends BaseEntity {
   packagingTypeId?: number;
   imageUrl?: string;
   description?: string;
-  basePrice: number;
+  basePrice: string;
   isActive: boolean;
   category: Category;
   brand?: Brand;
@@ -167,7 +181,7 @@ export interface CreateProductDto {
   packagingTypeId?: number;
   imageUrl?: string;
   description?: string;
-  basePrice?: number;
+  basePrice?: string;
   isActive?: boolean;
   dynamicAttributes?: ProductDynamicAttributeDto[];
 }
@@ -351,6 +365,34 @@ export class ProductQuotationApiClient {
     return this.request(`/products/${id}`, {
       method: 'DELETE',
     });
+  }
+
+  // Excel Import/Export methods
+  async downloadProductTemplate(): Promise<Blob> {
+    const response = await fetch(`${this.baseUrl}/products/excel/template`);
+
+    if (!response.ok) {
+      throw new Error('Failed to download template');
+    }
+
+    return response.blob();
+  }
+
+  async importProducts(file: File): Promise<ExcelImportResultDto> {
+    const formData = new FormData();
+    formData.append('file', file);
+
+    const response = await fetch(`${this.baseUrl}/products/excel/import`, {
+      method: 'POST',
+      body: formData,
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.message || 'Failed to import products');
+    }
+
+    return response.json();
   }
 
   // Quotations API
