@@ -11,7 +11,9 @@ const Layout = () => {
   return (
     <AntdLayout style={{ minHeight: '100vh' }}>
       <Header style={{ padding: '0 24px', background: '#fff', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <Navigation />
+        <div style={{ flex: 1, display: 'flex', justifyContent: 'center' }}>
+          <Navigation />
+        </div>
         <LanguageSwitcher />
       </Header>
       <Content style={{ padding: '24px', background: '#f5f5f5' }}>
