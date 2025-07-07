@@ -1,13 +1,13 @@
 
 import React, { useEffect, useState } from 'react';
-import { Form, Input, Button, Space, DatePicker, Card, Row, Col, Table, Select, InputNumber, message } from 'antd';
+import { Form, Input, Button, Space, DatePicker, Card, Row, Col, Table, message } from 'antd';
 import { PlusOutlined, DeleteOutlined } from '@ant-design/icons';
 import { CreateQuotationDto, Quotation, QuotationItemDto, Product, apiClient } from '../../services/api-client';
 import { useTranslation } from 'react-i18next';
 import moment from 'moment';
+import ProductSelectionModal from './ProductSelectionModal';
 
 const { TextArea } = Input;
-const { Option } = Select;
 
 interface QuotationFormProps {
   onSubmit: (data: CreateQuotationDto) => void;
@@ -20,9 +20,7 @@ const QuotationForm: React.FC<QuotationFormProps> = ({ onSubmit, initialData }) 
   const [loading, setLoading] = useState(false);
   const [products, setProducts] = useState<Product[]>([]);
   const [quotationItems, setQuotationItems] = useState<QuotationItemDto[]>([]);
-  const [selectedProduct, setSelectedProduct] = useState<number | undefined>();
-  const [quantity, setQuantity] = useState<number>(1);
-  const [unitPrice, setUnitPrice] = useState<number>(0);
+  const [productModalVisible, setProductModalVisible] = useState(false);
 
   useEffect(() => {
     loadProducts();
@@ -60,29 +58,9 @@ const QuotationForm: React.FC<QuotationFormProps> = ({ onSubmit, initialData }) 
     }
   };
 
-  const addItem = () => {
-    if (!selectedProduct || quantity <= 0 || unitPrice < 0) {
-      message.error(t('forms.selectProductAndEnterDetails'));
-      return;
-    }
-
-    const product = products.find(p => p.id === selectedProduct);
-    if (!product) {
-      message.error(t('forms.selectedProductNotFound'));
-      return;
-    }
-
-    const newItem: QuotationItemDto = {
-      productId: selectedProduct,
-      quantity,
-      unitPrice,
-      notes: '',
-    };
-
-    setQuotationItems(prev => [...prev, newItem]);
-    setSelectedProduct(undefined);
-    setQuantity(1);
-    setUnitPrice(0);
+  const handleAddProducts = (newItems: QuotationItemDto[]) => {
+    setQuotationItems(prev => [...prev, ...newItems]);
+    message.success(`${newItems.length} product(s) added to quotation`);
   };
 
   const removeItem = (index: number) => {
@@ -257,65 +235,16 @@ const QuotationForm: React.FC<QuotationFormProps> = ({ onSubmit, initialData }) 
       </Card>
 
       <Card title={t('sections.quotationItems')} style={{ marginBottom: 16 }}>
-        {products.length === 0 ? (
-          <div style={{ textAlign: 'center', padding: '20px', color: '#999' }}>
-            {t('forms.noProductsAvailable')}
-          </div>
-        ) : (
-          <div style={{ marginBottom: 16 }}>
-            <Row gutter={16} align="middle">
-              <Col span={8}>
-                <Select
-                  placeholder={t('forms.selectProduct')}
-                  value={selectedProduct}
-                  onChange={setSelectedProduct}
-                  style={{ width: '100%' }}
-                  showSearch
-                  filterOption={(input, option) =>
-                    option?.children?.toString().toLowerCase().includes(input.toLowerCase()) ?? false
-                  }
-                >
-                  {products.map(product => (
-                    <Option key={product.id} value={product.id}>
-                      {product.name} - ${product.basePrice?.toFixed(2) || '0.00'}
-                    </Option>
-                  ))}
-                </Select>
-              </Col>
-              <Col span={4}>
-                <InputNumber
-                  placeholder={t('forms.qty')}
-                  value={quantity}
-                  onChange={(value) => setQuantity(value || 1)}
-                  min={1}
-                  style={{ width: '100%' }}
-                />
-              </Col>
-              <Col span={4}>
-                <InputNumber
-                  placeholder={t('common.unitPrice')}
-                  value={unitPrice}
-                  onChange={(value) => setUnitPrice(value || 0)}
-                  min={0}
-                  step={0.01}
-                  precision={2}
-                  style={{ width: '100%' }}
-                  addonBefore="$"
-                />
-              </Col>
-              <Col span={4}>
-                <Button 
-                  type="primary" 
-                  icon={<PlusOutlined />}
-                  onClick={addItem}
-                  style={{ width: '100%' }}
-                >
-                  {t('forms.addItem')}
-                </Button>
-              </Col>
-            </Row>
-          </div>
-        )}
+        <div style={{ marginBottom: 16 }}>
+          <Button 
+            type="primary" 
+            icon={<PlusOutlined />}
+            onClick={() => setProductModalVisible(true)}
+            size="large"
+          >
+            Add Products
+          </Button>
+        </div>
 
         <Table
           dataSource={quotationItems}
@@ -346,6 +275,12 @@ const QuotationForm: React.FC<QuotationFormProps> = ({ onSubmit, initialData }) 
           </Button>
         </Space>
       </Form.Item>
+
+      <ProductSelectionModal
+        visible={productModalVisible}
+        onCancel={() => setProductModalVisible(false)}
+        onAddProducts={handleAddProducts}
+      />
     </Form>
   );
 };
