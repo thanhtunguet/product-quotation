@@ -186,9 +186,9 @@ const QuotationManager = () => {
     },
     {
       title: t('quotations.items'),
-      dataIndex: 'items',
-      key: 'items',
-      render: (items: any[]) => `${items?.length || 0} ${t('quotations.itemsCount')}`,
+      dataIndex: 'quotationItems',
+      key: 'quotationItems',
+      render: (quotationItems: any[]) => `${quotationItems?.length || 0} ${t('quotations.itemsCount')}`,
     },
     {
       title: t('common.actions'),

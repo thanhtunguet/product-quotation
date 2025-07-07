@@ -36,7 +36,7 @@ const QuotationForm: React.FC<QuotationFormProps> = ({ onSubmit, initialData }) 
       });
       
       // Convert existing items to QuotationItemDto format
-      const items: QuotationItemDto[] = initialData.items?.map(item => ({
+      const items: QuotationItemDto[] = initialData.quotationItems?.map(item => ({
         productId: item.productId,
         quantity: item.quantity,
         unitPrice: item.unitPrice,

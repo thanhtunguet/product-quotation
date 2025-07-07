@@ -215,7 +215,7 @@ export interface Quotation extends BaseEntity {
   status: QuotationStatus;
   totalAmount: number;
   notes?: string;
-  items: QuotationItem[];
+  quotationItems: QuotationItem[];
 }
 
 export interface QuotationItemDto {
