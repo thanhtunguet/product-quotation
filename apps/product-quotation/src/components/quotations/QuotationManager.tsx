@@ -4,12 +4,14 @@ import { PlusOutlined, EditOutlined, DeleteOutlined, ExclamationCircleOutlined, 
 import { apiClient, Quotation, CreateQuotationDto, QuotationStatus } from '../../services/api-client';
 import QuotationForm from './QuotationForm';
 import moment from 'moment';
+import { useTranslation } from 'react-i18next';
 
 const { Title } = Typography;
 const { Search } = Input;
 const { RangePicker } = DatePicker;
 
 const QuotationManager = () => {
+  const { t } = useTranslation();
   const [quotations, setQuotations] = useState<Quotation[]>([]);
   const [loading, setLoading] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -28,11 +30,11 @@ const QuotationManager = () => {
       console.error('Failed to fetch quotations:', error);
       setQuotations([]); // Set to empty array on error
       if (error.message?.includes('fetch') || error.message?.includes('API Error: 404')) {
-        setApiError('Quotations API is not yet implemented in the backend. This feature will be available once the backend developer implements the quotations endpoints.');
+        setApiError(t('quotations.apiNotImplementedMessage'));
       } else {
-        setApiError(`Failed to fetch quotations: ${error.message}`);
+        setApiError(`${t('quotations.fetchError')}: ${error.message}`);
       }
-      message.error('Failed to fetch quotations');
+      message.error(t('quotations.fetchError'));
     } finally {
       setLoading(false);
     }
@@ -47,13 +49,13 @@ const QuotationManager = () => {
       const newQuotation = await apiClient.createQuotation(formData);
       setQuotations(prev => [...prev, newQuotation]);
       setIsModalVisible(false);
-      message.success('Quotation created successfully');
+      message.success(t('quotations.createSuccess'));
     } catch (error: any) {
       console.error('Failed to create quotation:', error);
       if (error.message?.includes('fetch') || error.message?.includes('API Error: 404')) {
-        message.error('Quotations API is not yet implemented in the backend');
+        message.error(t('quotations.apiNotImplementedMessage'));
       } else {
-        message.error('Failed to create quotation');
+        message.error(t('quotations.createError'));
       }
     }
   };
@@ -68,13 +70,13 @@ const QuotationManager = () => {
       ));
       setIsModalVisible(false);
       setEditingQuotation(null);
-      message.success('Quotation updated successfully');
+      message.success(t('quotations.updateSuccess'));
     } catch (error: any) {
       console.error('Failed to update quotation:', error);
       if (error.message?.includes('fetch') || error.message?.includes('API Error: 404')) {
-        message.error('Quotations API is not yet implemented in the backend');
+        message.error(t('quotations.apiNotImplementedMessage'));
       } else {
-        message.error('Failed to update quotation');
+        message.error(t('quotations.updateError'));
       }
     }
   };
@@ -83,13 +85,13 @@ const QuotationManager = () => {
     try {
       await apiClient.deleteQuotation(id);
       setQuotations(prev => prev.filter(quotation => quotation.id !== id));
-      message.success('Quotation deleted successfully');
+      message.success(t('quotations.deleteSuccess'));
     } catch (error: any) {
       console.error('Failed to delete quotation:', error);
       if (error.message?.includes('fetch') || error.message?.includes('API Error: 404')) {
-        message.error('Quotations API is not yet implemented in the backend');
+        message.error(t('quotations.apiNotImplementedMessage'));
       } else {
-        message.error('Failed to delete quotation');
+        message.error(t('quotations.deleteError'));
       }
     }
   };
@@ -117,30 +119,30 @@ const QuotationManager = () => {
 
   const columns = [
     {
-      title: 'Quotation #',
+      title: t('quotations.quotationNumber'),
       dataIndex: 'quotationNumber',
       key: 'quotationNumber',
       sorter: (a: Quotation, b: Quotation) => a.quotationNumber.localeCompare(b.quotationNumber),
     },
     {
-      title: 'Customer',
+      title: t('quotations.customer'),
       dataIndex: 'customerName',
       key: 'customerName',
       sorter: (a: Quotation, b: Quotation) => a.customerName.localeCompare(b.customerName),
     },
     {
-      title: 'Company',
+      title: t('quotations.company'),
       dataIndex: 'companyName',
       key: 'companyName',
       render: (company: string) => company || '-',
     },
     {
-      title: 'Phone',
+      title: t('quotations.phone'),
       dataIndex: 'phoneNumber',
       key: 'phoneNumber',
     },
     {
-      title: 'Date',
+      title: t('quotations.date'),
       dataIndex: 'quotationDate',
       key: 'quotationDate',
       render: (date: string) => moment(date).format('MMM DD, YYYY'),
@@ -148,20 +150,20 @@ const QuotationManager = () => {
         moment(a.quotationDate).unix() - moment(b.quotationDate).unix(),
     },
     {
-      title: 'Valid Until',
+      title: t('quotations.validUntil'),
       dataIndex: 'validUntil',
       key: 'validUntil',
       render: (date: string) => date ? moment(date).format('MMM DD, YYYY') : '-',
     },
     {
-      title: 'Total Amount',
+      title: t('quotations.totalAmount'),
       dataIndex: 'totalAmount',
       key: 'totalAmount',
       render: (amount: number) => `$${amount?.toFixed(2) || '0.00'}`,
       sorter: (a: Quotation, b: Quotation) => (a.totalAmount || 0) - (b.totalAmount || 0),
     },
     {
-      title: 'Status',
+      title: t('quotations.status'),
       dataIndex: 'status',
       key: 'status',
       render: (status: QuotationStatus) => (
@@ -176,13 +178,13 @@ const QuotationManager = () => {
       onFilter: (value: any, record: Quotation) => record.status === value,
     },
     {
-      title: 'Items',
+      title: t('quotations.items'),
       dataIndex: 'items',
       key: 'items',
-      render: (items: any[]) => `${items?.length || 0} items`,
+      render: (items: any[]) => `${items?.length || 0} ${t('quotations.itemsCount')}`,
     },
     {
-      title: 'Actions',
+      title: t('common.actions'),
       key: 'actions',
       render: (_, record: Quotation) => (
         <Space>
@@ -191,9 +193,9 @@ const QuotationManager = () => {
             type="link"
             size="small"
             disabled={!!apiError}
-            title="Generate PDF"
+            title={t('common.pdf')}
           >
-            PDF
+            {t('common.pdf')}
           </Button>
           <Button
             icon={<EditOutlined />}
@@ -202,13 +204,13 @@ const QuotationManager = () => {
             size="small"
             disabled={!!apiError}
           >
-            Edit
+            {t('common.edit')}
           </Button>
           <Popconfirm
-            title="Are you sure you want to delete this quotation?"
+            title={t('confirmations.deleteQuotation')}
             onConfirm={() => handleDelete(record.id)}
-            okText="Yes"
-            cancelText="No"
+            okText={t('common.yes')}
+            cancelText={t('common.no')}
             disabled={!!apiError}
           >
             <Button
@@ -218,7 +220,7 @@ const QuotationManager = () => {
               danger
               disabled={!!apiError}
             >
-              Delete
+              {t('common.delete')}
             </Button>
           </Popconfirm>
         </Space>
@@ -230,42 +232,42 @@ const QuotationManager = () => {
     return (
       <div>
         <div style={{ marginBottom: 16, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <Title level={2}>Quotation Management</Title>
+          <Title level={2}>{t('quotations.management')}</Title>
           <Button 
             type="primary" 
             icon={<PlusOutlined />}
             disabled
           >
-            Create Quotation
+            {t('quotations.create')}
           </Button>
         </div>
         
         <Alert
-          message="Quotations API Not Implemented"
+          message={t('quotations.apiNotImplemented')}
           description={apiError}
           type="warning"
           icon={<ExclamationCircleOutlined />}
           showIcon
           action={
             <Button size="small" onClick={fetchQuotations}>
-              Retry
+              {t('common.retry')}
             </Button>
           }
         />
 
         <Card style={{ marginTop: 16 }}>
-          <Title level={4}>Quotation System Features</Title>
-          <p>Once the Quotations API is implemented, this system will provide:</p>
+          <Title level={4}>{t('quotations.systemFeatures')}</Title>
+          <p>{t('quotations.futureFeatures')}</p>
           <ul>
-            <li><strong>Quotation Management:</strong> Create, edit, and track quotations</li>
-            <li><strong>Customer Information:</strong> Manage customer details and contact info</li>
-            <li><strong>Product Line Items:</strong> Add products with quantities and pricing</li>
-            <li><strong>Status Workflow:</strong> Draft → Sent → Accepted/Rejected/Expired</li>
-            <li><strong>PDF Generation:</strong> Professional quotation documents</li>
-            <li><strong>Calculations:</strong> Automatic totals and tax calculations</li>
-            <li><strong>Search & Filter:</strong> Find quotations by customer, date, status</li>
+            <li><strong>{t('quotations.managementFeature')}</strong></li>
+            <li><strong>{t('quotations.customerFeature')}</strong></li>
+            <li><strong>{t('quotations.itemsFeature')}</strong></li>
+            <li><strong>{t('quotations.workflowFeature')}</strong></li>
+            <li><strong>{t('quotations.pdfFeature')}</strong></li>
+            <li><strong>{t('quotations.calculationFeature')}</strong></li>
+            <li><strong>{t('quotations.searchFeature')}</strong></li>
           </ul>
-          <p>This feature depends on the Products API being implemented first.</p>
+          <p>{t('quotations.dependencyMessage')}</p>
         </Card>
       </div>
     );
@@ -274,10 +276,10 @@ const QuotationManager = () => {
   return (
     <div>
       <div style={{ marginBottom: 16, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <Title level={2}>Quotation Management</Title>
+        <Title level={2}>{t('quotations.management')}</Title>
         <Space>
           <Search
-            placeholder="Search quotations..."
+            placeholder={t('quotations.searchPlaceholder')}
             allowClear
             style={{ width: 250 }}
             onSearch={setSearchTerm}
@@ -288,7 +290,7 @@ const QuotationManager = () => {
             icon={<PlusOutlined />}
             onClick={() => setIsModalVisible(true)}
           >
-            Create Quotation
+            {t('quotations.create')}
           </Button>
         </Space>
       </div>
@@ -302,13 +304,13 @@ const QuotationManager = () => {
           pageSize: 20,
           showSizeChanger: true,
           showQuickJumper: true,
-          showTotal: (total, range) => `${range[0]}-${range[1]} of ${total} items`,
+          showTotal: (total, range) => `${range[0]}-${range[1]} ${t('common.of')} ${total} ${t('common.items')}`,
         }}
         scroll={{ x: 'max-content' }}
       />
       
       <Modal 
-        title={editingQuotation ? 'Edit Quotation' : 'Create Quotation'} 
+        title={editingQuotation ? t('quotations.edit') : t('quotations.create')} 
         open={isModalVisible} 
         onCancel={handleModalClose} 
         footer={null}

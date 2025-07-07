@@ -3,8 +3,10 @@ import React, { useState, useEffect } from 'react';
 import { Table, Button } from 'antd';
 import { apiClient, Quotation } from '../../services/api-client';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 const QuotationList = () => {
+  const { t } = useTranslation();
   const [quotations, setQuotations] = useState<Quotation[]>([]);
 
   useEffect(() => {
@@ -12,15 +14,15 @@ const QuotationList = () => {
   }, []);
 
   const columns = [
-    { title: 'Quotation Number', dataIndex: 'quotationNumber', key: 'quotationNumber' },
-    { title: 'Customer Name', dataIndex: 'customerName', key: 'customerName' },
-    { title: 'Total Amount', dataIndex: 'totalAmount', key: 'totalAmount' },
+    { title: t('quotations.quotationNumber'), dataIndex: 'quotationNumber', key: 'quotationNumber' },
+    { title: t('quotations.customer'), dataIndex: 'customerName', key: 'customerName' },
+    { title: t('quotations.totalAmount'), dataIndex: 'totalAmount', key: 'totalAmount' },
     {
-      title: 'Action',
+      title: t('common.actions'),
       key: 'action',
-      render: (text: any, record: Quotation) => (
+      render: (_: unknown, record: Quotation) => (
         <span>
-          <Link to={`/quotations/${record.id}/edit`}>Edit</Link>
+          <Link to={`/quotations/${record.id}/edit`}>{t('common.edit')}</Link>
         </span>
       ),
     },
@@ -29,7 +31,7 @@ const QuotationList = () => {
   return (
     <div>
       <Link to="/quotations/new">
-        <Button type="primary">Create Quotation</Button>
+        <Button type="primary">{t('quotations.create')}</Button>
       </Link>
       <Table dataSource={quotations} columns={columns} />
     </div>

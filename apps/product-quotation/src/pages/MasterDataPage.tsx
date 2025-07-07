@@ -11,6 +11,7 @@ import {
   ToolOutlined
 } from '@ant-design/icons';
 import { Tabs, Typography } from 'antd';
+import { useTranslation } from 'react-i18next';
 import BrandManager from '../components/master-data/BrandManager';
 import CategoryManager from '../components/master-data/CategoryManager';
 import GenericMasterDataManager from '../components/master-data/GenericMasterDataManager';
@@ -19,13 +20,15 @@ import ManufacturerManager from '../components/master-data/ManufacturerManager';
 const { Title } = Typography;
 
 const MasterDataPage = () => {
+  const { t } = useTranslation();
+  
   const items = [
     {
       key: 'brands',
       label: (
         <span>
           <TagOutlined style={{ marginRight: 8 }} />
-          Brands
+          {t('masterData.brands')}
         </span>
       ),
       children: <BrandManager />,
@@ -35,7 +38,7 @@ const MasterDataPage = () => {
       label: (
         <span>
           <ApartmentOutlined style={{ marginRight: 8 }} />
-          Categories
+          {t('masterData.categories')}
         </span>
       ),
       children: <CategoryManager />,
@@ -45,7 +48,7 @@ const MasterDataPage = () => {
       label: (
         <span>
           <ShopOutlined style={{ marginRight: 8 }} />
-          Manufacturers
+          {t('masterData.manufacturers')}
         </span>
       ),
       children: <ManufacturerManager />,
@@ -55,11 +58,11 @@ const MasterDataPage = () => {
       label: (
         <span>
           <BuildOutlined style={{ marginRight: 8 }} />
-          Materials
+          {t('masterData.materials')}
         </span>
       ),
       children: <GenericMasterDataManager 
-        title="Material Management" 
+        title={t('masterData.materialManagement')}
         apiEndpoint="materials"
         entityName="material"
       />,
@@ -69,11 +72,11 @@ const MasterDataPage = () => {
       label: (
         <span>
           <ToolOutlined style={{ marginRight: 8 }} />
-          Methods
+          {t('masterData.methods')}
         </span>
       ),
       children: <GenericMasterDataManager 
-        title="Manufacturing Method Management" 
+        title={t('masterData.methodManagement')}
         apiEndpoint="manufacturingMethods"
         entityName="manufacturing method"
       />,
@@ -83,11 +86,11 @@ const MasterDataPage = () => {
       label: (
         <span>
           <BgColorsOutlined style={{ marginRight: 8 }} />
-          Colors
+          {t('masterData.colors')}
         </span>
       ),
       children: <GenericMasterDataManager 
-        title="Color Management" 
+        title={t('masterData.colorManagement')}
         apiEndpoint="colors"
         entityName="color"
         hasHexCode={true}
@@ -98,11 +101,11 @@ const MasterDataPage = () => {
       label: (
         <span>
           <ExpandOutlined style={{ marginRight: 8 }} />
-          Sizes
+          {t('masterData.sizes')}
         </span>
       ),
       children: <GenericMasterDataManager 
-        title="Size Management" 
+        title={t('masterData.sizeManagement')}
         apiEndpoint="sizes"
         entityName="size"
       />,
@@ -112,11 +115,11 @@ const MasterDataPage = () => {
       label: (
         <span>
           <AppstoreOutlined style={{ marginRight: 8 }} />
-          Types
+          {t('masterData.types')}
         </span>
       ),
       children: <GenericMasterDataManager 
-        title="Product Type Management" 
+        title={t('masterData.typeManagement')}
         apiEndpoint="productTypes"
         entityName="product type"
       />,
@@ -126,11 +129,11 @@ const MasterDataPage = () => {
       label: (
         <span>
           <InboxOutlined style={{ marginRight: 8 }} />
-          Packaging
+          {t('masterData.packaging')}
         </span>
       ),
       children: <GenericMasterDataManager 
-        title="Packaging Type Management" 
+        title={t('masterData.packagingManagement')}
         apiEndpoint="packagingTypes"
         entityName="packaging type"
       />,
@@ -139,7 +142,7 @@ const MasterDataPage = () => {
 
   return (
     <div>
-      <Title level={2}>Master Data Management</Title>
+      <Title level={2}>{t('masterData.title')}</Title>
       <Tabs
         defaultActiveKey="brands"
         items={items}

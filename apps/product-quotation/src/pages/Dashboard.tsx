@@ -2,22 +2,25 @@
 import React from 'react';
 import { Typography, Card, Row, Col, Statistic } from 'antd';
 import { ProductOutlined, FileTextOutlined, SettingOutlined, UserOutlined } from '@ant-design/icons';
+import { useTranslation } from 'react-i18next';
 
 const { Title, Paragraph } = Typography;
 
 const Dashboard = () => {
+  const { t } = useTranslation();
+  
   return (
     <div>
-      <Title level={2}>Product Quotation Dashboard</Title>
+      <Title level={2}>{t('dashboard.title')}</Title>
       <Paragraph>
-        Welcome to the Product Quotation Management System. Use the navigation menu to manage your products, quotations, and master data.
+        {t('dashboard.welcome')}
       </Paragraph>
       
       <Row gutter={16} style={{ marginTop: 24 }}>
         <Col span={6}>
           <Card>
             <Statistic
-              title="Total Products"
+              title={t('dashboard.totalProducts')}
               value={0}
               prefix={<ProductOutlined />}
             />
@@ -26,7 +29,7 @@ const Dashboard = () => {
         <Col span={6}>
           <Card>
             <Statistic
-              title="Active Quotations"
+              title={t('dashboard.activeQuotations')}
               value={0}
               prefix={<FileTextOutlined />}
             />
@@ -35,7 +38,7 @@ const Dashboard = () => {
         <Col span={6}>
           <Card>
             <Statistic
-              title="Categories"
+              title={t('dashboard.categories')}
               value={0}
               prefix={<SettingOutlined />}
             />
@@ -44,7 +47,7 @@ const Dashboard = () => {
         <Col span={6}>
           <Card>
             <Statistic
-              title="Brands"
+              title={t('dashboard.brands')}
               value={0}
               prefix={<UserOutlined />}
             />

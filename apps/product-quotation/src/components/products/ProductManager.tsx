@@ -1,13 +1,15 @@
-import React, { useState, useEffect } from 'react';
-import { Table, Button, Modal, Typography, Space, Tag, message, Popconfirm, Alert, Card, Input, Select } from 'antd';
-import { PlusOutlined, EditOutlined, DeleteOutlined, ExclamationCircleOutlined, SearchOutlined } from '@ant-design/icons';
-import { apiClient, Product, CreateProductDto, UpdateProductDto, Category, Brand, Manufacturer } from '../../services/api-client';
+import { useState, useEffect } from 'react';
+import { Table, Button, Modal, Typography, Space, Tag, message, Popconfirm, Alert, Card, Input } from 'antd';
+import { PlusOutlined, EditOutlined, DeleteOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
+import { apiClient, Product, CreateProductDto, Category, Brand, Manufacturer } from '../../services/api-client';
 import ProductForm from './ProductForm';
+import { useTranslation } from 'react-i18next';
 
 const { Title } = Typography;
 const { Search } = Input;
 
 const ProductManager = () => {
+  const { t } = useTranslation();
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -45,15 +47,15 @@ const ProductManager = () => {
     try {
       const result = await apiClient.getProducts(searchTerm || undefined);
       setProducts(Array.isArray(result) ? result : []);
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Failed to fetch products:', error);
       setProducts([]); // Set to empty array on error
-      if (error.message?.includes('fetch') || error.message?.includes('API Error: 404')) {
-        setApiError('Products API is not yet implemented in the backend. This feature will be available once the backend developer implements the products endpoints.');
+      if (error instanceof Error && (error.message?.includes('fetch') || error.message?.includes('API Error: 404'))) {
+        setApiError(t('products.apiNotImplementedMessage'));
       } else {
-        setApiError(`Failed to fetch products: ${error.message}`);
+        setApiError(`${t('products.fetchError')}: ${error instanceof Error ? error.message : 'Unknown error'}`);
       }
-      message.error('Failed to fetch products');
+      message.error(t('products.fetchError'));
     } finally {
       setLoading(false);
     }
@@ -62,20 +64,20 @@ const ProductManager = () => {
   useEffect(() => {
     fetchMasterData();
     fetchProducts();
-  }, [searchTerm]);
+  }, [searchTerm]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleCreate = async (formData: CreateProductDto) => {
     try {
       const newProduct = await apiClient.createProduct(formData);
       setProducts(prev => [...prev, newProduct]);
       setIsModalVisible(false);
-      message.success('Product created successfully');
-    } catch (error: any) {
+      message.success(t('products.createSuccess'));
+    } catch (error: unknown) {
       console.error('Failed to create product:', error);
-      if (error.message?.includes('fetch') || error.message?.includes('API Error: 404')) {
-        message.error('Products API is not yet implemented in the backend');
+      if (error instanceof Error && (error.message?.includes('fetch') || error.message?.includes('API Error: 404'))) {
+        message.error(t('products.apiNotImplemented'));
       } else {
-        message.error('Failed to create product');
+        message.error(t('products.createError'));
       }
     }
   };
@@ -90,13 +92,13 @@ const ProductManager = () => {
       ));
       setIsModalVisible(false);
       setEditingProduct(null);
-      message.success('Product updated successfully');
-    } catch (error: any) {
+      message.success(t('products.updateSuccess'));
+    } catch (error: unknown) {
       console.error('Failed to update product:', error);
-      if (error.message?.includes('fetch') || error.message?.includes('API Error: 404')) {
-        message.error('Products API is not yet implemented in the backend');
+      if (error instanceof Error && (error.message?.includes('fetch') || error.message?.includes('API Error: 404'))) {
+        message.error(t('products.apiNotImplemented'));
       } else {
-        message.error('Failed to update product');
+        message.error(t('products.updateError'));
       }
     }
   };
@@ -105,13 +107,13 @@ const ProductManager = () => {
     try {
       await apiClient.deleteProduct(id);
       setProducts(prev => prev.filter(product => product.id !== id));
-      message.success('Product deleted successfully');
-    } catch (error: any) {
+      message.success(t('products.deleteSuccess'));
+    } catch (error: unknown) {
       console.error('Failed to delete product:', error);
-      if (error.message?.includes('fetch') || error.message?.includes('API Error: 404')) {
-        message.error('Products API is not yet implemented in the backend');
+      if (error instanceof Error && (error.message?.includes('fetch') || error.message?.includes('API Error: 404'))) {
+        message.error(t('products.apiNotImplemented'));
       } else {
-        message.error('Failed to delete product');
+        message.error(t('products.deleteError'));
       }
     }
   };
@@ -128,59 +130,59 @@ const ProductManager = () => {
 
   const columns = [
     {
-      title: 'Name',
+      title: t('common.name'),
       dataIndex: 'name',
       key: 'name',
       sorter: (a: Product, b: Product) => a.name.localeCompare(b.name),
     },
     {
-      title: 'Code',
+      title: t('common.code'),
       dataIndex: 'code',
       key: 'code',
     },
     {
-      title: 'SKU',
+      title: t('common.sku'),
       dataIndex: 'sku',
       key: 'sku',
     },
     {
-      title: 'Category',
+      title: t('common.category'),
       dataIndex: ['category', 'name'],
       key: 'category',
-      render: (text: string) => text || 'No category',
+      render: (text: string) => text || t('common.noData'),
     },
     {
-      title: 'Brand',
+      title: t('common.brand'),
       dataIndex: ['brand', 'name'],
       key: 'brand',
-      render: (text: string) => text || 'No brand',
+      render: (text: string) => text || t('common.noData'),
     },
     {
-      title: 'Price',
+      title: t('common.price'),
       dataIndex: 'basePrice',
       key: 'basePrice',
       render: (price: number) => `$${price?.toFixed(2) || '0.00'}`,
       sorter: (a: Product, b: Product) => (a.basePrice || 0) - (b.basePrice || 0),
     },
     {
-      title: 'Status',
+      title: t('common.status'),
       dataIndex: 'isActive',
       key: 'isActive',
       render: (isActive: boolean) => (
         <Tag color={isActive ? 'green' : 'red'}>
-          {isActive ? 'Active' : 'Inactive'}
+          {isActive ? t('common.active') : t('common.inactive')}
         </Tag>
       ),
       filters: [
-        { text: 'Active', value: true },
-        { text: 'Inactive', value: false },
+        { text: t('common.active'), value: true },
+        { text: t('common.inactive'), value: false },
       ],
-      onFilter: (value: any, record: Product) => record.isActive === value,
+      onFilter: (value: boolean | React.Key, record: Product) => record.isActive === value,
     },
     {
-      title: 'Actions',
+      title: t('common.actions'),
       key: 'actions',
-      render: (_, record: Product) => (
+      render: (_: unknown, record: Product) => (
         <Space>
           <Button
             icon={<EditOutlined />}
@@ -189,13 +191,13 @@ const ProductManager = () => {
             size="small"
             disabled={!!apiError}
           >
-            Edit
+            {t('common.edit')}
           </Button>
           <Popconfirm
-            title="Are you sure you want to delete this product?"
+            title={t('confirmations.deleteProduct')}
             onConfirm={() => handleDelete(record.id)}
-            okText="Yes"
-            cancelText="No"
+            okText={t('common.yes')}
+            cancelText={t('common.no')}
             disabled={!!apiError}
           >
             <Button
@@ -205,7 +207,7 @@ const ProductManager = () => {
               danger
               disabled={!!apiError}
             >
-              Delete
+              {t('common.delete')}
             </Button>
           </Popconfirm>
         </Space>
@@ -217,39 +219,39 @@ const ProductManager = () => {
     return (
       <div>
         <div style={{ marginBottom: 16, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <Title level={2}>Product Management</Title>
+          <Title level={2}>{t('products.management')}</Title>
           <Button 
             type="primary" 
             icon={<PlusOutlined />}
             disabled
           >
-            Add Product
+            {t('products.addProduct')}
           </Button>
         </div>
         
         <Alert
-          message="Products API Not Implemented"
+          message={t('products.apiNotImplemented')}
           description={apiError}
           type="warning"
           icon={<ExclamationCircleOutlined />}
           showIcon
           action={
             <Button size="small" onClick={fetchProducts}>
-              Retry
+              {t('common.retry')}
             </Button>
           }
         />
 
         <Card style={{ marginTop: 16 }}>
-          <Title level={4}>What's Available</Title>
-          <p>While the Products API is being implemented, you can still manage:</p>
+          <Title level={4}>{t('products.whatsAvailable')}</Title>
+          <p>{t('products.availableFeatures')}</p>
           <ul>
-            <li><strong>Categories:</strong> Create hierarchical product categories</li>
-            <li><strong>Brands:</strong> Manage product brands</li>
-            <li><strong>Manufacturers:</strong> Manage manufacturing partners</li>
-            <li><strong>Other Master Data:</strong> Materials, Colors, Sizes, etc.</li>
+            <li><strong>{t('masterData.categories')}:</strong> {t('products.categoriesFeature')}</li>
+            <li><strong>{t('masterData.brands')}:</strong> {t('products.brandsFeature')}</li>
+            <li><strong>{t('masterData.manufacturers')}:</strong> {t('products.manufacturersFeature')}</li>
+            <li><strong>{t('masterData.materials')}:</strong> {t('products.otherMasterDataFeature')}</li>
           </ul>
-          <p>Once the backend team implements the Products API, this page will be fully functional.</p>
+          <p>{t('products.futureMessage')}</p>
         </Card>
       </div>
     );
@@ -258,10 +260,10 @@ const ProductManager = () => {
   return (
     <div>
       <div style={{ marginBottom: 16, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <Title level={2}>Product Management</Title>
+        <Title level={2}>{t('products.management')}</Title>
         <Space>
           <Search
-            placeholder="Search products..."
+            placeholder={t('products.searchPlaceholder')}
             allowClear
             style={{ width: 250 }}
             onSearch={setSearchTerm}
@@ -272,7 +274,7 @@ const ProductManager = () => {
             icon={<PlusOutlined />}
             onClick={() => setIsModalVisible(true)}
           >
-            Add Product
+            {t('products.addProduct')}
           </Button>
         </Space>
       </div>
@@ -286,13 +288,13 @@ const ProductManager = () => {
           pageSize: 20,
           showSizeChanger: true,
           showQuickJumper: true,
-          showTotal: (total, range) => `${range[0]}-${range[1]} of ${total} items`,
+          showTotal: (total, range) => `${range[0]}-${range[1]} ${t('common.of')} ${total} ${t('common.items')}`,
         }}
         scroll={{ x: 'max-content' }}
       />
       
       <Modal 
-        title={editingProduct ? 'Edit Product' : 'Add Product'} 
+        title={editingProduct ? t('products.editProduct') : t('products.addProduct')} 
         open={isModalVisible} 
         onCancel={handleModalClose} 
         footer={null}

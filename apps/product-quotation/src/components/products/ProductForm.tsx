@@ -1,6 +1,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { Form, Input, Button, Switch, Space, Select, InputNumber, TreeSelect, Tabs, Card, Row, Col } from 'antd';
+import { useTranslation } from 'react-i18next';
 import { CreateProductDto, Product, Category, Brand, Manufacturer, apiClient } from '../../services/api-client';
 
 const { TextArea } = Input;
@@ -21,6 +22,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
   brands,
   manufacturers 
 }) => {
+  const { t } = useTranslation();
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
   
@@ -144,19 +146,19 @@ const ProductForm: React.FC<ProductFormProps> = ({
         <Col span={12}>
           <Form.Item
             name="name"
-            label="Product Name"
-            rules={[{ required: true, message: 'Product name is required' }]}
+            label={t('common.name')}
+            rules={[{ required: true, message: t('forms.productNameRequired') }]}
           >
-            <Input placeholder="Enter product name" />
+            <Input placeholder={t('forms.enterProductName')} />
           </Form.Item>
         </Col>
         <Col span={12}>
           <Form.Item
             name="code"
-            label="Product Code"
-            rules={[{ required: true, message: 'Product code is required' }]}
+            label={t('common.code')}
+            rules={[{ required: true, message: t('forms.productCodeRequired') }]}
           >
-            <Input placeholder="Enter product code" />
+            <Input placeholder={t('forms.enterProductCode')} />
           </Form.Item>
         </Col>
       </Row>
@@ -165,16 +167,16 @@ const ProductForm: React.FC<ProductFormProps> = ({
         <Col span={12}>
           <Form.Item
             name="sku"
-            label="SKU"
+            label={t('common.sku')}
           >
-            <Input placeholder="Enter SKU (optional)" />
+            <Input placeholder={t('forms.enterSku')} />
           </Form.Item>
         </Col>
         <Col span={12}>
           <Form.Item
             name="basePrice"
-            label="Base Price"
-            rules={[{ required: true, message: 'Base price is required' }]}
+            label={t('common.basePrice')}
+            rules={[{ required: true, message: t('forms.basePriceRequired') }]}
           >
             <InputNumber
               style={{ width: '100%' }}
@@ -190,24 +192,24 @@ const ProductForm: React.FC<ProductFormProps> = ({
 
       <Form.Item
         name="description"
-        label="Description"
+        label={t('common.description')}
       >
-        <TextArea placeholder="Enter product description" rows={4} />
+        <TextArea placeholder={t('forms.enterProductDescription')} rows={4} />
       </Form.Item>
 
       <Form.Item
         name="imageUrl"
-        label="Image URL"
+        label={t('common.imageUrl')}
       >
-        <Input placeholder="Enter image URL (optional)" />
+        <Input placeholder={t('forms.enterImageUrl')} />
       </Form.Item>
 
       <Form.Item
         name="isActive"
-        label="Status"
+        label={t('common.status')}
         valuePropName="checked"
       >
-        <Switch checkedChildren="Active" unCheckedChildren="Inactive" />
+        <Switch checkedChildren={t('common.active')} unCheckedChildren={t('common.inactive')} />
       </Form.Item>
     </Card>
   );
@@ -218,11 +220,11 @@ const ProductForm: React.FC<ProductFormProps> = ({
         <Col span={12}>
           <Form.Item
             name="categoryId"
-            label="Category"
-            rules={[{ required: true, message: 'Category is required' }]}
+            label={t('common.category')}
+            rules={[{ required: true, message: t('forms.categoryRequired') }]}
           >
             <TreeSelect
-              placeholder="Select category"
+              placeholder={t('forms.selectCategory')}
               treeData={transformCategoriesToTree(categories)}
               showSearch
               filterTreeNode={(search, node) =>
@@ -234,9 +236,9 @@ const ProductForm: React.FC<ProductFormProps> = ({
         <Col span={12}>
           <Form.Item
             name="brandId"
-            label="Brand"
+            label={t('common.brand')}
           >
-            <Select placeholder="Select brand (optional)" allowClear>
+            <Select placeholder={t('forms.selectBrand')} allowClear>
               {brands.map(brand => (
                 <Option key={brand.id} value={brand.id}>{brand.name}</Option>
               ))}
@@ -249,9 +251,9 @@ const ProductForm: React.FC<ProductFormProps> = ({
         <Col span={12}>
           <Form.Item
             name="manufacturerId"
-            label="Manufacturer"
+            label={t('common.manufacturer')}
           >
-            <Select placeholder="Select manufacturer (optional)" allowClear>
+            <Select placeholder={t('forms.selectManufacturer')} allowClear>
               {manufacturers.map(manufacturer => (
                 <Option key={manufacturer.id} value={manufacturer.id}>{manufacturer.name}</Option>
               ))}
@@ -261,9 +263,9 @@ const ProductForm: React.FC<ProductFormProps> = ({
         <Col span={12}>
           <Form.Item
             name="productTypeId"
-            label="Product Type"
+            label={t('common.type')}
           >
-            <Select placeholder="Select product type (optional)" allowClear>
+            <Select placeholder={t('forms.selectType')} allowClear>
               {productTypes.map(type => (
                 <Option key={type.id} value={type.id}>{type.name}</Option>
               ))}
@@ -280,9 +282,9 @@ const ProductForm: React.FC<ProductFormProps> = ({
         <Col span={12}>
           <Form.Item
             name="materialId"
-            label="Material"
+            label={t('common.material')}
           >
-            <Select placeholder="Select material (optional)" allowClear>
+            <Select placeholder={t('forms.selectMaterial')} allowClear>
               {materials.map(material => (
                 <Option key={material.id} value={material.id}>{material.name}</Option>
               ))}
@@ -292,9 +294,9 @@ const ProductForm: React.FC<ProductFormProps> = ({
         <Col span={12}>
           <Form.Item
             name="colorId"
-            label="Color"
+            label={t('common.color')}
           >
-            <Select placeholder="Select color (optional)" allowClear>
+            <Select placeholder={t('forms.selectColor')} allowClear>
               {colors.map(color => (
                 <Option key={color.id} value={color.id}>
                   <Space>
@@ -323,9 +325,9 @@ const ProductForm: React.FC<ProductFormProps> = ({
         <Col span={12}>
           <Form.Item
             name="sizeId"
-            label="Size"
+            label={t('common.size')}
           >
-            <Select placeholder="Select size (optional)" allowClear>
+            <Select placeholder={t('forms.selectSize')} allowClear>
               {sizes.map(size => (
                 <Option key={size.id} value={size.id}>{size.name}</Option>
               ))}
@@ -335,9 +337,9 @@ const ProductForm: React.FC<ProductFormProps> = ({
         <Col span={12}>
           <Form.Item
             name="manufacturingMethodId"
-            label="Manufacturing Method"
+            label={t('common.method')}
           >
-            <Select placeholder="Select manufacturing method (optional)" allowClear>
+            <Select placeholder={t('forms.selectMethod')} allowClear>
               {manufacturingMethods.map(method => (
                 <Option key={method.id} value={method.id}>{method.name}</Option>
               ))}
@@ -348,9 +350,9 @@ const ProductForm: React.FC<ProductFormProps> = ({
 
       <Form.Item
         name="packagingTypeId"
-        label="Packaging Type"
+        label={t('common.packaging')}
       >
-        <Select placeholder="Select packaging type (optional)" allowClear style={{ width: '50%' }}>
+        <Select placeholder={t('forms.selectPackaging')} allowClear style={{ width: '50%' }}>
           {packagingTypes.map(type => (
             <Option key={type.id} value={type.id}>{type.name}</Option>
           ))}
@@ -362,17 +364,17 @@ const ProductForm: React.FC<ProductFormProps> = ({
   const tabItems = [
     {
       key: 'basic',
-      label: 'Basic Information',
+      label: t('sections.basicInformation'),
       children: basicInfoTab,
     },
     {
       key: 'categorization',
-      label: 'Categorization',
+      label: t('sections.categorization'),
       children: categorizationTab,
     },
     {
       key: 'specifications',
-      label: 'Specifications',
+      label: t('sections.specifications'),
       children: specificationsTab,
     },
   ];
@@ -392,10 +394,10 @@ const ProductForm: React.FC<ProductFormProps> = ({
       <Form.Item style={{ marginTop: 24, marginBottom: 0 }}>
         <Space>
           <Button type="primary" htmlType="submit" loading={loading}>
-            {initialData ? 'Update Product' : 'Create Product'}
+            {initialData ? t('products.editProduct') : t('products.addProduct')}
           </Button>
           <Button onClick={() => form.resetFields()}>
-            Reset
+            {t('common.reset')}
           </Button>
         </Space>
       </Form.Item>

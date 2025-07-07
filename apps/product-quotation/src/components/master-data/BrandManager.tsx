@@ -2,12 +2,14 @@
 import React, { useState, useEffect } from 'react';
 import { Table, Button, Modal, Typography, Space, Tag, message, Spin, Popconfirm } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
+import { useTranslation } from 'react-i18next';
 import { apiClient, Brand, CreateMasterDataDto, UpdateMasterDataDto } from '../../services/api-client';
 import MasterDataForm from './MasterDataForm';
 
 const { Title } = Typography;
 
 const BrandManager = () => {
+  const { t } = useTranslation();
   const [brands, setBrands] = useState<Brand[]>([]);
   const [loading, setLoading] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -19,7 +21,7 @@ const BrandManager = () => {
       const data = await apiClient.brands.getAll();
       setBrands(data);
     } catch (error) {
-      message.error('Failed to fetch brands');
+      message.error(t('brands.fetchError'));
     } finally {
       setLoading(false);
     }
@@ -34,9 +36,9 @@ const BrandManager = () => {
       const newBrand = await apiClient.brands.create(data);
       setBrands(prev => [...prev, newBrand]);
       setIsModalVisible(false);
-      message.success('Brand created successfully');
+      message.success(t('brands.createSuccess'));
     } catch (error) {
-      message.error('Failed to create brand');
+      message.error(t('brands.createError'));
     }
   };
 
@@ -50,9 +52,9 @@ const BrandManager = () => {
       ));
       setIsModalVisible(false);
       setEditingBrand(null);
-      message.success('Brand updated successfully');
+      message.success(t('brands.updateSuccess'));
     } catch (error) {
-      message.error('Failed to update brand');
+      message.error(t('brands.updateError'));
     }
   };
 
@@ -60,9 +62,9 @@ const BrandManager = () => {
     try {
       await apiClient.brands.delete(id);
       setBrands(prev => prev.filter(brand => brand.id !== id));
-      message.success('Brand deleted successfully');
+      message.success(t('brands.deleteSuccess'));
     } catch (error) {
-      message.error('Failed to delete brand');
+      message.error(t('brands.deleteError'));
     }
   };
 
@@ -78,32 +80,32 @@ const BrandManager = () => {
 
   const columns = [
     {
-      title: 'Name',
+      title: t('common.name'),
       dataIndex: 'name',
       key: 'name',
     },
     {
-      title: 'Code',
+      title: t('common.code'),
       dataIndex: 'code',
       key: 'code',
     },
     {
-      title: 'Description',
+      title: t('common.description'),
       dataIndex: 'description',
       key: 'description',
     },
     {
-      title: 'Status',
+      title: t('common.status'),
       dataIndex: 'isActive',
       key: 'isActive',
       render: (isActive: boolean) => (
         <Tag color={isActive ? 'green' : 'red'}>
-          {isActive ? 'Active' : 'Inactive'}
+          {isActive ? t('common.active') : t('common.inactive')}
         </Tag>
       ),
     },
     {
-      title: 'Actions',
+      title: t('common.actions'),
       key: 'actions',
       render: (_, record: Brand) => (
         <Space>
@@ -113,13 +115,13 @@ const BrandManager = () => {
             type="link"
             size="small"
           >
-            Edit
+            {t('common.edit')}
           </Button>
           <Popconfirm
-            title="Are you sure you want to delete this brand?"
+            title={t('confirmations.deleteBrand')}
             onConfirm={() => handleDelete(record.id)}
-            okText="Yes"
-            cancelText="No"
+            okText={t('common.yes')}
+            cancelText={t('common.no')}
           >
             <Button
               icon={<DeleteOutlined />}
@@ -127,7 +129,7 @@ const BrandManager = () => {
               size="small"
               danger
             >
-              Delete
+              {t('common.delete')}
             </Button>
           </Popconfirm>
         </Space>
@@ -138,13 +140,13 @@ const BrandManager = () => {
   return (
     <div>
       <div style={{ marginBottom: 16, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <Title level={3}>Brand Management</Title>
+        <Title level={3}>{t('brands.management')}</Title>
         <Button 
           type="primary" 
           icon={<PlusOutlined />}
           onClick={() => setIsModalVisible(true)}
         >
-          Add Brand
+          {t('brands.add')}
         </Button>
       </div>
       
@@ -157,7 +159,7 @@ const BrandManager = () => {
       />
       
       <Modal 
-        title={editingBrand ? 'Edit Brand' : 'Add Brand'} 
+        title={editingBrand ? t('brands.edit') : t('brands.add')} 
         open={isModalVisible} 
         onCancel={handleModalClose} 
         footer={null}
