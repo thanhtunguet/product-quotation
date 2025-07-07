@@ -25,5 +25,33 @@ export default defineConfig(() => ({
     commonjsOptions: {
       transformMixedEsModules: true,
     },
+    rollupOptions: {
+      external: [],
+      output: {
+        manualChunks: undefined,
+      },
+      onwarn: (warning, warn) => {
+        if (warning.code === 'UNRESOLVED_IMPORT') {
+          if (warning.source?.includes('@rc-component/util')) {
+            return;
+          }
+        }
+        warn(warning);
+      },
+    },
+  },
+  optimizeDeps: {
+    include: [
+      '@ant-design/icons',
+      'antd',
+      'react',
+      'react-dom',
+      'react-router-dom',
+      'jspdf',
+      'html2canvas',
+    ],
+  },
+  resolve: {
+    alias: {},
   },
 }));

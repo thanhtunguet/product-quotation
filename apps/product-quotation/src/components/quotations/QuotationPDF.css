@@ -1,0 +1,419 @@
+/* QuotationPDF.css */
+.quotation-pdf {
+  width: 210mm;
+  min-height: 297mm;
+  margin: 0 auto;
+  background: white;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-size: 14px;
+  line-height: 1.4;
+  color: #333;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+  padding: 20mm;
+  box-sizing: border-box;
+}
+
+/* Header Section */
+.pdf-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 30px;
+  padding-bottom: 20px;
+  border-bottom: 2px solid #e8e8e8;
+}
+
+.company-info {
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+}
+
+.company-logo {
+  width: 80px;
+  height: 80px;
+}
+
+.logo-placeholder {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  font-weight: bold;
+}
+
+.logo-text {
+  font-size: 14px;
+  letter-spacing: 1px;
+}
+
+.logo-subtext {
+  font-size: 10px;
+  letter-spacing: 2px;
+  margin-top: 2px;
+}
+
+.company-details .company-name {
+  font-size: 24px;
+  font-weight: bold;
+  color: #2c3e50;
+  margin: 0 0 10px 0;
+}
+
+.company-address {
+  font-size: 12px;
+  color: #666;
+  line-height: 1.3;
+}
+
+.company-address p {
+  margin: 2px 0;
+}
+
+.quotation-info {
+  text-align: right;
+}
+
+.document-title {
+  font-size: 32px;
+  font-weight: bold;
+  color: #2c3e50;
+  margin: 0 0 15px 0;
+  letter-spacing: 2px;
+}
+
+.quotation-details {
+  background: #f8f9fa;
+  padding: 15px;
+  border-radius: 8px;
+  border-left: 4px solid #667eea;
+}
+
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  min-width: 200px;
+}
+
+.detail-row:last-child {
+  margin-bottom: 0;
+}
+
+.detail-row .label {
+  font-weight: 600;
+  color: #555;
+}
+
+.detail-row .value {
+  font-weight: 500;
+  color: #333;
+}
+
+.status-draft { color: #6c757d; }
+.status-sent { color: #007bff; }
+.status-accepted { color: #28a745; }
+.status-rejected { color: #dc3545; }
+.status-expired { color: #fd7e14; }
+
+/* Customer Section */
+.customer-section {
+  margin-bottom: 30px;
+}
+
+.section-title {
+  font-size: 16px;
+  font-weight: bold;
+  color: #2c3e50;
+  margin: 0 0 10px 0;
+  padding-bottom: 5px;
+  border-bottom: 1px solid #e8e8e8;
+}
+
+.customer-info {
+  background: #f8f9fa;
+  padding: 15px;
+  border-radius: 6px;
+  border-left: 3px solid #28a745;
+}
+
+.customer-name {
+  font-size: 16px;
+  font-weight: bold;
+  color: #2c3e50;
+  margin-bottom: 5px;
+}
+
+.customer-company {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 5px;
+}
+
+.customer-phone {
+  font-size: 12px;
+  color: #666;
+}
+
+/* Items Table */
+.items-section {
+  margin-bottom: 30px;
+}
+
+.items-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.items-table thead {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+}
+
+.items-table th {
+  padding: 12px 8px;
+  font-weight: 600;
+  text-align: left;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.items-table td {
+  padding: 12px 8px;
+  border-bottom: 1px solid #eee;
+  vertical-align: top;
+}
+
+.item-row:nth-child(even) {
+  background-color: #f8f9fa;
+}
+
+.item-row:hover {
+  background-color: #e3f2fd;
+}
+
+/* Table Columns */
+.item-col { width: 25%; }
+.desc-col { width: 30%; }
+.qty-col { width: 10%; text-align: center; }
+.price-col { width: 15%; text-align: right; }
+.total-col { width: 20%; text-align: right; font-weight: 600; }
+
+.product-name {
+  font-weight: 600;
+  color: #2c3e50;
+  margin-bottom: 2px;
+}
+
+.product-code {
+  font-size: 11px;
+  color: #666;
+  font-style: italic;
+}
+
+.product-description {
+  font-size: 12px;
+  color: #666;
+  margin-bottom: 4px;
+}
+
+.item-notes {
+  font-size: 11px;
+  color: #007bff;
+  font-style: italic;
+  background: #e3f2fd;
+  padding: 4px 6px;
+  border-radius: 3px;
+  margin-top: 4px;
+}
+
+/* Totals Section */
+.totals-section {
+  margin-bottom: 30px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.totals-container {
+  min-width: 300px;
+  background: #f8f9fa;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.total-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 12px 15px;
+  border-bottom: 1px solid #eee;
+}
+
+.total-row:last-child {
+  border-bottom: none;
+}
+
+.subtotal-row {
+  background: white;
+}
+
+.tax-row {
+  background: #fff3cd;
+  border-left: 3px solid #ffc107;
+}
+
+.grand-total-row {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  font-weight: bold;
+  font-size: 16px;
+}
+
+.total-label {
+  font-weight: 600;
+}
+
+.total-value {
+  font-weight: 600;
+  font-family: 'Courier New', monospace;
+}
+
+/* Notes Section */
+.notes-section {
+  margin-bottom: 30px;
+}
+
+.notes-content {
+  background: #fff3cd;
+  padding: 15px;
+  border-radius: 6px;
+  border-left: 3px solid #ffc107;
+  font-style: italic;
+  color: #856404;
+}
+
+/* Terms Section */
+.terms-section {
+  margin-bottom: 30px;
+}
+
+.terms-content {
+  font-size: 12px;
+  color: #666;
+  line-height: 1.5;
+}
+
+.terms-content p {
+  margin: 8px 0;
+  padding-left: 10px;
+}
+
+/* Footer */
+.pdf-footer {
+  margin-top: 40px;
+  padding-top: 20px;
+  border-top: 1px solid #ddd;
+}
+
+.footer-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+
+.footer-left {
+  font-size: 12px;
+  color: #666;
+}
+
+.footer-left p {
+  margin: 4px 0;
+}
+
+.signature-section {
+  text-align: center;
+  min-width: 200px;
+}
+
+.signature-line {
+  border-bottom: 1px solid #333;
+  width: 180px;
+  margin-bottom: 5px;
+  height: 40px;
+}
+
+.signature-label {
+  font-size: 11px;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* Print Styles */
+@media print {
+  .quotation-pdf {
+    width: 100%;
+    margin: 0;
+    box-shadow: none;
+    padding: 15mm;
+  }
+  
+  .pdf-header {
+    page-break-inside: avoid;
+  }
+  
+  .items-table {
+    page-break-inside: avoid;
+  }
+  
+  .totals-section {
+    page-break-inside: avoid;
+  }
+}
+
+/* Responsive for smaller screens */
+@media (max-width: 768px) {
+  .quotation-pdf {
+    width: 100%;
+    padding: 15px;
+    font-size: 12px;
+  }
+  
+  .pdf-header {
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  .company-info {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .quotation-info {
+    text-align: left;
+  }
+  
+  .document-title {
+    font-size: 24px;
+  }
+  
+  .items-table {
+    font-size: 11px;
+  }
+  
+  .footer-content {
+    flex-direction: column;
+    gap: 20px;
+    text-align: center;
+  }
+}

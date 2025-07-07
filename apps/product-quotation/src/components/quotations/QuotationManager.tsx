@@ -1,8 +1,10 @@
-import React, { useState, useEffect } from 'react';
-import { Table, Button, Modal, Typography, Space, Tag, message, Popconfirm, Alert, Card, Input, DatePicker, Select } from 'antd';
-import { PlusOutlined, EditOutlined, DeleteOutlined, ExclamationCircleOutlined, SearchOutlined, FilePdfOutlined } from '@ant-design/icons';
+import React, { useState, useEffect, useRef } from 'react';
+import { Table, Button, Modal, Typography, Space, Tag, message, Popconfirm, Alert, Card, Input, DatePicker, Select, Dropdown } from 'antd';
+import { PlusOutlined, EditOutlined, DeleteOutlined, ExclamationCircleOutlined, SearchOutlined, FilePdfOutlined, DownOutlined, EyeOutlined, DownloadOutlined } from '@ant-design/icons';
 import { apiClient, Quotation, CreateQuotationDto, QuotationStatus } from '../../services/api-client';
 import QuotationForm from './QuotationForm';
+import QuotationPDF from './QuotationPDF';
+import PDFGenerator from '../../utils/pdfGenerator';
 import moment from 'moment';
 import { useTranslation } from 'react-i18next';
 
@@ -18,6 +20,10 @@ const QuotationManager = () => {
   const [editingQuotation, setEditingQuotation] = useState<Quotation | null>(null);
   const [apiError, setApiError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
+  const [pdfModalVisible, setPdfModalVisible] = useState(false);
+  const [selectedQuotationForPdf, setSelectedQuotationForPdf] = useState<Quotation | null>(null);
+  const [generatingPdf, setGeneratingPdf] = useState(false);
+  const pdfRef = useRef<HTMLDivElement>(null);
 
   const fetchQuotations = async () => {
     setLoading(true);
@@ -104,6 +110,79 @@ const QuotationManager = () => {
   const handleModalClose = () => {
     setIsModalVisible(false);
     setEditingQuotation(null);
+  };
+
+  const handlePdfPreview = (quotation: Quotation) => {
+    setSelectedQuotationForPdf(quotation);
+    setPdfModalVisible(true);
+  };
+
+  const handlePdfDownload = async (quotation: Quotation) => {
+    if (!pdfRef.current) {
+      message.error('PDF component not ready');
+      return;
+    }
+
+    try {
+      setGeneratingPdf(true);
+      await PDFGenerator.generateQuotationPDF(
+        pdfRef.current,
+        quotation,
+        {
+          filename: `quotation-${quotation.quotationNumber}.pdf`,
+          quality: 1.0,
+        }
+      );
+      message.success('PDF downloaded successfully');
+    } catch (error) {
+      console.error('PDF generation error:', error);
+      message.error('Failed to generate PDF');
+    } finally {
+      setGeneratingPdf(false);
+    }
+  };
+
+  const handlePdfOpenInNewTab = async (quotation: Quotation) => {
+    if (!pdfRef.current) {
+      message.error('PDF component not ready');
+      return;
+    }
+
+    try {
+      setGeneratingPdf(true);
+      await PDFGenerator.previewQuotationPDF(
+        pdfRef.current,
+        quotation,
+        {
+          quality: 1.0,
+        }
+      );
+    } catch (error) {
+      console.error('PDF preview error:', error);
+      message.error('Failed to preview PDF');
+    } finally {
+      setGeneratingPdf(false);
+    }
+  };
+
+  const handlePdfAction = async (action: 'preview' | 'download' | 'open', quotation: Quotation) => {
+    // First, open the modal to render the PDF component
+    setSelectedQuotationForPdf(quotation);
+    setPdfModalVisible(true);
+
+    // Wait for the component to render
+    setTimeout(async () => {
+      if (action === 'preview') {
+        // Modal is already open, just keep it open
+        return;
+      } else if (action === 'download') {
+        await handlePdfDownload(quotation);
+        setPdfModalVisible(false);
+      } else if (action === 'open') {
+        await handlePdfOpenInNewTab(quotation);
+        setPdfModalVisible(false);
+      }
+    }, 100);
   };
 
   const getStatusColor = (status: QuotationStatus) => {
@@ -193,45 +272,74 @@ const QuotationManager = () => {
     {
       title: t('common.actions'),
       key: 'actions',
-      render: (_, record: Quotation) => (
-        <Space>
-          <Button
-            icon={<FilePdfOutlined />}
-            type="link"
-            size="small"
-            disabled={!!apiError}
-            title={t('common.pdf')}
-          >
-            {t('common.pdf')}
-          </Button>
-          <Button
-            icon={<EditOutlined />}
-            onClick={() => handleEdit(record)}
-            type="link"
-            size="small"
-            disabled={!!apiError}
-          >
-            {t('common.edit')}
-          </Button>
-          <Popconfirm
-            title={t('confirmations.deleteQuotation')}
-            onConfirm={() => handleDelete(record.id)}
-            okText={t('common.yes')}
-            cancelText={t('common.no')}
-            disabled={!!apiError}
-          >
+      render: (_, record: Quotation) => {
+        const pdfMenuItems = [
+          {
+            key: 'preview',
+            label: 'Preview PDF',
+            icon: <EyeOutlined />,
+            onClick: () => handlePdfAction('preview', record),
+          },
+          {
+            key: 'download',
+            label: 'Download PDF',
+            icon: <DownloadOutlined />,
+            onClick: () => handlePdfAction('download', record),
+          },
+          {
+            key: 'open',
+            label: 'Open in New Tab',
+            icon: <FilePdfOutlined />,
+            onClick: () => handlePdfAction('open', record),
+          },
+        ];
+
+        return (
+          <Space>
+            <Dropdown
+              menu={{ items: pdfMenuItems }}
+              trigger={['click']}
+              disabled={!!apiError || generatingPdf}
+            >
+              <Button
+                icon={<FilePdfOutlined />}
+                type="link"
+                size="small"
+                disabled={!!apiError || generatingPdf}
+                loading={generatingPdf && selectedQuotationForPdf?.id === record.id}
+              >
+                {t('common.pdf')} <DownOutlined />
+              </Button>
+            </Dropdown>
             <Button
-              icon={<DeleteOutlined />}
+              icon={<EditOutlined />}
+              onClick={() => handleEdit(record)}
               type="link"
               size="small"
-              danger
               disabled={!!apiError}
             >
-              {t('common.delete')}
+              {t('common.edit')}
             </Button>
-          </Popconfirm>
-        </Space>
-      ),
+            <Popconfirm
+              title={t('confirmations.deleteQuotation')}
+              onConfirm={() => handleDelete(record.id)}
+              okText={t('common.yes')}
+              cancelText={t('common.no')}
+              disabled={!!apiError}
+            >
+              <Button
+                icon={<DeleteOutlined />}
+                type="link"
+                size="small"
+                danger
+                disabled={!!apiError}
+              >
+                {t('common.delete')}
+              </Button>
+            </Popconfirm>
+          </Space>
+        );
+      },
     },
   ];
 
@@ -329,6 +437,61 @@ const QuotationManager = () => {
           initialData={editingQuotation}
         />
       </Modal>
+
+      {/* PDF Preview Modal */}
+      <Modal
+        title={
+          <Space>
+            <FilePdfOutlined />
+            PDF Preview - {selectedQuotationForPdf?.quotationNumber}
+          </Space>
+        }
+        open={pdfModalVisible}
+        onCancel={() => setPdfModalVisible(false)}
+        width={1200}
+        style={{ top: 20 }}
+        footer={[
+          <Button key="close" onClick={() => setPdfModalVisible(false)}>
+            Close
+          </Button>,
+          <Button
+            key="download"
+            type="primary"
+            icon={<DownloadOutlined />}
+            onClick={() => selectedQuotationForPdf && handlePdfDownload(selectedQuotationForPdf)}
+            loading={generatingPdf}
+          >
+            Download PDF
+          </Button>,
+          <Button
+            key="open"
+            icon={<FilePdfOutlined />}
+            onClick={() => selectedQuotationForPdf && handlePdfOpenInNewTab(selectedQuotationForPdf)}
+            loading={generatingPdf}
+          >
+            Open in New Tab
+          </Button>,
+        ]}
+      >
+        {selectedQuotationForPdf && (
+          <div style={{ maxHeight: '70vh', overflow: 'auto', border: '1px solid #d9d9d9', borderRadius: '6px' }}>
+            <QuotationPDF 
+              quotation={selectedQuotationForPdf} 
+              onRef={(ref) => { if (ref) pdfRef.current = ref; }}
+            />
+          </div>
+        )}
+      </Modal>
+
+      {/* Hidden PDF Component for Generation */}
+      {selectedQuotationForPdf && !pdfModalVisible && (
+        <div style={{ position: 'absolute', left: '-9999px', top: '-9999px' }}>
+          <QuotationPDF 
+            quotation={selectedQuotationForPdf} 
+            onRef={(ref) => { if (ref) pdfRef.current = ref; }}
+          />
+        </div>
+      )}
     </div>
   );
 };
