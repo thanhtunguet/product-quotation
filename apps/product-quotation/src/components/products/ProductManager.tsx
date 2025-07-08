@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
-import { Table, Button, Modal, Typography, Space, Tag, message, Popconfirm, Alert, Card, Input } from 'antd';
-import { PlusOutlined, EditOutlined, DeleteOutlined, ExclamationCircleOutlined, FileExcelOutlined, DownloadOutlined } from '@ant-design/icons';
+import { useState, useEffect, useRef } from 'react';
+import { Table, Button, Modal, Typography, Space, Tag, message, Popconfirm, Alert, Card, Input, Radio, List, Avatar } from 'antd';
+import { PlusOutlined, EditOutlined, DeleteOutlined, ExclamationCircleOutlined, FileExcelOutlined, DownloadOutlined, UnorderedListOutlined, TableOutlined } from '@ant-design/icons';
 import { apiClient, Product, CreateProductDto, Category, Brand, Manufacturer } from '../../services/api-client';
 import ProductForm from './ProductForm';
 import { ExcelImportModal } from './ExcelImportModal';
@@ -18,6 +18,9 @@ const ProductManager = () => {
   const [apiError, setApiError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [isExcelImportModalVisible, setIsExcelImportModalVisible] = useState(false);
+  const [viewMode, setViewMode] = useState<'pagination' | 'virtual'>('pagination');
+  const [listHeight, setListHeight] = useState(600);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   // Master data for dropdowns
   const [categories, setCategories] = useState<Category[]>([]);
@@ -63,10 +66,37 @@ const ProductManager = () => {
     }
   };
 
+  const calculateListHeight = () => {
+    if (containerRef.current && viewMode === 'virtual') {
+      const containerRect = containerRef.current.getBoundingClientRect();
+      const windowHeight = window.innerHeight;
+      const availableHeight = windowHeight - containerRect.top - 40; // 40px bottom padding
+      setListHeight(Math.max(400, availableHeight)); // Minimum 400px
+    }
+  };
+
   useEffect(() => {
     fetchMasterData();
     fetchProducts();
   }, [searchTerm]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    calculateListHeight();
+    
+    const handleResize = () => {
+      calculateListHeight();
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, [viewMode]);
+
+  useEffect(() => {
+    if (viewMode === 'virtual') {
+      // Recalculate height when switching to virtual mode
+      setTimeout(calculateListHeight, 100);
+    }
+  }, [viewMode]);
 
   const handleCreate = async (formData: CreateProductDto) => {
     try {
@@ -267,7 +297,7 @@ const ProductManager = () => {
   }
 
   return (
-    <div>
+    <div ref={containerRef}>
       <div style={{ marginBottom: 16, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <Title level={2}>{t('products.management')}</Title>
         <Space>
@@ -294,19 +324,109 @@ const ProductManager = () => {
         </Space>
       </div>
       
-      <Table 
-        dataSource={products} 
-        columns={columns} 
-        loading={loading}
-        rowKey="id"
-        pagination={{ 
-          pageSize: 20,
-          showSizeChanger: true,
-          showQuickJumper: true,
-          showTotal: (total, range) => `${range[0]}-${range[1]} ${t('common.of')} ${total} ${t('common.items')}`,
-        }}
-        scroll={{ x: 'max-content' }}
-      />
+      <div style={{ marginBottom: 16, display: 'flex', justifyContent: 'flex-end' }}>
+        <Radio.Group 
+          value={viewMode} 
+          onChange={(e) => setViewMode(e.target.value)}
+          optionType="button"
+          buttonStyle="solid"
+        >
+          <Radio.Button value="pagination">
+            <TableOutlined /> Pagination
+          </Radio.Button>
+          <Radio.Button value="virtual">
+            <UnorderedListOutlined /> Virtual Scroll
+          </Radio.Button>
+        </Radio.Group>
+      </div>
+      
+      {viewMode === 'pagination' ? (
+        <Table 
+          dataSource={products} 
+          columns={columns} 
+          loading={loading}
+          rowKey="id"
+          pagination={{ 
+            pageSize: 20,
+            showSizeChanger: true,
+            showQuickJumper: true,
+            showTotal: (total, range) => `${range[0]}-${range[1]} ${t('common.of')} ${total} ${t('common.items')}`,
+          }}
+          scroll={{ x: 'max-content' }}
+        />
+      ) : (
+        <List
+          loading={loading}
+          dataSource={products}
+          pagination={false}
+          style={{ height: `${listHeight}px`, overflow: 'auto' }}
+          renderItem={(product: Product) => (
+            <List.Item
+              key={product.id}
+              actions={[
+                <Button
+                  key="edit"
+                  icon={<EditOutlined />}
+                  onClick={() => handleEdit(product)}
+                  type="link"
+                  size="small"
+                  disabled={!!apiError}
+                >
+                  {t('common.edit')}
+                </Button>,
+                <Popconfirm
+                  key="delete"
+                  title={t('confirmations.deleteProduct')}
+                  onConfirm={() => handleDelete(product.id)}
+                  okText={t('common.yes')}
+                  cancelText={t('common.no')}
+                  disabled={!!apiError}
+                >
+                  <Button
+                    icon={<DeleteOutlined />}
+                    type="link"
+                    size="small"
+                    danger
+                    disabled={!!apiError}
+                  >
+                    {t('common.delete')}
+                  </Button>
+                </Popconfirm>
+              ]}
+            >
+              <List.Item.Meta
+                avatar={
+                  product.imageUrl ? (
+                    <Avatar src={product.imageUrl} size={64} />
+                  ) : (
+                    <Avatar size={64} style={{ backgroundColor: '#f56a00' }}>
+                      {product.name.charAt(0).toUpperCase()}
+                    </Avatar>
+                  )
+                }
+                title={
+                  <Space>
+                    <span style={{ fontWeight: 'bold' }}>{product.name}</span>
+                    <Tag color={product.isActive ? 'green' : 'red'}>
+                      {product.isActive ? t('common.active') : t('common.inactive')}
+                    </Tag>
+                  </Space>
+                }
+                description={
+                  <div>
+                    <div><strong>{t('common.code')}:</strong> {product.code}</div>
+                    {product.sku && <div><strong>{t('common.sku')}:</strong> {product.sku}</div>}
+                    <div><strong>{t('common.category')}:</strong> {product.category?.name || t('common.noData')}</div>
+                    <div><strong>{t('common.brand')}:</strong> {product.brand?.name || t('common.noData')}</div>
+                    <div><strong>{t('common.price')}:</strong> ${(typeof product.basePrice === 'string' ? parseFloat(product.basePrice) : (product.basePrice || 0)).toFixed(2)}</div>
+                    {product.description && <div style={{ marginTop: 8, color: '#666' }}>{product.description}</div>}
+                  </div>
+                }
+              />
+            </List.Item>
+          )}
+        />
+      )}
       
       <Modal 
         title={editingProduct ? t('products.editProduct') : t('products.addProduct')} 
