@@ -257,7 +257,7 @@ const ProductManager = () => {
   if (apiError) {
     return (
       <div>
-        <div style={{ marginBottom: 16, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <div className="mb-4 flex justify-between items-center">
           <Title level={2}>{t('products.management')}</Title>
           <Button 
             type="primary" 
@@ -281,7 +281,7 @@ const ProductManager = () => {
           }
         />
 
-        <Card style={{ marginTop: 16 }}>
+        <Card className="mt-4">
           <Title level={4}>{t('products.whatsAvailable')}</Title>
           <p>{t('products.availableFeatures')}</p>
           <ul>
@@ -298,13 +298,13 @@ const ProductManager = () => {
 
   return (
     <div ref={containerRef}>
-      <div style={{ marginBottom: 16, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+      <div className="mb-4 flex justify-between items-center">
         <Title level={2}>{t('products.management')}</Title>
         <Space>
           <Search
             placeholder={t('products.searchPlaceholder')}
             allowClear
-            style={{ width: 250 }}
+            className="w-64"
             onSearch={setSearchTerm}
             onChange={(e) => !e.target.value && setSearchTerm('')}
           />
@@ -324,7 +324,7 @@ const ProductManager = () => {
         </Space>
       </div>
       
-      <div style={{ marginBottom: 16, display: 'flex', justifyContent: 'flex-end' }}>
+      <div className="mb-4 flex justify-end">
         <Radio.Group 
           value={viewMode} 
           onChange={(e) => setViewMode(e.target.value)}
@@ -359,7 +359,8 @@ const ProductManager = () => {
           loading={loading}
           dataSource={products}
           pagination={false}
-          style={{ height: `${listHeight}px`, overflow: 'auto' }}
+          className="overflow-auto"
+          style={{ height: `${listHeight}px` }}
           renderItem={(product: Product) => (
             <List.Item
               key={product.id}
@@ -399,14 +400,14 @@ const ProductManager = () => {
                   product.imageUrl ? (
                     <Avatar src={product.imageUrl} size={64} />
                   ) : (
-                    <Avatar size={64} style={{ backgroundColor: '#f56a00' }}>
+                    <Avatar size={64} className="bg-orange-500">
                       {product.name.charAt(0).toUpperCase()}
                     </Avatar>
                   )
                 }
                 title={
                   <Space>
-                    <span style={{ fontWeight: 'bold' }}>{product.name}</span>
+                    <span className="font-bold">{product.name}</span>
                     <Tag color={product.isActive ? 'green' : 'red'}>
                       {product.isActive ? t('common.active') : t('common.inactive')}
                     </Tag>
@@ -419,7 +420,7 @@ const ProductManager = () => {
                     <div><strong>{t('common.category')}:</strong> {product.category?.name || t('common.noData')}</div>
                     <div><strong>{t('common.brand')}:</strong> {product.brand?.name || t('common.noData')}</div>
                     <div><strong>{t('common.price')}:</strong> ${(typeof product.basePrice === 'string' ? parseFloat(product.basePrice) : (product.basePrice || 0)).toFixed(2)}</div>
-                    {product.description && <div style={{ marginTop: 8, color: '#666' }}>{product.description}</div>}
+                    {product.description && <div className="mt-2 text-gray-600">{product.description}</div>}
                   </div>
                 }
               />
@@ -434,7 +435,7 @@ const ProductManager = () => {
         onCancel={handleModalClose} 
         footer={null}
         width={800}
-        style={{ top: 20 }}
+        className="top-5"
       >
         <ProductForm 
           onSubmit={editingProduct ? handleUpdate : handleCreate}

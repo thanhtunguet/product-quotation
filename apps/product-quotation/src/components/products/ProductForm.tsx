@@ -179,7 +179,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
             rules={[{ required: true, message: t('forms.basePriceRequired') }]}
           >
             <InputNumber
-              style={{ width: '100%' }}
+              className="w-full"
               placeholder="0.00"
               min={0}
               step={0.01}
@@ -302,14 +302,8 @@ const ProductForm: React.FC<ProductFormProps> = ({
                   <Space>
                     {color.hexCode && (
                       <div 
-                        style={{ 
-                          width: 12, 
-                          height: 12, 
-                          backgroundColor: color.hexCode,
-                          border: '1px solid #ccc',
-                          borderRadius: 2,
-                          display: 'inline-block'
-                        }} 
+                        className="w-3 h-3 border border-gray-300 rounded-sm inline-block"
+                        style={{ backgroundColor: color.hexCode }} 
                       />
                     )}
                     {color.name}
@@ -352,7 +346,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
         name="packagingTypeId"
         label={t('common.packaging')}
       >
-        <Select placeholder={t('forms.selectPackaging')} allowClear style={{ width: '50%' }}>
+        <Select placeholder={t('forms.selectPackaging')} allowClear className="w-1/2">
           {packagingTypes.map(type => (
             <Option key={type.id} value={type.id}>{type.name}</Option>
           ))}
@@ -391,7 +385,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
     >
       <Tabs items={tabItems} />
 
-      <Form.Item style={{ marginTop: 24, marginBottom: 0 }}>
+      <Form.Item className="mt-6 mb-0">
         <Space>
           <Button type="primary" htmlType="submit" loading={loading}>
             {initialData ? t('products.editProduct') : t('products.addProduct')}

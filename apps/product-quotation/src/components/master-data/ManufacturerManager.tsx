@@ -137,7 +137,7 @@ const ManufacturerManager = () => {
 
   return (
     <div>
-      <div style={{ marginBottom: 16, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+      <div className="mb-4 flex justify-between items-center">
         <Title level={3}>Manufacturer Management</Title>
         <Button 
           type="primary" 

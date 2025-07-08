@@ -90,16 +90,10 @@ const CategoryManager = () => {
   const transformToAntdTree = (categories: Category[]): any[] => {
     return categories.map(cat => ({
       title: (
-        <div style={{ 
-          display: 'flex', 
-          justifyContent: 'space-between', 
-          alignItems: 'center',
-          padding: '4px 8px',
-          minHeight: '32px'
-        }}>
-          <span style={{ fontSize: '14px', fontWeight: 500 }}>{cat.name}</span>
+        <div className="flex justify-between items-center p-2 min-h-8">
+          <span className="text-sm font-medium">{cat.name}</span>
           <Space size="small">
-            <Tag color={cat.isActive ? 'green' : 'red'} style={{ margin: 0 }}>
+            <Tag color={cat.isActive ? 'green' : 'red'} className="m-0">
               {cat.isActive ? t('common.active') : t('common.inactive')}
             </Tag>
             <Button
@@ -110,7 +104,7 @@ const CategoryManager = () => {
               }}
               type="link"
               size="small"
-              style={{ padding: '4px' }}
+              className="p-1"
             />
             <Popconfirm
               title={t('confirmations.deleteCategory')}
@@ -127,7 +121,7 @@ const CategoryManager = () => {
                 type="link"
                 size="small"
                 danger
-                style={{ padding: '4px' }}
+                className="p-1"
               />
             </Popconfirm>
           </Space>
@@ -208,14 +202,14 @@ const CategoryManager = () => {
       key: 'tree',
       label: (
         <span>
-          <ApartmentOutlined style={{ marginRight: 8 }} />
+          <ApartmentOutlined className="mr-2" />
           {t('categories.treeView')}
         </span>
       ),
       children: (
-        <Card style={{ minHeight: '400px' }}>
+        <Card className="min-h-96">
           {treeData.length === 0 && !loading ? (
-            <div style={{ textAlign: 'center', padding: '40px', color: '#999' }}>
+            <div className="text-center p-10 text-gray-400">
               <p>{t('categories.noCategories')}</p>
             </div>
           ) : (
@@ -223,7 +217,7 @@ const CategoryManager = () => {
               treeData={transformToAntdTree(treeData)}
               showLine
               defaultExpandAll
-              style={{ padding: '16px 0' }}
+              className="py-4"
             />
           )}
         </Card>
@@ -233,7 +227,7 @@ const CategoryManager = () => {
       key: 'table',
       label: (
         <span>
-          <UnorderedListOutlined style={{ marginRight: 8 }} />
+          <UnorderedListOutlined className="mr-2" />
           {t('categories.tableView')}
         </span>
       ),
@@ -254,7 +248,7 @@ const CategoryManager = () => {
               t('categories.noCategories') : 
               t('common.noData')
           }}
-          style={{ marginTop: '16px' }}
+          className="mt-4"
           size="middle"
         />
       ),
@@ -263,7 +257,7 @@ const CategoryManager = () => {
 
   return (
     <div>
-      <div style={{ marginBottom: 16, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+      <div className="mb-4 flex justify-between items-center">
         <Title level={3}>{t('categories.management')}</Title>
         <Space>
           <Button 

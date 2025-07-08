@@ -146,19 +146,19 @@ const QuotationForm: React.FC<QuotationFormProps> = ({ onSubmit, initialData }) 
       key: 'quantity',
       width: 140,
       render: (quantity: number, _: any, index: number) => (
-        <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+        <div className="flex items-center gap-1">
           <Button
             size="small"
             icon={<MinusOutlined />}
             onClick={() => updateItemQuantity(index, quantity - 1)}
             disabled={quantity <= 1}
-            style={{ width: '24px', height: '24px', padding: 0 }}
+            className="w-6 h-6 p-0"
           />
           <InputNumber
             value={quantity}
             onChange={(value) => updateItemQuantity(index, value || 1)}
             min={1}
-            style={{ width: '60px', textAlign: 'center' }}
+            className="w-15 text-center"
             size="small"
             controls={false}
           />
@@ -166,7 +166,7 @@ const QuotationForm: React.FC<QuotationFormProps> = ({ onSubmit, initialData }) 
             size="small"
             icon={<PlusOutlined />}
             onClick={() => updateItemQuantity(index, quantity + 1)}
-            style={{ width: '24px', height: '24px', padding: 0 }}
+            className="w-6 h-6 p-0"
           />
         </div>
       ),
@@ -183,7 +183,7 @@ const QuotationForm: React.FC<QuotationFormProps> = ({ onSubmit, initialData }) 
           min={0}
           step={0.01}
           precision={2}
-          style={{ width: '100%' }}
+          className="w-full"
           size="small"
           addonBefore="$"
         />
@@ -205,7 +205,7 @@ const QuotationForm: React.FC<QuotationFormProps> = ({ onSubmit, initialData }) 
           onChange={(e) => updateItemNotes(index, e.target.value)}
           placeholder={t('forms.itemNotes')}
           rows={1}
-          style={{ minWidth: 150 }}
+          className="min-w-38"
         />
       ),
     },
@@ -235,7 +235,7 @@ const QuotationForm: React.FC<QuotationFormProps> = ({ onSubmit, initialData }) 
         validUntil: moment().add(30, 'days'),
       }}
     >
-      <Card title={t('sections.customerInformation')} style={{ marginBottom: 16 }}>
+      <Card title={t('sections.customerInformation')} className="mb-4">
         <Row gutter={16}>
           <Col span={12}>
             <Form.Item
@@ -296,8 +296,8 @@ const QuotationForm: React.FC<QuotationFormProps> = ({ onSubmit, initialData }) 
         </Form.Item>
       </Card>
 
-      <Card title={t('sections.quotationItems')} style={{ marginBottom: 16 }}>
-        <div style={{ marginBottom: 16 }}>
+      <Card title={t('sections.quotationItems')} className="mb-4">
+        <div className="mb-4">
           <Button 
             type="primary" 
             icon={<PlusOutlined />}
@@ -327,7 +327,7 @@ const QuotationForm: React.FC<QuotationFormProps> = ({ onSubmit, initialData }) 
         />
       </Card>
 
-      <Form.Item style={{ marginBottom: 0, textAlign: 'right' }}>
+      <Form.Item className="mb-0 text-right">
         <Space>
           <Button onClick={() => form.resetFields()}>
             {t('common.reset')}

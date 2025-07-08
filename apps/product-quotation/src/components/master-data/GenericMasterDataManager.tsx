@@ -171,13 +171,8 @@ const GenericMasterDataManager: React.FC<GenericMasterDataManagerProps> = ({
       <Space>
         {hexCode && (
           <div 
-            style={{ 
-              width: 20, 
-              height: 20, 
-              backgroundColor: hexCode,
-              border: '1px solid #ccc',
-              borderRadius: 4 
-            }} 
+            className="w-5 h-5 border border-gray-300 rounded"
+            style={{ backgroundColor: hexCode }} 
           />
         )}
         <span>{hexCode || 'No color'}</span>
@@ -241,7 +236,7 @@ const GenericMasterDataManager: React.FC<GenericMasterDataManagerProps> = ({
   if (apiError) {
     return (
       <div>
-        <div style={{ marginBottom: 16, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <div className="mb-4 flex justify-between items-center">
           <Title level={3}>{title}</Title>
           <Button 
             type="primary" 
@@ -270,7 +265,7 @@ const GenericMasterDataManager: React.FC<GenericMasterDataManagerProps> = ({
 
   return (
     <div>
-      <div style={{ marginBottom: 16, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+      <div className="mb-4 flex justify-between items-center">
         <Title level={3}>{title}</Title>
         <Button 
           type="primary" 

@@ -1,11 +1,10 @@
-
 import React from 'react';
 import { Menu } from 'antd';
 import { Link, useLocation } from 'react-router-dom';
-import { 
-  HomeOutlined, 
-  ProductOutlined, 
-  FileTextOutlined, 
+import {
+  HomeOutlined,
+  ProductOutlined,
+  FileTextOutlined,
   TagOutlined,
   ApartmentOutlined,
   ShopOutlined,
@@ -15,7 +14,7 @@ import {
   ExpandOutlined,
   AppstoreOutlined,
   InboxOutlined,
-  SettingOutlined
+  SettingOutlined,
 } from '@ant-design/icons';
 import { useTranslation } from 'react-i18next';
 
@@ -53,22 +52,36 @@ const Navigation = () => {
         {
           key: 'categories',
           icon: <ApartmentOutlined />,
-          label: <Link to="/master-data/categories">{t('masterData.categories')}</Link>,
+          label: (
+            <Link to="/master-data/categories">
+              {t('masterData.categories')}
+            </Link>
+          ),
         },
         {
           key: 'manufacturers',
           icon: <ShopOutlined />,
-          label: <Link to="/master-data/manufacturers">{t('masterData.manufacturers')}</Link>,
+          label: (
+            <Link to="/master-data/manufacturers">
+              {t('masterData.manufacturers')}
+            </Link>
+          ),
         },
         {
           key: 'materials',
           icon: <BuildOutlined />,
-          label: <Link to="/master-data/materials">{t('masterData.materials')}</Link>,
+          label: (
+            <Link to="/master-data/materials">{t('masterData.materials')}</Link>
+          ),
         },
         {
           key: 'methods',
           icon: <ToolOutlined />,
-          label: <Link to="/master-data/manufacturing-methods">{t('masterData.methods')}</Link>,
+          label: (
+            <Link to="/master-data/manufacturing-methods">
+              {t('masterData.methods')}
+            </Link>
+          ),
         },
         {
           key: 'colors',
@@ -83,12 +96,18 @@ const Navigation = () => {
         {
           key: 'types',
           icon: <AppstoreOutlined />,
-          label: <Link to="/master-data/product-types">{t('masterData.types')}</Link>,
+          label: (
+            <Link to="/master-data/product-types">{t('masterData.types')}</Link>
+          ),
         },
         {
           key: 'packaging',
           icon: <InboxOutlined />,
-          label: <Link to="/master-data/packaging-types">{t('masterData.packaging')}</Link>,
+          label: (
+            <Link to="/master-data/packaging-types">
+              {t('masterData.packaging')}
+            </Link>
+          ),
         },
       ],
     },
@@ -124,21 +143,14 @@ const Navigation = () => {
   };
 
   return (
-    <div style={{ textAlign: 'left' }}>
-      <Menu 
-        mode="horizontal" 
-        items={menuItems}
-        selectedKeys={[getSelectedKey()]}
-        openKeys={openKeys}
-        onOpenChange={handleOpenChange}
-        style={{ 
-          border: 'none', 
-          background: 'transparent',
-          textAlign: 'left',
-          justifyContent: 'flex-start'
-        }}
-      />
-    </div>
+    <Menu
+      mode="horizontal"
+      items={menuItems}
+      selectedKeys={[getSelectedKey()]}
+      openKeys={openKeys}
+      onOpenChange={handleOpenChange}
+      className="border-none bg-transparent text-left justify-start w-full"
+    />
   );
 };
 

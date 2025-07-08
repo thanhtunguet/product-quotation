@@ -100,13 +100,8 @@ const GenericMasterDataForm: React.FC<GenericMasterDataFormProps> = ({
             placeholder="#FF0000" 
             addonBefore={
               <div 
-                style={{ 
-                  width: 20, 
-                  height: 20, 
-                  backgroundColor: Form.useWatch('hexCode', form) || '#ccc',
-                  border: '1px solid #ccc',
-                  borderRadius: 2
-                }} 
+                className="w-5 h-5 border border-gray-300 rounded-sm"
+                style={{ backgroundColor: Form.useWatch('hexCode', form) || '#ccc' }} 
               />
             }
           />

@@ -15,7 +15,7 @@ const LanguageSwitcher = () => {
     <Select
       value={i18n.language}
       onChange={handleLanguageChange}
-      style={{ width: 120 }}
+      className="w-30"
       suffixIcon={<GlobalOutlined />}
     >
       <Option value="vi">Tiếng Việt</Option>

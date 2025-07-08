@@ -126,8 +126,8 @@ const ProductSelectionModal: React.FC<ProductSelectionModalProps> = ({
       width: 200,
       render: (name: string, record: ProductSelectionItem) => (
         <div>
-          <div style={{ fontWeight: 'bold' }}>{name}</div>
-          <div style={{ fontSize: '12px', color: '#666' }}>{record.code}</div>
+          <div className="font-bold">{name}</div>
+          <div className="text-xs text-gray-600">{record.code}</div>
         </div>
       ),
     },
@@ -161,7 +161,7 @@ const ProductSelectionModal: React.FC<ProductSelectionModalProps> = ({
           min={1}
           value={record.quantity}
           onChange={(value) => updateProductQuantity(record.id, value || 1)}
-          style={{ width: '100%' }}
+          className="w-full"
           disabled={!selectedRowKeys.includes(record.id)}
         />
       ),
@@ -177,7 +177,7 @@ const ProductSelectionModal: React.FC<ProductSelectionModalProps> = ({
           precision={2}
           value={record.unitPrice}
           onChange={(value) => updateProductPrice(record.id, value || 0)}
-          style={{ width: '100%' }}
+          className="w-full"
           addonBefore="$"
           disabled={!selectedRowKeys.includes(record.id)}
         />
@@ -242,20 +242,20 @@ const ProductSelectionModal: React.FC<ProductSelectionModalProps> = ({
         </Button>,
       ]}
     >
-      <div style={{ marginBottom: 16 }}>
+      <div className="mb-4">
         <Search
           placeholder="Search products by name, code, category, or brand..."
           value={searchText}
           onChange={(e) => setSearchText(e.target.value)}
-          style={{ width: '100%' }}
+          className="w-full"
           allowClear
         />
       </div>
 
       {products.length === 0 && !loading ? (
-        <div style={{ textAlign: 'center', padding: '40px', color: '#999' }}>
+        <div className="text-center p-10 text-gray-400">
           <div>{t('forms.noProductsAvailable')}</div>
-          <div style={{ fontSize: '12px', marginTop: '8px' }}>
+          <div className="text-xs mt-2">
             The Products API needs to be implemented first.
           </div>
         </div>
@@ -279,14 +279,7 @@ const ProductSelectionModal: React.FC<ProductSelectionModalProps> = ({
       )}
 
       {selectedRowKeys.length > 0 && (
-        <div
-          style={{
-            marginTop: 16,
-            padding: 12,
-            backgroundColor: '#f0f9ff',
-            border: '1px solid #bae6fd',
-            borderRadius: 6,
-          }}
+        <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-md"
         >
           <Space split="|">
             <span>

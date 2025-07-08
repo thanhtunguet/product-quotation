@@ -27,7 +27,7 @@ const MasterDataPage = () => {
       key: 'brands',
       label: (
         <span>
-          <TagOutlined style={{ marginRight: 8 }} />
+          <TagOutlined className="mr-2" />
           {t('masterData.brands')}
         </span>
       ),
@@ -37,7 +37,7 @@ const MasterDataPage = () => {
       key: 'categories',
       label: (
         <span>
-          <ApartmentOutlined style={{ marginRight: 8 }} />
+          <ApartmentOutlined className="mr-2" />
           {t('masterData.categories')}
         </span>
       ),
@@ -47,7 +47,7 @@ const MasterDataPage = () => {
       key: 'manufacturers',
       label: (
         <span>
-          <ShopOutlined style={{ marginRight: 8 }} />
+          <ShopOutlined className="mr-2" />
           {t('masterData.manufacturers')}
         </span>
       ),
@@ -57,7 +57,7 @@ const MasterDataPage = () => {
       key: 'materials',
       label: (
         <span>
-          <BuildOutlined style={{ marginRight: 8 }} />
+          <BuildOutlined className="mr-2" />
           {t('masterData.materials')}
         </span>
       ),
@@ -71,7 +71,7 @@ const MasterDataPage = () => {
       key: 'manufacturing-methods',
       label: (
         <span>
-          <ToolOutlined style={{ marginRight: 8 }} />
+          <ToolOutlined className="mr-2" />
           {t('masterData.methods')}
         </span>
       ),
@@ -85,7 +85,7 @@ const MasterDataPage = () => {
       key: 'colors',
       label: (
         <span>
-          <BgColorsOutlined style={{ marginRight: 8 }} />
+          <BgColorsOutlined className="mr-2" />
           {t('masterData.colors')}
         </span>
       ),
@@ -100,7 +100,7 @@ const MasterDataPage = () => {
       key: 'sizes',
       label: (
         <span>
-          <ExpandOutlined style={{ marginRight: 8 }} />
+          <ExpandOutlined className="mr-2" />
           {t('masterData.sizes')}
         </span>
       ),
@@ -114,7 +114,7 @@ const MasterDataPage = () => {
       key: 'product-types',
       label: (
         <span>
-          <AppstoreOutlined style={{ marginRight: 8 }} />
+          <AppstoreOutlined className="mr-2" />
           {t('masterData.types')}
         </span>
       ),
@@ -128,7 +128,7 @@ const MasterDataPage = () => {
       key: 'packaging-types',
       label: (
         <span>
-          <InboxOutlined style={{ marginRight: 8 }} />
+          <InboxOutlined className="mr-2" />
           {t('masterData.packaging')}
         </span>
       ),

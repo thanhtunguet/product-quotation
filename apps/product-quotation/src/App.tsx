@@ -19,7 +19,7 @@ import './i18n';
 const MasterDataWrapper = ({ children, title }: { children: React.ReactNode; title: string }) => {
   return (
     <div>
-      <h2 style={{ marginBottom: 24, fontSize: 24, fontWeight: 600 }}>{title}</h2>
+      <h2 className="mb-6 text-2xl font-semibold">{title}</h2>
       {children}
     </div>
   );

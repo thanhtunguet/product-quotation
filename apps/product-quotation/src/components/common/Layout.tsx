@@ -1,23 +1,22 @@
 
-import React from 'react';
-import { Layout as AntdLayout, Space } from 'antd';
+import { Layout as AntdLayout } from 'antd';
 import { Outlet } from 'react-router-dom';
-import Navigation from './Navigation';
 import LanguageSwitcher from './LanguageSwitcher';
+import Navigation from './Navigation';
 
 const { Header, Content } = AntdLayout;
 
 const Layout = () => {
   return (
-    <AntdLayout style={{ minHeight: '100vh' }}>
-      <Header style={{ padding: '0 24px', background: '#fff', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <div style={{ flex: 1, display: 'flex', justifyContent: 'center' }}>
+    <AntdLayout className="min-h-screen">
+      <Header className="px-6 bg-white flex justify-between items-center">
+        <div className="flex-1 flex justify-start">
           <Navigation />
         </div>
         <LanguageSwitcher />
       </Header>
-      <Content style={{ padding: '24px', background: '#f5f5f5' }}>
-        <div style={{ background: '#fff', padding: '24px', borderRadius: '8px' }}>
+      <Content className="p-6 bg-gray-100">
+        <div className="bg-white p-6 rounded-lg">
           <Outlet />
         </div>
       </Content>

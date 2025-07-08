@@ -473,13 +473,13 @@ const QuotationManager = () => {
 
   return (
     <div>
-      <div style={{ marginBottom: 16, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+      <div className="mb-4 flex justify-between items-center">
         <Title level={2}>{t('quotations.management')}</Title>
         <Space>
           <Search
             placeholder={t('quotations.searchPlaceholder')}
             allowClear
-            style={{ width: 250 }}
+            className="w-64"
             onSearch={setSearchTerm}
             onChange={(e) => !e.target.value && setSearchTerm('')}
           />
@@ -551,7 +551,7 @@ const QuotationManager = () => {
           icon={<ExclamationCircleOutlined />}
           showIcon
           closable
-          style={{ marginBottom: 16 }}
+          className="mb-4"
           action={
             <Button size="small" onClick={fetchQuotations}>
               Retry Connection
@@ -580,7 +580,7 @@ const QuotationManager = () => {
         onCancel={handleModalClose} 
         footer={null}
         width={900}
-        style={{ top: 20 }}
+        className="top-5"
       >
         <QuotationForm 
           onSubmit={editingQuotation ? handleUpdate : handleCreate}
@@ -599,7 +599,7 @@ const QuotationManager = () => {
         open={pdfModalVisible}
         onCancel={() => setPdfModalVisible(false)}
         width={1200}
-        style={{ top: 20 }}
+        className="top-5"
         footer={[
           <Button key="close" onClick={() => setPdfModalVisible(false)}>
             Close
@@ -624,7 +624,7 @@ const QuotationManager = () => {
         ]}
       >
         {selectedQuotationForPdf && (
-          <div style={{ maxHeight: '70vh', overflow: 'auto', border: '1px solid #d9d9d9', borderRadius: '6px' }}>
+          <div className="max-h-[70vh] overflow-auto border border-gray-300 rounded-md">
             <QuotationPDF 
               quotation={selectedQuotationForPdf} 
               onRef={(ref) => { if (ref) pdfRef.current = ref; }}
@@ -635,7 +635,7 @@ const QuotationManager = () => {
 
       {/* Hidden PDF Component for Generation */}
       {selectedQuotationForPdf && !pdfModalVisible && (
-        <div style={{ position: 'absolute', left: '-9999px', top: '-9999px' }}>
+        <div className="absolute -left-[9999px] -top-[9999px]">
           <QuotationPDF 
             quotation={selectedQuotationForPdf} 
             onRef={(ref) => { if (ref) pdfRef.current = ref; }}

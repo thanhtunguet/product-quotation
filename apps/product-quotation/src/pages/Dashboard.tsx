@@ -64,7 +64,7 @@ const Dashboard = () => {
         {t('dashboard.welcome')}
       </Paragraph>
       
-      <Row gutter={16} style={{ marginTop: 24 }}>
+      <Row gutter={16} className="mt-6">
         <Col span={6}>
           <Card>
             <Statistic
