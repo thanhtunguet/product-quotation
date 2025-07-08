@@ -298,6 +298,7 @@ const ProductManager = () => {
     {
       title: t('common.actions'),
       key: 'actions',
+      width: 100,
       render: (_: unknown, record: Product) => (
         <Space>
           <Button
@@ -306,9 +307,7 @@ const ProductManager = () => {
             type="link"
             size="small"
             disabled={!!apiError}
-          >
-            {t('common.edit')}
-          </Button>
+          />
           <Popconfirm
             title={t('confirmations.deleteProduct')}
             onConfirm={() => handleDelete(record.id)}
@@ -322,9 +321,7 @@ const ProductManager = () => {
               size="small"
               danger
               disabled={!!apiError}
-            >
-              {t('common.delete')}
-            </Button>
+            />
           </Popconfirm>
         </Space>
       ),

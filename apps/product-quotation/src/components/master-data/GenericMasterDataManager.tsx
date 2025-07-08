@@ -243,6 +243,7 @@ const GenericMasterDataManager: React.FC<GenericMasterDataManagerProps> = ({
   const actionsColumn = {
     title: 'Actions',
     key: 'actions',
+    width: 100,
     render: (_, record: MasterDataEntity) => (
       <Space>
         <Button
@@ -251,9 +252,7 @@ const GenericMasterDataManager: React.FC<GenericMasterDataManagerProps> = ({
           type="link"
           size="small"
           disabled={!!apiError}
-        >
-          Edit
-        </Button>
+        />
         <Popconfirm
           title={`Are you sure you want to delete this ${entityName}?`}
           onConfirm={() => handleDelete(record.id)}
@@ -267,9 +266,7 @@ const GenericMasterDataManager: React.FC<GenericMasterDataManagerProps> = ({
             size="small"
             danger
             disabled={!!apiError}
-          >
-            Delete
-          </Button>
+          />
         </Popconfirm>
       </Space>
     ),

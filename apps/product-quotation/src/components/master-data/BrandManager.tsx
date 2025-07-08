@@ -127,6 +127,7 @@ const BrandManager = () => {
     {
       title: t('common.actions'),
       key: 'actions',
+      width: 100,
       render: (_, record: Brand) => (
         <Space>
           <Button
@@ -134,18 +135,14 @@ const BrandManager = () => {
             onClick={() => handleEdit(record)}
             type="link"
             size="small"
-          >
-            {t('common.edit')}
-          </Button>
+          />
           <Popconfirm
             title={t('confirmations.deleteBrand')}
             onConfirm={() => handleDelete(record.id)}
             okText={t('common.yes')}
             cancelText={t('common.no')}
           >
-            <Button icon={<DeleteOutlined />} type="link" size="small" danger>
-              {t('common.delete')}
-            </Button>
+            <Button icon={<DeleteOutlined />} type="link" size="small" danger />
           </Popconfirm>
         </Space>
       ),

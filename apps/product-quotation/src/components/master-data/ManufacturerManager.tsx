@@ -133,6 +133,7 @@ const ManufacturerManager = () => {
     {
       title: 'Actions',
       key: 'actions',
+      width: 100,
       render: (_, record: Manufacturer) => (
         <Space>
           <Button
@@ -140,18 +141,14 @@ const ManufacturerManager = () => {
             onClick={() => handleEdit(record)}
             type="link"
             size="small"
-          >
-            Edit
-          </Button>
+          />
           <Popconfirm
             title="Are you sure you want to delete this manufacturer?"
             onConfirm={() => handleDelete(record.id)}
             okText="Yes"
             cancelText="No"
           >
-            <Button icon={<DeleteOutlined />} type="link" size="small" danger>
-              Delete
-            </Button>
+            <Button icon={<DeleteOutlined />} type="link" size="small" danger />
           </Popconfirm>
         </Space>
       ),

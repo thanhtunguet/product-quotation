@@ -450,6 +450,7 @@ const QuotationManager = () => {
     {
       title: t('common.actions'),
       key: 'actions',
+      width: 120,
       render: (_, record: Quotation) => {
         const exportMenuItems = [
           {
@@ -496,9 +497,7 @@ const QuotationManager = () => {
                 loading={
                   generatingPdf && selectedQuotationForPdf?.id === record.id
                 }
-              >
-                Export <DownOutlined />
-              </Button>
+              />
             </Dropdown>
             <Button
               icon={<EditOutlined />}
@@ -506,9 +505,7 @@ const QuotationManager = () => {
               type="link"
               size="small"
               disabled={false}
-            >
-              {t('common.edit')}
-            </Button>
+            />
             <Popconfirm
               title={t('confirmations.deleteQuotation')}
               onConfirm={() => handleDelete(record.id)}
@@ -522,9 +519,7 @@ const QuotationManager = () => {
                 size="small"
                 danger
                 disabled={false}
-              >
-                {t('common.delete')}
-              </Button>
+              />
             </Popconfirm>
           </Space>
         );
