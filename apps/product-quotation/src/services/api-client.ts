@@ -2,7 +2,7 @@
 // Copy this to your frontend project and adapt as needed
 
 // Base API configuration
-export const API_BASE_URL = 'http://localhost:3000/api';
+export const API_BASE_URL = new URL('/api', window.location.origin).href;
 
 // Common interfaces
 export interface BaseEntity {
@@ -299,10 +299,14 @@ export class ProductQuotationApiClient {
   }
 
   // Generic Master Data API methods
-  private createMasterDataMethods<T extends MasterDataEntity>(endpoint: string) {
+  private createMasterDataMethods<T extends MasterDataEntity>(
+    endpoint: string
+  ) {
     return {
       getAll: async (search?: string): Promise<T[]> => {
-        const queryParam = search ? `?search=${encodeURIComponent(search)}` : '';
+        const queryParam = search
+          ? `?search=${encodeURIComponent(search)}`
+          : '';
         return this.request(`/${endpoint}${queryParam}`);
       },
       getById: async (id: number): Promise<T> => {
@@ -332,11 +336,14 @@ export class ProductQuotationApiClient {
   brands = this.createMasterDataMethods<Brand>('brands');
   manufacturers = this.createMasterDataMethods<Manufacturer>('manufacturers');
   materials = this.createMasterDataMethods<Material>('materials');
-  manufacturingMethods = this.createMasterDataMethods<ManufacturingMethod>('manufacturing-methods');
+  manufacturingMethods = this.createMasterDataMethods<ManufacturingMethod>(
+    'manufacturing-methods'
+  );
   colors = this.createMasterDataMethods<Color>('colors');
   sizes = this.createMasterDataMethods<Size>('sizes');
   productTypes = this.createMasterDataMethods<ProductType>('product-types');
-  packagingTypes = this.createMasterDataMethods<PackagingType>('packaging-types');
+  packagingTypes =
+    this.createMasterDataMethods<PackagingType>('packaging-types');
 
   // Products API
   async getProducts(search?: string): Promise<Product[]> {
@@ -355,7 +362,10 @@ export class ProductQuotationApiClient {
     });
   }
 
-  async updateProduct(id: number, data: Partial<CreateProductDto>): Promise<Product> {
+  async updateProduct(
+    id: number,
+    data: Partial<CreateProductDto>
+  ): Promise<Product> {
     return this.request(`/products/${id}`, {
       method: 'PATCH',
       body: JSON.stringify(data),
@@ -413,7 +423,10 @@ export class ProductQuotationApiClient {
     });
   }
 
-  async updateQuotation(id: number, data: Partial<CreateQuotationDto>): Promise<Quotation> {
+  async updateQuotation(
+    id: number,
+    data: Partial<CreateQuotationDto>
+  ): Promise<Quotation> {
     return this.request(`/quotations/${id}`, {
       method: 'PATCH',
       body: JSON.stringify(data),
@@ -436,14 +449,18 @@ export class ProductQuotationApiClient {
     return this.request(`/product-attributes/${id}`);
   }
 
-  async createProductAttribute(data: CreateProductAttributeDto): Promise<ProductAttribute> {
+  async createProductAttribute(
+    data: CreateProductAttributeDto
+  ): Promise<ProductAttribute> {
     return this.request('/product-attributes', {
       method: 'POST',
       body: JSON.stringify(data),
     });
   }
 
-  async getProductAttributeValues(attributeId: number): Promise<ProductAttributeValue[]> {
+  async getProductAttributeValues(
+    attributeId: number
+  ): Promise<ProductAttributeValue[]> {
     return this.request(`/product-attributes/${attributeId}/values`);
   }
 }
