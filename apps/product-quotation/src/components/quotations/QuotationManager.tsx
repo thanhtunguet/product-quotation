@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Table, Button, Modal, Typography, Space, Tag, message, Popconfirm, Alert, Card, Input, DatePicker, Select, Dropdown } from 'antd';
-import { PlusOutlined, EditOutlined, DeleteOutlined, ExclamationCircleOutlined, SearchOutlined, FilePdfOutlined, DownOutlined, EyeOutlined, DownloadOutlined } from '@ant-design/icons';
+import { PlusOutlined, EditOutlined, DeleteOutlined, ExclamationCircleOutlined, SearchOutlined, FilePdfOutlined, DownOutlined, EyeOutlined, DownloadOutlined, ExportOutlined, ImportOutlined, SyncOutlined } from '@ant-design/icons';
 import { apiClient, Quotation, CreateQuotationDto, QuotationStatus } from '../../services/api-client';
+import { enhancedApiClient } from '../../services/enhanced-api-client';
 import QuotationForm from './QuotationForm';
 import QuotationPDF from './QuotationPDF';
 import PDFGenerator from '../../utils/pdfGenerator';
@@ -30,16 +31,12 @@ const QuotationManager = () => {
     setApiError(null);
     
     try {
-      const result = await apiClient.getQuotations(searchTerm || undefined);
+      const result = await enhancedApiClient.getQuotations(searchTerm || undefined);
       setQuotations(Array.isArray(result) ? result : []);
     } catch (error: any) {
       console.error('Failed to fetch quotations:', error);
       setQuotations([]); // Set to empty array on error
-      if (error.message?.includes('fetch') || error.message?.includes('API Error: 404')) {
-        setApiError(t('quotations.apiNotImplementedMessage'));
-      } else {
-        setApiError(`${t('quotations.fetchError')}: ${error.message}`);
-      }
+      setApiError(`${t('quotations.fetchError')}: ${error.message}`);
       message.error(t('quotations.fetchError'));
     } finally {
       setLoading(false);
@@ -52,17 +49,13 @@ const QuotationManager = () => {
 
   const handleCreate = async (formData: CreateQuotationDto) => {
     try {
-      const newQuotation = await apiClient.createQuotation(formData);
+      const newQuotation = await enhancedApiClient.createQuotation(formData);
       setQuotations(prev => [...prev, newQuotation]);
       setIsModalVisible(false);
       message.success(t('quotations.createSuccess'));
     } catch (error: any) {
       console.error('Failed to create quotation:', error);
-      if (error.message?.includes('fetch') || error.message?.includes('API Error: 404')) {
-        message.error(t('quotations.apiNotImplementedMessage'));
-      } else {
-        message.error(t('quotations.createError'));
-      }
+      message.error(t('quotations.createError'));
     }
   };
 
@@ -70,7 +63,7 @@ const QuotationManager = () => {
     if (!editingQuotation) return;
     
     try {
-      const updatedQuotation = await apiClient.updateQuotation(editingQuotation.id, formData);
+      const updatedQuotation = await enhancedApiClient.updateQuotation(editingQuotation.id, formData);
       setQuotations(prev => prev.map(quotation => 
         quotation.id === editingQuotation.id ? updatedQuotation : quotation
       ));
@@ -79,26 +72,18 @@ const QuotationManager = () => {
       message.success(t('quotations.updateSuccess'));
     } catch (error: any) {
       console.error('Failed to update quotation:', error);
-      if (error.message?.includes('fetch') || error.message?.includes('API Error: 404')) {
-        message.error(t('quotations.apiNotImplementedMessage'));
-      } else {
-        message.error(t('quotations.updateError'));
-      }
+      message.error(t('quotations.updateError'));
     }
   };
 
   const handleDelete = async (id: number) => {
     try {
-      await apiClient.deleteQuotation(id);
+      await enhancedApiClient.deleteQuotation(id);
       setQuotations(prev => prev.filter(quotation => quotation.id !== id));
       message.success(t('quotations.deleteSuccess'));
     } catch (error: any) {
       console.error('Failed to delete quotation:', error);
-      if (error.message?.includes('fetch') || error.message?.includes('API Error: 404')) {
-        message.error(t('quotations.apiNotImplementedMessage'));
-      } else {
-        message.error(t('quotations.deleteError'));
-      }
+      message.error(t('quotations.deleteError'));
     }
   };
 
@@ -183,6 +168,68 @@ const QuotationManager = () => {
         setPdfModalVisible(false);
       }
     }, 100);
+  };
+
+  const handleExportData = () => {
+    try {
+      const data = enhancedApiClient.exportLocalData();
+      const blob = new Blob([data], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `quotations-export-${new Date().toISOString().split('T')[0]}.json`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      message.success('Data exported successfully');
+    } catch (error) {
+      message.error('Failed to export data');
+    }
+  };
+
+  const handleImportData = () => {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = '.json';
+    input.onchange = (event) => {
+      const file = (event.target as HTMLInputElement).files?.[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          try {
+            const data = e.target?.result as string;
+            const success = enhancedApiClient.importLocalData(data);
+            if (success) {
+              message.success('Data imported successfully');
+              fetchQuotations(); // Refresh the list
+            } else {
+              message.error('Invalid data format');
+            }
+          } catch (error) {
+            message.error('Failed to import data');
+          }
+        };
+        reader.readAsText(file);
+      }
+    };
+    input.click();
+  };
+
+  const handleSyncData = async () => {
+    try {
+      setLoading(true);
+      const result = await enhancedApiClient.syncLocalDataToBackend();
+      message.success(`Sync completed: ${result.success} successful, ${result.failed} failed`);
+      if (result.errors.length > 0) {
+        console.log('Sync errors:', result.errors);
+      }
+      fetchQuotations(); // Refresh from backend
+    } catch (error) {
+      message.error('Sync failed: Backend not available');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const getStatusColor = (status: QuotationStatus) => {
@@ -303,13 +350,13 @@ const QuotationManager = () => {
             <Dropdown
               menu={{ items: pdfMenuItems }}
               trigger={['click']}
-              disabled={!!apiError || generatingPdf}
+              disabled={generatingPdf}
             >
               <Button
                 icon={<FilePdfOutlined />}
                 type="link"
                 size="small"
-                disabled={!!apiError || generatingPdf}
+                disabled={generatingPdf}
                 loading={generatingPdf && selectedQuotationForPdf?.id === record.id}
               >
                 {t('common.pdf')} <DownOutlined />
@@ -320,7 +367,7 @@ const QuotationManager = () => {
               onClick={() => handleEdit(record)}
               type="link"
               size="small"
-              disabled={!!apiError}
+              disabled={false}
             >
               {t('common.edit')}
             </Button>
@@ -329,14 +376,14 @@ const QuotationManager = () => {
               onConfirm={() => handleDelete(record.id)}
               okText={t('common.yes')}
               cancelText={t('common.no')}
-              disabled={!!apiError}
+              disabled={false}
             >
               <Button
                 icon={<DeleteOutlined />}
                 type="link"
                 size="small"
                 danger
-                disabled={!!apiError}
+                disabled={false}
               >
                 {t('common.delete')}
               </Button>
@@ -347,50 +394,8 @@ const QuotationManager = () => {
     },
   ];
 
-  if (apiError) {
-    return (
-      <div>
-        <div style={{ marginBottom: 16, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <Title level={2}>{t('quotations.management')}</Title>
-          <Button 
-            type="primary" 
-            icon={<PlusOutlined />}
-            disabled
-          >
-            {t('quotations.create')}
-          </Button>
-        </div>
-        
-        <Alert
-          message={t('quotations.apiNotImplemented')}
-          description={apiError}
-          type="warning"
-          icon={<ExclamationCircleOutlined />}
-          showIcon
-          action={
-            <Button size="small" onClick={fetchQuotations}>
-              {t('common.retry')}
-            </Button>
-          }
-        />
-
-        <Card style={{ marginTop: 16 }}>
-          <Title level={4}>{t('quotations.systemFeatures')}</Title>
-          <p>{t('quotations.futureFeatures')}</p>
-          <ul>
-            <li><strong>{t('quotations.managementFeature')}</strong></li>
-            <li><strong>{t('quotations.customerFeature')}</strong></li>
-            <li><strong>{t('quotations.itemsFeature')}</strong></li>
-            <li><strong>{t('quotations.workflowFeature')}</strong></li>
-            <li><strong>{t('quotations.pdfFeature')}</strong></li>
-            <li><strong>{t('quotations.calculationFeature')}</strong></li>
-            <li><strong>{t('quotations.searchFeature')}</strong></li>
-          </ul>
-          <p>{t('quotations.dependencyMessage')}</p>
-        </Card>
-      </div>
-    );
-  }
+  // Show a simple warning if there are API errors, but still allow functionality
+  const showApiWarning = apiError && quotations.length === 0;
 
   return (
     <div>
@@ -404,6 +409,36 @@ const QuotationManager = () => {
             onSearch={setSearchTerm}
             onChange={(e) => !e.target.value && setSearchTerm('')}
           />
+          <Dropdown
+            menu={{
+              items: [
+                {
+                  key: 'export',
+                  label: 'Export Data',
+                  icon: <ExportOutlined />,
+                  onClick: handleExportData,
+                },
+                {
+                  key: 'import',
+                  label: 'Import Data',
+                  icon: <ImportOutlined />,
+                  onClick: handleImportData,
+                },
+                {
+                  key: 'sync',
+                  label: 'Sync to Backend',
+                  icon: <SyncOutlined />,
+                  onClick: handleSyncData,
+                  disabled: loading,
+                },
+              ],
+            }}
+            trigger={['click']}
+          >
+            <Button icon={<DownOutlined />}>
+              Data Management
+            </Button>
+          </Dropdown>
           <Button 
             type="primary" 
             icon={<PlusOutlined />}
@@ -413,6 +448,23 @@ const QuotationManager = () => {
           </Button>
         </Space>
       </div>
+
+      {showApiWarning && (
+        <Alert
+          message="Backend Unavailable - Using Local Storage"
+          description="Data is being saved locally and will sync when the backend is available."
+          type="info"
+          icon={<ExclamationCircleOutlined />}
+          showIcon
+          closable
+          style={{ marginBottom: 16 }}
+          action={
+            <Button size="small" onClick={fetchQuotations}>
+              Retry Connection
+            </Button>
+          }
+        />
+      )}
       
       <Table 
         dataSource={quotations} 
