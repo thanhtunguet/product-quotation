@@ -7,7 +7,7 @@ WORKDIR /app
 RUN addgroup -g 1001 -S nodejs && \
     adduser -S nestjs -u 1001
 
-COPY apps/backend/package.json apps/backend/yarn.lock ./
+COPY apps/backend/package.json ./
 
 RUN yarn install --frozen-lockfile --production --network-timeout 600000
 
