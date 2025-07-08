@@ -14,13 +14,15 @@ import {
   BgColorsOutlined,
   ExpandOutlined,
   AppstoreOutlined,
-  InboxOutlined
+  InboxOutlined,
+  SettingOutlined
 } from '@ant-design/icons';
 import { useTranslation } from 'react-i18next';
 
 const Navigation = () => {
   const location = useLocation();
   const { t } = useTranslation();
+  const [openKeys, setOpenKeys] = React.useState<string[]>([]);
 
   const menuItems = [
     {
@@ -39,49 +41,56 @@ const Navigation = () => {
       label: <Link to="/quotations">{t('navigation.quotations')}</Link>,
     },
     {
-      key: 'brands',
-      icon: <TagOutlined />,
-      label: <Link to="/master-data/brands">{t('masterData.brands')}</Link>,
-    },
-    {
-      key: 'categories',
-      icon: <ApartmentOutlined />,
-      label: <Link to="/master-data/categories">{t('masterData.categories')}</Link>,
-    },
-    {
-      key: 'manufacturers',
-      icon: <ShopOutlined />,
-      label: <Link to="/master-data/manufacturers">{t('masterData.manufacturers')}</Link>,
-    },
-    {
-      key: 'materials',
-      icon: <BuildOutlined />,
-      label: <Link to="/master-data/materials">{t('masterData.materials')}</Link>,
-    },
-    {
-      key: 'methods',
-      icon: <ToolOutlined />,
-      label: <Link to="/master-data/manufacturing-methods">{t('masterData.methods')}</Link>,
-    },
-    {
-      key: 'colors',
-      icon: <BgColorsOutlined />,
-      label: <Link to="/master-data/colors">{t('masterData.colors')}</Link>,
-    },
-    {
-      key: 'sizes',
-      icon: <ExpandOutlined />,
-      label: <Link to="/master-data/sizes">{t('masterData.sizes')}</Link>,
-    },
-    {
-      key: 'types',
-      icon: <AppstoreOutlined />,
-      label: <Link to="/master-data/product-types">{t('masterData.types')}</Link>,
-    },
-    {
-      key: 'packaging',
-      icon: <InboxOutlined />,
-      label: <Link to="/master-data/packaging-types">{t('masterData.packaging')}</Link>,
+      key: 'master-data',
+      icon: <SettingOutlined />,
+      label: t('navigation.masterData'),
+      children: [
+        {
+          key: 'brands',
+          icon: <TagOutlined />,
+          label: <Link to="/master-data/brands">{t('masterData.brands')}</Link>,
+        },
+        {
+          key: 'categories',
+          icon: <ApartmentOutlined />,
+          label: <Link to="/master-data/categories">{t('masterData.categories')}</Link>,
+        },
+        {
+          key: 'manufacturers',
+          icon: <ShopOutlined />,
+          label: <Link to="/master-data/manufacturers">{t('masterData.manufacturers')}</Link>,
+        },
+        {
+          key: 'materials',
+          icon: <BuildOutlined />,
+          label: <Link to="/master-data/materials">{t('masterData.materials')}</Link>,
+        },
+        {
+          key: 'methods',
+          icon: <ToolOutlined />,
+          label: <Link to="/master-data/manufacturing-methods">{t('masterData.methods')}</Link>,
+        },
+        {
+          key: 'colors',
+          icon: <BgColorsOutlined />,
+          label: <Link to="/master-data/colors">{t('masterData.colors')}</Link>,
+        },
+        {
+          key: 'sizes',
+          icon: <ExpandOutlined />,
+          label: <Link to="/master-data/sizes">{t('masterData.sizes')}</Link>,
+        },
+        {
+          key: 'types',
+          icon: <AppstoreOutlined />,
+          label: <Link to="/master-data/product-types">{t('masterData.types')}</Link>,
+        },
+        {
+          key: 'packaging',
+          icon: <InboxOutlined />,
+          label: <Link to="/master-data/packaging-types">{t('masterData.packaging')}</Link>,
+        },
+      ],
     },
   ];
 
@@ -101,13 +110,35 @@ const Navigation = () => {
     return 'dashboard';
   };
 
+  React.useEffect(() => {
+    const path = location.pathname;
+    if (path.startsWith('/master-data')) {
+      setOpenKeys(['master-data']);
+    } else {
+      setOpenKeys([]);
+    }
+  }, [location.pathname]);
+
+  const handleOpenChange = (keys: string[]) => {
+    setOpenKeys(keys);
+  };
+
   return (
-    <Menu 
-      mode="horizontal" 
-      items={menuItems}
-      selectedKeys={[getSelectedKey()]}
-      style={{ border: 'none', background: 'transparent' }}
-    />
+    <div style={{ textAlign: 'left' }}>
+      <Menu 
+        mode="horizontal" 
+        items={menuItems}
+        selectedKeys={[getSelectedKey()]}
+        openKeys={openKeys}
+        onOpenChange={handleOpenChange}
+        style={{ 
+          border: 'none', 
+          background: 'transparent',
+          textAlign: 'left',
+          justifyContent: 'flex-start'
+        }}
+      />
+    </div>
   );
 };
 
