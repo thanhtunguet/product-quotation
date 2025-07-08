@@ -38,6 +38,8 @@ const CategoryManager = () => {
   const [loading, setLoading] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [editingCategory, setEditingCategory] = useState<Category | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
 
   const fetchCategories = async () => {
     setLoading(true);
@@ -116,6 +118,11 @@ const CategoryManager = () => {
   const handleModalClose = () => {
     setIsModalVisible(false);
     setEditingCategory(null);
+  };
+
+  const handlePaginationChange = (page: number, size: number) => {
+    setCurrentPage(page);
+    setPageSize(size);
   };
 
   const transformToAntdTree = (categories: Category[]): any[] => {
@@ -264,13 +271,17 @@ const CategoryManager = () => {
           loading={loading}
           rowKey="id"
           pagination={{
-            pageSize: 10,
+            current: currentPage,
+            pageSize: pageSize,
             showSizeChanger: true,
             showQuickJumper: true,
+            pageSizeOptions: ['5', '10', '20', '50'],
             showTotal: (total, range) =>
               `${range[0]}-${range[1]} ${t('common.of')} ${total} ${t(
                 'common.items'
               )}`,
+            onChange: handlePaginationChange,
+            onShowSizeChange: handlePaginationChange,
           }}
           locale={{
             emptyText:

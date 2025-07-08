@@ -27,6 +27,8 @@ const BrandManager = () => {
   const [loading, setLoading] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [editingBrand, setEditingBrand] = useState<Brand | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
 
   const fetchBrands = async () => {
     setLoading(true);
@@ -91,6 +93,11 @@ const BrandManager = () => {
   const handleModalClose = () => {
     setIsModalVisible(false);
     setEditingBrand(null);
+  };
+
+  const handlePaginationChange = (page: number, size: number) => {
+    setCurrentPage(page);
+    setPageSize(size);
   };
 
   const columns = [
@@ -165,7 +172,16 @@ const BrandManager = () => {
         columns={columns}
         loading={loading}
         rowKey="id"
-        pagination={{ pageSize: 10 }}
+        pagination={{
+          current: currentPage,
+          pageSize: pageSize,
+          showSizeChanger: true,
+          showQuickJumper: true,
+          pageSizeOptions: ['5', '10', '20', '50'],
+          showTotal: (total, range) => `${range[0]}-${range[1]} ${t('common.of')} ${total} ${t('common.items')}`,
+          onChange: handlePaginationChange,
+          onShowSizeChange: handlePaginationChange,
+        }}
       />
 
       <Modal

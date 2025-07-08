@@ -26,6 +26,8 @@ const ManufacturerManager = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [editingManufacturer, setEditingManufacturer] =
     useState<Manufacturer | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
 
   const fetchManufacturers = async () => {
     setLoading(true);
@@ -97,6 +99,11 @@ const ManufacturerManager = () => {
   const handleModalClose = () => {
     setIsModalVisible(false);
     setEditingManufacturer(null);
+  };
+
+  const handlePaginationChange = (page: number, size: number) => {
+    setCurrentPage(page);
+    setPageSize(size);
   };
 
   const columns = [
@@ -171,7 +178,16 @@ const ManufacturerManager = () => {
         columns={columns}
         loading={loading}
         rowKey="id"
-        pagination={{ pageSize: 10 }}
+        pagination={{
+          current: currentPage,
+          pageSize: pageSize,
+          showSizeChanger: true,
+          showQuickJumper: true,
+          pageSizeOptions: ['5', '10', '20', '50'],
+          showTotal: (total, range) => `${range[0]}-${range[1]} of ${total} items`,
+          onChange: handlePaginationChange,
+          onShowSizeChange: handlePaginationChange,
+        }}
       />
 
       <Modal

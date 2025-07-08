@@ -45,6 +45,8 @@ const GenericMasterDataManager: React.FC<GenericMasterDataManagerProps> = ({
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [editingItem, setEditingItem] = useState<MasterDataEntity | null>(null);
   const [apiError, setApiError] = useState<string | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
 
   const getApiMethods = () => {
     const api = apiClient[apiEndpoint];
@@ -183,6 +185,11 @@ const GenericMasterDataManager: React.FC<GenericMasterDataManagerProps> = ({
     setEditingItem(null);
   };
 
+  const handlePaginationChange = (page: number, size: number) => {
+    setCurrentPage(page);
+    setPageSize(size);
+  };
+
   const baseColumns = [
     {
       title: 'Name',
@@ -319,7 +326,16 @@ const GenericMasterDataManager: React.FC<GenericMasterDataManagerProps> = ({
         columns={columns}
         loading={loading}
         rowKey="id"
-        pagination={{ pageSize: 10 }}
+        pagination={{
+          current: currentPage,
+          pageSize: pageSize,
+          showSizeChanger: true,
+          showQuickJumper: true,
+          pageSizeOptions: ['5', '10', '20', '50'],
+          showTotal: (total, range) => `${range[0]}-${range[1]} of ${total} items`,
+          onChange: handlePaginationChange,
+          onShowSizeChange: handlePaginationChange,
+        }}
       />
 
       <Modal

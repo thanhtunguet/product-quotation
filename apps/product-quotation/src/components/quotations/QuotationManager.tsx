@@ -59,6 +59,8 @@ const QuotationManager = () => {
   const [selectedQuotationForPdf, setSelectedQuotationForPdf] =
     useState<Quotation | null>(null);
   const [generatingPdf, setGeneratingPdf] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(20);
   const pdfRef = useRef<HTMLDivElement>(null);
 
   const fetchQuotations = async () => {
@@ -84,6 +86,7 @@ const QuotationManager = () => {
     // Add demo data if no quotations exist
     addDemoDataToLocalStorage();
     fetchQuotations();
+    setCurrentPage(1); // Reset to first page when search changes
   }, [searchTerm]);
 
   const handleCreate = async (formData: CreateQuotationDto) => {
@@ -139,6 +142,11 @@ const QuotationManager = () => {
   const handleModalClose = () => {
     setIsModalVisible(false);
     setEditingQuotation(null);
+  };
+
+  const handlePaginationChange = (page: number, size: number) => {
+    setCurrentPage(page);
+    setPageSize(size);
   };
 
   const handlePdfPreview = (quotation: Quotation) => {
@@ -620,13 +628,17 @@ const QuotationManager = () => {
         loading={loading}
         rowKey="id"
         pagination={{
-          pageSize: 20,
+          current: currentPage,
+          pageSize: pageSize,
           showSizeChanger: true,
           showQuickJumper: true,
+          pageSizeOptions: ['10', '20', '50', '100'],
           showTotal: (total, range) =>
             `${range[0]}-${range[1]} ${t('common.of')} ${total} ${t(
               'common.items'
             )}`,
+          onChange: handlePaginationChange,
+          onShowSizeChange: handlePaginationChange,
         }}
         scroll={{ x: 'max-content' }}
       />
