@@ -7,12 +7,12 @@ WORKDIR /app
 RUN addgroup -g 1001 -S nodejs && \
     adduser -S nestjs -u 1001
 
-COPY package.json yarn.lock ./
+COPY apps/backend/package.json apps/backend/yarn.lock ./
 
 RUN yarn install --frozen-lockfile --production --network-timeout 600000
 
 # Copy the built application (includes package.json with runtime deps)
-COPY apps/backend/dist/ ./apps/backend/dist/
+COPY apps/backend/dist/ ./
 
 # Change ownership to non-root user
 RUN chown -R nestjs:nodejs /app
@@ -26,4 +26,4 @@ HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
   CMD node --version || exit 1
 
 # Start the application
-CMD ["node", "apps/backend/dist/main.js"]
+CMD ["node", "main.js"]
