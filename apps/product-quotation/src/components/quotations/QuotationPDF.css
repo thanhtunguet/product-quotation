@@ -1,16 +1,19 @@
 /* QuotationPDF.css */
+/* Vietnamese font support */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
 .quotation-pdf {
   width: 210mm;
   min-height: 297mm;
   margin: 0 auto;
   background: white;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   font-size: 14px;
-  line-height: 1.4;
-  color: #333;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+  line-height: 1.5;
+  color: #2d3748;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
   padding: 20mm;
   box-sizing: border-box;
+  position: relative;
 }
 
 /* Header Section */
@@ -18,9 +21,10 @@
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  margin-bottom: 30px;
-  padding-bottom: 20px;
-  border-bottom: 2px solid #e8e8e8;
+  margin-bottom: 40px;
+  padding-bottom: 25px;
+  border-bottom: 3px solid #1a365d;
+  position: relative;
 }
 
 .company-info {
@@ -59,10 +63,11 @@
 }
 
 .company-details .company-name {
-  font-size: 24px;
-  font-weight: bold;
-  color: #2c3e50;
-  margin: 0 0 10px 0;
+  font-size: 28px;
+  font-weight: 800;
+  color: #1a365d;
+  margin: 0 0 15px 0;
+  letter-spacing: 0.5px;
 }
 
 .company-address {
@@ -80,18 +85,20 @@
 }
 
 .document-title {
-  font-size: 32px;
-  font-weight: bold;
-  color: #2c3e50;
-  margin: 0 0 15px 0;
-  letter-spacing: 2px;
+  font-size: 36px;
+  font-weight: 900;
+  color: #1a365d;
+  margin: 0 0 20px 0;
+  letter-spacing: 3px;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
 }
 
 .quotation-details {
-  background: #f8f9fa;
-  padding: 15px;
-  border-radius: 8px;
-  border-left: 4px solid #667eea;
+  background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%);
+  padding: 20px;
+  border-radius: 12px;
+  border-left: 5px solid #4299e1;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
 .detail-row {
@@ -136,10 +143,11 @@
 }
 
 .customer-info {
-  background: #f8f9fa;
-  padding: 15px;
-  border-radius: 6px;
-  border-left: 3px solid #28a745;
+  background: linear-gradient(135deg, #f0fff4 0%, #e6fffa 100%);
+  padding: 20px;
+  border-radius: 12px;
+  border-left: 5px solid #38a169;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
 .customer-name {
@@ -167,39 +175,44 @@
 
 .items-table {
   width: 100%;
-  border-collapse: collapse;
-  margin-top: 10px;
-  border: 1px solid #ddd;
-  border-radius: 6px;
+  border-collapse: separate;
+  border-spacing: 0;
+  margin-top: 15px;
+  border: 2px solid #e2e8f0;
+  border-radius: 12px;
   overflow: hidden;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
 }
 
 .items-table thead {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #4299e1 0%, #3182ce 100%);
   color: white;
+  position: relative;
 }
 
 .items-table th {
-  padding: 12px 8px;
-  font-weight: 600;
+  padding: 16px 12px;
+  font-weight: 700;
   text-align: left;
-  font-size: 12px;
+  font-size: 13px;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 1px;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
 }
 
 .items-table td {
-  padding: 12px 8px;
-  border-bottom: 1px solid #eee;
+  padding: 16px 12px;
+  border-bottom: 1px solid #e2e8f0;
   vertical-align: top;
+  transition: background-color 0.2s ease;
 }
 
 .item-row:nth-child(even) {
-  background-color: #f8f9fa;
+  background-color: #f7fafc;
 }
 
 .item-row:hover {
-  background-color: #e3f2fd;
+  background-color: #ebf8ff;
 }
 
 /* Table Columns */
@@ -245,11 +258,12 @@
 }
 
 .totals-container {
-  min-width: 300px;
-  background: #f8f9fa;
-  border: 1px solid #ddd;
-  border-radius: 6px;
+  min-width: 350px;
+  background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%);
+  border: 2px solid #e2e8f0;
+  border-radius: 12px;
   overflow: hidden;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
 }
 
 .total-row {
@@ -273,10 +287,11 @@
 }
 
 .grand-total-row {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #4299e1 0%, #3182ce 100%);
   color: white;
-  font-weight: bold;
-  font-size: 16px;
+  font-weight: 800;
+  font-size: 18px;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
 }
 
 .total-label {
@@ -284,8 +299,9 @@
 }
 
 .total-value {
-  font-weight: 600;
-  font-family: 'Courier New', monospace;
+  font-weight: 700;
+  font-family: 'SF Mono', 'Monaco', 'Cascadia Code', 'Courier New', monospace;
+  font-size: 14px;
 }
 
 /* Notes Section */
@@ -294,12 +310,13 @@
 }
 
 .notes-content {
-  background: #fff3cd;
-  padding: 15px;
-  border-radius: 6px;
-  border-left: 3px solid #ffc107;
+  background: linear-gradient(135deg, #fffdf7 0%, #fefcbf 100%);
+  padding: 20px;
+  border-radius: 12px;
+  border-left: 5px solid #f6e05e;
   font-style: italic;
-  color: #856404;
+  color: #744210;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
 /* Terms Section */
@@ -308,9 +325,13 @@
 }
 
 .terms-content {
-  font-size: 12px;
-  color: #666;
-  line-height: 1.5;
+  font-size: 13px;
+  color: #4a5568;
+  line-height: 1.6;
+  background: #f7fafc;
+  padding: 20px;
+  border-radius: 12px;
+  border-left: 4px solid #cbd5e0;
 }
 
 .terms-content p {
@@ -320,9 +341,10 @@
 
 /* Footer */
 .pdf-footer {
-  margin-top: 40px;
-  padding-top: 20px;
-  border-top: 1px solid #ddd;
+  margin-top: 50px;
+  padding-top: 25px;
+  border-top: 2px solid #e2e8f0;
+  position: relative;
 }
 
 .footer-content {
@@ -346,17 +368,140 @@
 }
 
 .signature-line {
-  border-bottom: 1px solid #333;
-  width: 180px;
-  margin-bottom: 5px;
-  height: 40px;
+  border-bottom: 2px solid #4a5568;
+  width: 200px;
+  margin-bottom: 8px;
+  height: 50px;
+  position: relative;
 }
 
 .signature-label {
-  font-size: 11px;
-  color: #666;
+  font-size: 12px;
+  color: #4a5568;
   text-transform: uppercase;
-  letter-spacing: 1px;
+  letter-spacing: 1.5px;
+  font-weight: 600;
+}
+
+/* Additional Professional Styling */
+.quotation-pdf::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 5px;
+  background: linear-gradient(135deg, #4299e1 0%, #3182ce 100%);
+  z-index: 1;
+}
+
+.product-name {
+  font-weight: 700;
+  color: #1a365d;
+  margin-bottom: 4px;
+  font-size: 15px;
+}
+
+.product-code {
+  font-size: 11px;
+  color: #718096;
+  font-style: italic;
+  background: #edf2f7;
+  padding: 2px 6px;
+  border-radius: 4px;
+  display: inline-block;
+}
+
+.product-description {
+  font-size: 12px;
+  color: #4a5568;
+  margin-bottom: 6px;
+  line-height: 1.4;
+}
+
+.item-notes {
+  font-size: 11px;
+  color: #2b6cb0;
+  font-style: italic;
+  background: linear-gradient(135deg, #ebf8ff 0%, #bee3f8 100%);
+  padding: 6px 8px;
+  border-radius: 6px;
+  margin-top: 6px;
+  border-left: 3px solid #4299e1;
+}
+
+.customer-name {
+  font-size: 18px;
+  font-weight: 700;
+  color: #1a365d;
+  margin-bottom: 8px;
+}
+
+.customer-company {
+  font-size: 15px;
+  color: #2d3748;
+  margin-bottom: 6px;
+  font-weight: 500;
+}
+
+.customer-phone {
+  font-size: 13px;
+  color: #4a5568;
+  font-weight: 500;
+}
+
+.section-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: #1a365d;
+  margin: 0 0 12px 0;
+  padding-bottom: 8px;
+  border-bottom: 2px solid #e2e8f0;
+  position: relative;
+}
+
+.section-title::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 50px;
+  height: 2px;
+  background: linear-gradient(135deg, #4299e1 0%, #3182ce 100%);
+}
+
+.total-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 14px 18px;
+  border-bottom: 1px solid #e2e8f0;
+  transition: background-color 0.2s ease;
+}
+
+.subtotal-row {
+  background: white;
+  font-weight: 600;
+}
+
+.tax-row {
+  background: linear-gradient(135deg, #fffdf7 0%, #fefcbf 100%);
+  border-left: 4px solid #f6e05e;
+  font-weight: 600;
+}
+
+/* Logo enhancement */
+.logo-placeholder {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #4299e1 0%, #3182ce 100%);
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  font-weight: bold;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
 }
 
 /* Print Styles */
@@ -366,6 +511,10 @@
     margin: 0;
     box-shadow: none;
     padding: 15mm;
+  }
+  
+  .quotation-pdf::before {
+    display: none;
   }
   
   .pdf-header {
@@ -378,6 +527,10 @@
   
   .totals-section {
     page-break-inside: avoid;
+  }
+  
+  .item-row:hover {
+    background-color: transparent;
   }
 }
 

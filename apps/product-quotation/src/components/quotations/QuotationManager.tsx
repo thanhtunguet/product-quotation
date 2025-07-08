@@ -224,7 +224,7 @@ const QuotationManager = () => {
       title: t('quotations.date'),
       dataIndex: 'quotationDate',
       key: 'quotationDate',
-      render: (date: string) => moment(date).format('MMM DD, YYYY'),
+      render: (date: string) => moment(date).format('DD/MM/YYYY'),
       sorter: (a: Quotation, b: Quotation) => 
         moment(a.quotationDate).unix() - moment(b.quotationDate).unix(),
     },
@@ -232,7 +232,7 @@ const QuotationManager = () => {
       title: t('quotations.validUntil'),
       dataIndex: 'validUntil',
       key: 'validUntil',
-      render: (date: string) => date ? moment(date).format('MMM DD, YYYY') : '-',
+      render: (date: string) => date ? moment(date).format('DD/MM/YYYY') : '-',
     },
     {
       title: t('quotations.totalAmount'),
@@ -240,7 +240,11 @@ const QuotationManager = () => {
       key: 'totalAmount',
       render: (amount: number | string) => {
         const numAmount = typeof amount === 'string' ? parseFloat(amount) : amount;
-        return `$${(numAmount || 0).toFixed(2)}`;
+        return new Intl.NumberFormat('vi-VN', {
+          style: 'currency',
+          currency: 'VND',
+          currencyDisplay: 'symbol',
+        }).format(numAmount || 0);
       },
       sorter: (a: Quotation, b: Quotation) => {
         const aAmount = typeof a.totalAmount === 'string' ? parseFloat(a.totalAmount) : a.totalAmount;

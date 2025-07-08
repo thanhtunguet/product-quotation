@@ -25,10 +25,22 @@ const QuotationPDF: React.FC<QuotationPDFProps> = ({ quotation, onRef }) => {
   const total = subtotal + tax;
 
   const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('en-US', {
+    return new Intl.NumberFormat('vi-VN', {
       style: 'currency',
-      currency: 'USD',
+      currency: 'VND',
+      currencyDisplay: 'symbol',
     }).format(amount);
+  };
+
+  const getStatusText = (status: string) => {
+    const statusMap: { [key: string]: string } = {
+      'DRAFT': 'Nháp',
+      'SENT': 'Đã gửi',
+      'ACCEPTED': 'Đã chấp nhận',
+      'REJECTED': 'Đã từ chối',
+      'EXPIRED': 'Hết hạn',
+    };
+    return statusMap[status.toUpperCase()] || status;
   };
 
   return (
@@ -43,37 +55,37 @@ const QuotationPDF: React.FC<QuotationPDFProps> = ({ quotation, onRef }) => {
             </div>
           </div>
           <div className="company-details">
-            <h1 className="company-name">Your Company Name</h1>
+            <h1 className="company-name">CÔNG TY TNHH ABC</h1>
             <div className="company-address">
-              <p>123 Business Street</p>
-              <p>Business City, State 12345</p>
-              <p>Phone: (555) 123-4567</p>
-              <p>Email: info@yourcompany.com</p>
-              <p>Website: www.yourcompany.com</p>
+              <p>123 Đường Nguyễn Văn Cừ, Quận 1</p>
+              <p>Thành phố Hồ Chí Minh, Việt Nam</p>
+              <p>Điện thoại: (028) 123-4567</p>
+              <p>Email: info@abc.com.vn</p>
+              <p>Website: www.abc.com.vn</p>
             </div>
           </div>
         </div>
         <div className="quotation-info">
-          <h2 className="document-title">QUOTATION</h2>
+          <h2 className="document-title">BÁO GIÁ SẢN PHẨM</h2>
           <div className="quotation-details">
             <div className="detail-row">
-              <span className="label">Quotation #:</span>
+              <span className="label">Số báo giá:</span>
               <span className="value">{quotation.quotationNumber}</span>
             </div>
             <div className="detail-row">
-              <span className="label">Date:</span>
-              <span className="value">{moment(quotation.quotationDate).format('MMM DD, YYYY')}</span>
+              <span className="label">Ngày:</span>
+              <span className="value">{moment(quotation.quotationDate).format('DD/MM/YYYY')}</span>
             </div>
             {quotation.validUntil && (
               <div className="detail-row">
-                <span className="label">Valid Until:</span>
-                <span className="value">{moment(quotation.validUntil).format('MMM DD, YYYY')}</span>
+                <span className="label">Có hiệu lực đến:</span>
+                <span className="value">{moment(quotation.validUntil).format('DD/MM/YYYY')}</span>
               </div>
             )}
             <div className="detail-row">
-              <span className="label">Status:</span>
+              <span className="label">Trạng thái:</span>
               <span className={`value status-${quotation.status.toLowerCase()}`}>
-                {quotation.status}
+                {getStatusText(quotation.status)}
               </span>
             </div>
           </div>
@@ -82,13 +94,13 @@ const QuotationPDF: React.FC<QuotationPDFProps> = ({ quotation, onRef }) => {
 
       {/* Customer Information */}
       <div className="customer-section">
-        <h3 className="section-title">Bill To:</h3>
+        <h3 className="section-title">Thông tin khách hàng:</h3>
         <div className="customer-info">
           <div className="customer-name">{quotation.customerName}</div>
           {quotation.companyName && (
             <div className="customer-company">{quotation.companyName}</div>
           )}
-          <div className="customer-phone">Phone: {quotation.phoneNumber}</div>
+          <div className="customer-phone">Điện thoại: {quotation.phoneNumber}</div>
         </div>
       </div>
 
@@ -97,11 +109,11 @@ const QuotationPDF: React.FC<QuotationPDFProps> = ({ quotation, onRef }) => {
         <table className="items-table">
           <thead>
             <tr>
-              <th className="item-col">Item</th>
-              <th className="desc-col">Description</th>
-              <th className="qty-col">Qty</th>
-              <th className="price-col">Unit Price</th>
-              <th className="total-col">Total</th>
+              <th className="item-col">Sản phẩm</th>
+              <th className="desc-col">Mô tả</th>
+              <th className="qty-col">SL</th>
+              <th className="price-col">Đơn giá</th>
+              <th className="total-col">Thành tiền</th>
             </tr>
           </thead>
           <tbody>
@@ -110,7 +122,7 @@ const QuotationPDF: React.FC<QuotationPDFProps> = ({ quotation, onRef }) => {
               return (
                 <tr key={index} className="item-row">
                   <td className="item-col">
-                    <div className="product-name">{item.product?.name || `Product ID: ${item.productId}`}</div>
+                    <div className="product-name">{item.product?.name || `Mã sản phẩm: ${item.productId}`}</div>
                     <div className="product-code">{item.product?.code}</div>
                   </td>
                   <td className="desc-col">
@@ -135,15 +147,15 @@ const QuotationPDF: React.FC<QuotationPDFProps> = ({ quotation, onRef }) => {
       <div className="totals-section">
         <div className="totals-container">
           <div className="total-row subtotal-row">
-            <span className="total-label">Subtotal:</span>
+            <span className="total-label">Tạm tính:</span>
             <span className="total-value">{formatCurrency(subtotal)}</span>
           </div>
           <div className="total-row tax-row">
-            <span className="total-label">Tax (10%):</span>
+            <span className="total-label">Thuế VAT (10%):</span>
             <span className="total-value">{formatCurrency(tax)}</span>
           </div>
           <div className="total-row grand-total-row">
-            <span className="total-label">Total Amount:</span>
+            <span className="total-label">Tổng cộng:</span>
             <span className="total-value">{formatCurrency(total)}</span>
           </div>
         </div>
@@ -152,20 +164,20 @@ const QuotationPDF: React.FC<QuotationPDFProps> = ({ quotation, onRef }) => {
       {/* Notes Section */}
       {quotation.notes && (
         <div className="notes-section">
-          <h3 className="section-title">Notes:</h3>
+          <h3 className="section-title">Ghi chú:</h3>
           <div className="notes-content">{quotation.notes}</div>
         </div>
       )}
 
       {/* Terms & Conditions */}
       <div className="terms-section">
-        <h3 className="section-title">Terms & Conditions:</h3>
+        <h3 className="section-title">Điều khoản & Điều kiện:</h3>
         <div className="terms-content">
-          <p>• This quotation is valid for {quotation.validUntil ? moment(quotation.validUntil).diff(moment(quotation.quotationDate), 'days') : '30'} days from the date of issue.</p>
-          <p>• Prices are in USD and exclude shipping costs unless otherwise specified.</p>
-          <p>• Payment terms: 50% advance, 50% on delivery.</p>
-          <p>• Delivery time will be confirmed upon order confirmation.</p>
-          <p>• This quotation is subject to our standard terms and conditions.</p>
+          <p>• Báo giá này có hiệu lực trong vòng {quotation.validUntil ? moment(quotation.validUntil).diff(moment(quotation.quotationDate), 'days') : '30'} ngày kể từ ngày phát hành.</p>
+          <p>• Giá đã bao gồm thuế VAT 10%, chưa bao gồm phí vận chuyển (nếu có).</p>
+          <p>• Điều kiện thanh toán: 50% tạm ứng, 50% khi giao hàng.</p>
+          <p>• Thời gian giao hàng sẽ được xác nhận khi đặt hàng.</p>
+          <p>• Báo giá này tuân theo các điều khoản và điều kiện tiêu chuẩn của chúng tôi.</p>
         </div>
       </div>
 
@@ -173,13 +185,13 @@ const QuotationPDF: React.FC<QuotationPDFProps> = ({ quotation, onRef }) => {
       <div className="pdf-footer">
         <div className="footer-content">
           <div className="footer-left">
-            <p>Thank you for your business!</p>
-            <p>For any questions, please contact us at the above information.</p>
+            <p>Cảm ơn quý khách đã quan tâm đến sản phẩm của chúng tôi!</p>
+            <p>Mọi thắc mắc xin vui lòng liên hệ theo thông tin trên.</p>
           </div>
           <div className="footer-right">
             <div className="signature-section">
               <div className="signature-line"></div>
-              <div className="signature-label">Authorized Signature</div>
+              <div className="signature-label">Chữ ký người có thẩm quyền</div>
             </div>
           </div>
         </div>
