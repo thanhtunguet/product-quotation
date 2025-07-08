@@ -285,8 +285,7 @@ const GenericMasterDataManager: React.FC<GenericMasterDataManagerProps> = ({
   if (apiError) {
     return (
       <div>
-        <div className="mb-4 flex justify-between items-center">
-          <Title level={3}>{title}</Title>
+        <div className="mb-4 flex justify-end">
           <Button type="primary" icon={<PlusOutlined />} disabled>
             Add {entityName}
           </Button>
@@ -310,8 +309,7 @@ const GenericMasterDataManager: React.FC<GenericMasterDataManagerProps> = ({
 
   return (
     <div>
-      <div className="mb-4 flex justify-between items-center">
-        <Title level={3}>{title}</Title>
+      <div className="mb-4 flex justify-end">
         <Button
           type="primary"
           icon={<PlusOutlined />}

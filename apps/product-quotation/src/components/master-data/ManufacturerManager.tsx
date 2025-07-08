@@ -18,8 +18,6 @@ import {
 } from '../../services/api-client';
 import MasterDataForm from './MasterDataForm';
 
-const { Title } = Typography;
-
 const ManufacturerManager = () => {
   const [manufacturers, setManufacturers] = useState<Manufacturer[]>([]);
   const [loading, setLoading] = useState(false);
@@ -162,8 +160,7 @@ const ManufacturerManager = () => {
 
   return (
     <div>
-      <div className="mb-4 flex justify-between items-center">
-        <Title level={3}>Manufacturer Management</Title>
+      <div className="mb-4 flex justify-end">
         <Button
           type="primary"
           icon={<PlusOutlined />}

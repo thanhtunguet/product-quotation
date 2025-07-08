@@ -19,8 +19,6 @@ import {
 } from '../../services/api-client';
 import MasterDataForm from './MasterDataForm';
 
-const { Title } = Typography;
-
 const BrandManager = () => {
   const { t } = useTranslation();
   const [brands, setBrands] = useState<Brand[]>([]);
@@ -156,8 +154,7 @@ const BrandManager = () => {
 
   return (
     <div>
-      <div className="mb-4 flex justify-between items-center">
-        <Title level={3}>{t('brands.management')}</Title>
+      <div className="mb-4 flex justify-end">
         <Button
           type="primary"
           icon={<PlusOutlined />}

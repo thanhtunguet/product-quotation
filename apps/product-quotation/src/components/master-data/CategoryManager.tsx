@@ -29,8 +29,6 @@ import {
 } from '../../services/api-client';
 import CategoryForm from './CategoryForm';
 
-const { Title } = Typography;
-
 const CategoryManager = () => {
   const { t } = useTranslation();
   const [categories, setCategories] = useState<Category[]>([]);
@@ -298,8 +296,7 @@ const CategoryManager = () => {
 
   return (
     <div>
-      <div className="mb-4 flex justify-between items-center">
-        <Title level={3}>{t('categories.management')}</Title>
+      <div className="mb-4 flex justify-end">
         <Space>
           <Button
             icon={<ReloadOutlined />}
