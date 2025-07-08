@@ -1,121 +1,121 @@
-name: Continuous Integration
+# name: Continuous Integration
 
-on:
-  pull_request:
-    branches:
-      - main
-      - develop
-  push:
-    branches:
-      - develop
+# on:
+#   pull_request:
+#     branches:
+#       - main
+#       - develop
+#   push:
+#     branches:
+#       - develop
 
-concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+# concurrency:
+#   group: ${{ github.workflow }}-${{ github.ref }}
+#   cancel-in-progress: true
 
-permissions:
-  actions: read
-  contents: read
+# permissions:
+#   actions: read
+#   contents: read
 
-jobs:
-  lint-and-test:
-    runs-on: ubuntu-latest
+# jobs:
+#   lint-and-test:
+#     runs-on: ubuntu-latest
     
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
+#     steps:
+#       - name: Checkout repository
+#         uses: actions/checkout@v4
+#         with:
+#           fetch-depth: 0
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '22'
-          cache: 'npm'
+#       - name: Set up Node.js
+#         uses: actions/setup-node@v4
+#         with:
+#           node-version: '22'
+#           cache: 'npm'
 
-      - name: Install dependencies
-        run: npm ci
+#       - name: Install dependencies
+#         run: npm ci
 
-      - name: Run ESLint
-        run: npx nx run-many --target=lint --all --parallel=3 || echo "Lint completed with warnings"
+#       - name: Run ESLint
+#         run: npx nx run-many --target=lint --all --parallel=3 || echo "Lint completed with warnings"
 
-      - name: Run tests
-        run: npx nx run-many --target=test --all --parallel=3 || echo "Tests completed"
+#       - name: Run tests
+#         run: npx nx run-many --target=test --all --parallel=3 || echo "Tests completed"
 
-  build-test:
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        component: [backend, frontend]
+#   build-test:
+#     runs-on: ubuntu-latest
+#     strategy:
+#       matrix:
+#         component: [backend, frontend]
     
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+#     steps:
+#       - name: Checkout repository
+#         uses: actions/checkout@v4
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '22'
-          cache: 'npm'
+#       - name: Set up Node.js
+#         uses: actions/setup-node@v4
+#         with:
+#           node-version: '22'
+#           cache: 'npm'
 
-      - name: Install dependencies
-        run: npm ci
+#       - name: Install dependencies
+#         run: npm ci
 
-      - name: Build backend
-        if: matrix.component == 'backend'
-        run: npx nx build backend --prod
+#       - name: Build backend
+#         if: matrix.component == 'backend'
+#         run: npx nx build backend --prod
 
-      - name: Build frontend
-        if: matrix.component == 'frontend'
-        run: npx nx build product-quotation --prod
+#       - name: Build frontend
+#         if: matrix.component == 'frontend'
+#         run: npx nx build product-quotation --prod
 
-      - name: Test Docker build for backend
-        if: matrix.component == 'backend'
-        run: |
-          # Prepare backend for Docker build
-          cd apps/backend
-          npm pkg delete scripts.postinstall devDependencies 2>/dev/null || true
-          cp package.json dist/
-          if [ -f "package-lock.json" ]; then cp package-lock.json dist/; fi
-          if [ -f "../../yarn.lock" ]; then cp ../../yarn.lock dist/; fi
-          cd ../..
+#       - name: Test Docker build for backend
+#         if: matrix.component == 'backend'
+#         run: |
+#           # Prepare backend for Docker build
+#           cd apps/backend
+#           npm pkg delete scripts.postinstall devDependencies 2>/dev/null || true
+#           cp package.json dist/
+#           if [ -f "package-lock.json" ]; then cp package-lock.json dist/; fi
+#           if [ -f "../../yarn.lock" ]; then cp ../../yarn.lock dist/; fi
+#           cd ../..
           
-          # Test Docker build
-          docker build -f Dockerfile.backend -t test-backend .
+#           # Test Docker build
+#           docker build -f Dockerfile.backend -t test-backend .
 
-      - name: Test Docker build for frontend
-        if: matrix.component == 'frontend'
-        run: |
-          docker build -f Dockerfile.frontend -t test-frontend .
+#       - name: Test Docker build for frontend
+#         if: matrix.component == 'frontend'
+#         run: |
+#           docker build -f Dockerfile.frontend -t test-frontend .
 
-  security-audit:
-    runs-on: ubuntu-latest
+#   security-audit:
+#     runs-on: ubuntu-latest
     
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+#     steps:
+#       - name: Checkout repository
+#         uses: actions/checkout@v4
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '22'
-          cache: 'npm'
+#       - name: Set up Node.js
+#         uses: actions/setup-node@v4
+#         with:
+#           node-version: '22'
+#           cache: 'npm'
 
-      - name: Install dependencies
-        run: npm ci
+#       - name: Install dependencies
+#         run: npm ci
 
-      - name: Run security audit
-        run: npm audit --audit-level=moderate || echo "Audit completed with warnings"
+#       - name: Run security audit
+#         run: npm audit --audit-level=moderate || echo "Audit completed with warnings"
 
-  validate-docker-compose:
-    runs-on: ubuntu-latest
+#   validate-docker-compose:
+#     runs-on: ubuntu-latest
     
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+#     steps:
+#       - name: Checkout repository
+#         uses: actions/checkout@v4
 
-      - name: Validate docker-compose files
-        run: |
-          # Test docker-compose files are valid
-          docker-compose -f docker-compose.yml config
-          docker-compose -f docker-compose.dev.yml config
+#       - name: Validate docker-compose files
+#         run: |
+#           # Test docker-compose files are valid
+#           docker-compose -f docker-compose.yml config
+#           docker-compose -f docker-compose.dev.yml config

@@ -1,51 +1,19 @@
-version: '3.8'
-
 services:
-  mysql:
-    image: mysql:8.0
-    environment:
-      MYSQL_ROOT_PASSWORD: rootpassword
-      MYSQL_DATABASE: product_quotation
-      MYSQL_USER: user
-      MYSQL_PASSWORD: password
-    ports:
-      - "3306:3306"
-    volumes:
-      - mysql_data:/var/lib/mysql
-      - ./database.sql:/docker-entrypoint-initdb.d/init.sql
-    healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
-      timeout: 20s
-      retries: 10
-
   backend:
-    build:
-      context: .
-      dockerfile: Dockerfile.backend
-    environment:
-      - DATABASE_HOST=mysql
-      - DATABASE_PORT=3306
-      - DATABASE_USERNAME=user
-      - DATABASE_PASSWORD=password
-      - DATABASE_NAME=product_quotation
-      - JWT_SECRET=your-secret-key
-      - NODE_ENV=production
+    image: thanhtunguet/product-quotation-backend:latest
+    env_file:
+      - .env
     ports:
-      - "3000:3000"
+      - '8082:3000'
     depends_on:
       mysql:
         condition: service_healthy
     restart: unless-stopped
 
   frontend:
-    build:
-      context: .
-      dockerfile: Dockerfile.frontend
+    image: thanhtunguet/product-quotation-frontend:latest
     ports:
-      - "80:80"
+      - '8081:80'
     depends_on:
       - backend
     restart: unless-stopped
-
-volumes:
-  mysql_data:

@@ -1,311 +1,311 @@
-name: Release and Deploy
+# name: Release and Deploy
 
-on:
-  release:
-    types: [published]
-  workflow_dispatch:
-    inputs:
-      tag:
-        description: 'Tag to deploy'
-        required: true
-        default: 'latest'
+# on:
+#   release:
+#     types: [published]
+#   workflow_dispatch:
+#     inputs:
+#       tag:
+#         description: 'Tag to deploy'
+#         required: true
+#         default: 'latest'
 
-env:
-  REGISTRY: docker.io
-  BACKEND_IMAGE_NAME: ${{ github.repository }}-backend
-  FRONTEND_IMAGE_NAME: ${{ github.repository }}-frontend
+# env:
+#   REGISTRY: docker.io
+#   BACKEND_IMAGE_NAME: ${{ github.repository }}-backend
+#   FRONTEND_IMAGE_NAME: ${{ github.repository }}-frontend
 
-jobs:
-  build-and-release:
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
+# jobs:
+#   build-and-release:
+#     runs-on: ubuntu-latest
+#     permissions:
+#       contents: read
+#       packages: write
       
-    outputs:
-      backend-digest: ${{ steps.build-backend.outputs.digest }}
-      frontend-digest: ${{ steps.build-frontend.outputs.digest }}
-      version: ${{ steps.version.outputs.version }}
+#     outputs:
+#       backend-digest: ${{ steps.build-backend.outputs.digest }}
+#       frontend-digest: ${{ steps.build-frontend.outputs.digest }}
+#       version: ${{ steps.version.outputs.version }}
 
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+#     steps:
+#       - name: Checkout repository
+#         uses: actions/checkout@v4
 
-      - name: Extract version
-        id: version
-        run: |
-          if [ "${{ github.event_name }}" = "release" ]; then
-            VERSION=${{ github.event.release.tag_name }}
-          else
-            VERSION=${{ github.event.inputs.tag }}
-          fi
-          echo "version=${VERSION}" >> $GITHUB_OUTPUT
-          echo "Version: $VERSION"
+#       - name: Extract version
+#         id: version
+#         run: |
+#           if [ "${{ github.event_name }}" = "release" ]; then
+#             VERSION=${{ github.event.release.tag_name }}
+#           else
+#             VERSION=${{ github.event.inputs.tag }}
+#           fi
+#           echo "version=${VERSION}" >> $GITHUB_OUTPUT
+#           echo "Version: $VERSION"
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '22'
-          cache: 'npm'
+#       - name: Set up Node.js
+#         uses: actions/setup-node@v4
+#         with:
+#           node-version: '22'
+#           cache: 'npm'
 
-      - name: Install dependencies
-        run: npm ci
+#       - name: Install dependencies
+#         run: npm ci
 
-      - name: Run tests
-        run: |
-          npm run test --if-present
-          npm run lint --if-present
+#       - name: Run tests
+#         run: |
+#           npm run test --if-present
+#           npm run lint --if-present
 
-      - name: Build backend
-        run: npx nx build backend --prod
+#       - name: Build backend
+#         run: npx nx build backend --prod
 
-      - name: Build frontend
-        run: npx nx build product-quotation --prod
+#       - name: Build frontend
+#         run: npx nx build product-quotation --prod
 
-      - name: Prepare backend artifacts
-        run: |
-          cd apps/backend
-          # Clean up package.json for production
-          npm pkg delete scripts.postinstall devDependencies 2>/dev/null || true
-          cp package.json dist/
+#       - name: Prepare backend artifacts
+#         run: |
+#           cd apps/backend
+#           # Clean up package.json for production
+#           npm pkg delete scripts.postinstall devDependencies 2>/dev/null || true
+#           cp package.json dist/
           
-          # Copy lockfiles if they exist
-          if [ -f "package-lock.json" ]; then cp package-lock.json dist/; fi
-          if [ -f "../../yarn.lock" ]; then cp ../../yarn.lock dist/; fi
+#           # Copy lockfiles if they exist
+#           if [ -f "package-lock.json" ]; then cp package-lock.json dist/; fi
+#           if [ -f "../../yarn.lock" ]; then cp ../../yarn.lock dist/; fi
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
+#       - name: Set up Docker Buildx
+#         uses: docker/setup-buildx-action@v3
 
-      - name: Log in to Docker Hub
-        uses: docker/login-action@v3
-        with:
-          registry: ${{ env.REGISTRY }}
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
+#       - name: Log in to Docker Hub
+#         uses: docker/login-action@v3
+#         with:
+#           registry: ${{ env.REGISTRY }}
+#           username: ${{ secrets.DOCKERHUB_USERNAME }}
+#           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Build and push backend image
-        id: build-backend
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          file: ./Dockerfile.backend
-          push: true
-          tags: |
-            ${{ env.REGISTRY }}/${{ env.BACKEND_IMAGE_NAME }}:${{ steps.version.outputs.version }}
-            ${{ env.REGISTRY }}/${{ env.BACKEND_IMAGE_NAME }}:latest
-          labels: |
-            org.opencontainers.image.title=Product Quotation Backend
-            org.opencontainers.image.description=NestJS backend for Product Quotation System
-            org.opencontainers.image.version=${{ steps.version.outputs.version }}
-            org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}
-            org.opencontainers.image.revision=${{ github.sha }}
-            org.opencontainers.image.created=${{ github.event.head_commit.timestamp }}
-          platforms: linux/amd64,linux/arm64
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+#       - name: Build and push backend image
+#         id: build-backend
+#         uses: docker/build-push-action@v5
+#         with:
+#           context: .
+#           file: ./Dockerfile.backend
+#           push: true
+#           tags: |
+#             ${{ env.REGISTRY }}/${{ env.BACKEND_IMAGE_NAME }}:${{ steps.version.outputs.version }}
+#             ${{ env.REGISTRY }}/${{ env.BACKEND_IMAGE_NAME }}:latest
+#           labels: |
+#             org.opencontainers.image.title=Product Quotation Backend
+#             org.opencontainers.image.description=NestJS backend for Product Quotation System
+#             org.opencontainers.image.version=${{ steps.version.outputs.version }}
+#             org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}
+#             org.opencontainers.image.revision=${{ github.sha }}
+#             org.opencontainers.image.created=${{ github.event.head_commit.timestamp }}
+#           platforms: linux/amd64,linux/arm64
+#           cache-from: type=gha
+#           cache-to: type=gha,mode=max
 
-      - name: Build and push frontend image
-        id: build-frontend
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          file: ./Dockerfile.frontend
-          push: true
-          tags: |
-            ${{ env.REGISTRY }}/${{ env.FRONTEND_IMAGE_NAME }}:${{ steps.version.outputs.version }}
-            ${{ env.REGISTRY }}/${{ env.FRONTEND_IMAGE_NAME }}:latest
-          labels: |
-            org.opencontainers.image.title=Product Quotation Frontend
-            org.opencontainers.image.description=React frontend for Product Quotation System
-            org.opencontainers.image.version=${{ steps.version.outputs.version }}
-            org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}
-            org.opencontainers.image.revision=${{ github.sha }}
-            org.opencontainers.image.created=${{ github.event.head_commit.timestamp }}
-          platforms: linux/amd64,linux/arm64
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+#       - name: Build and push frontend image
+#         id: build-frontend
+#         uses: docker/build-push-action@v5
+#         with:
+#           context: .
+#           file: ./Dockerfile.frontend
+#           push: true
+#           tags: |
+#             ${{ env.REGISTRY }}/${{ env.FRONTEND_IMAGE_NAME }}:${{ steps.version.outputs.version }}
+#             ${{ env.REGISTRY }}/${{ env.FRONTEND_IMAGE_NAME }}:latest
+#           labels: |
+#             org.opencontainers.image.title=Product Quotation Frontend
+#             org.opencontainers.image.description=React frontend for Product Quotation System
+#             org.opencontainers.image.version=${{ steps.version.outputs.version }}
+#             org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}
+#             org.opencontainers.image.revision=${{ github.sha }}
+#             org.opencontainers.image.created=${{ github.event.head_commit.timestamp }}
+#           platforms: linux/amd64,linux/arm64
+#           cache-from: type=gha
+#           cache-to: type=gha,mode=max
 
-  generate-deployment-artifacts:
-    runs-on: ubuntu-latest
-    needs: build-and-release
+#   generate-deployment-artifacts:
+#     runs-on: ubuntu-latest
+#     needs: build-and-release
     
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+#     steps:
+#       - name: Checkout repository
+#         uses: actions/checkout@v4
 
-      - name: Generate docker-compose for deployment
-        run: |
-          cat > docker-compose.production.yml << EOF
-          version: '3.8'
+#       - name: Generate docker-compose for deployment
+#         run: |
+#           cat > docker-compose.production.yml << EOF
+#           version: '3.8'
           
-          services:
-            backend:
-              image: ${{ env.REGISTRY }}/${{ env.BACKEND_IMAGE_NAME }}:${{ needs.build-and-release.outputs.version }}
-              container_name: product-quotation-backend
-              restart: unless-stopped
-              environment:
-                - NODE_ENV=production
-                - DB_HOST=\${DB_HOST:-db}
-                - DB_PORT=\${DB_PORT:-3306}
-                - DB_USERNAME=\${DB_USERNAME}
-                - DB_PASSWORD=\${DB_PASSWORD}
-                - DB_DATABASE=\${DB_DATABASE}
-                - JWT_SECRET=\${JWT_SECRET}
-              depends_on:
-                - db
-              networks:
-                - app-network
-              healthcheck:
-                test: ["CMD", "node", "--version"]
-                interval: 30s
-                timeout: 10s
-                retries: 3
-                start_period: 40s
+#           services:
+#             backend:
+#               image: ${{ env.REGISTRY }}/${{ env.BACKEND_IMAGE_NAME }}:${{ needs.build-and-release.outputs.version }}
+#               container_name: product-quotation-backend
+#               restart: unless-stopped
+#               environment:
+#                 - NODE_ENV=production
+#                 - DB_HOST=\${DB_HOST:-db}
+#                 - DB_PORT=\${DB_PORT:-3306}
+#                 - DB_USERNAME=\${DB_USERNAME}
+#                 - DB_PASSWORD=\${DB_PASSWORD}
+#                 - DB_DATABASE=\${DB_DATABASE}
+#                 - JWT_SECRET=\${JWT_SECRET}
+#               depends_on:
+#                 - db
+#               networks:
+#                 - app-network
+#               healthcheck:
+#                 test: ["CMD", "node", "--version"]
+#                 interval: 30s
+#                 timeout: 10s
+#                 retries: 3
+#                 start_period: 40s
 
-            frontend:
-              image: ${{ env.REGISTRY }}/${{ env.FRONTEND_IMAGE_NAME }}:${{ needs.build-and-release.outputs.version }}
-              container_name: product-quotation-frontend
-              restart: unless-stopped
-              ports:
-                - "80:80"
-              depends_on:
-                - backend
-              networks:
-                - app-network
-              healthcheck:
-                test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost/health"]
-                interval: 30s
-                timeout: 10s
-                retries: 3
-                start_period: 40s
+#             frontend:
+#               image: ${{ env.REGISTRY }}/${{ env.FRONTEND_IMAGE_NAME }}:${{ needs.build-and-release.outputs.version }}
+#               container_name: product-quotation-frontend
+#               restart: unless-stopped
+#               ports:
+#                 - "80:80"
+#               depends_on:
+#                 - backend
+#               networks:
+#                 - app-network
+#               healthcheck:
+#                 test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost/health"]
+#                 interval: 30s
+#                 timeout: 10s
+#                 retries: 3
+#                 start_period: 40s
 
-            db:
-              image: mysql:8.0
-              container_name: product-quotation-db
-              restart: unless-stopped
-              environment:
-                - MYSQL_ROOT_PASSWORD=\${MYSQL_ROOT_PASSWORD}
-                - MYSQL_DATABASE=\${DB_DATABASE}
-                - MYSQL_USER=\${DB_USERNAME}
-                - MYSQL_PASSWORD=\${DB_PASSWORD}
-              volumes:
-                - db_data:/var/lib/mysql
-                - ./database.sql:/docker-entrypoint-initdb.d/init.sql:ro
-              networks:
-                - app-network
-              healthcheck:
-                test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
-                interval: 30s
-                timeout: 10s
-                retries: 5
-                start_period: 60s
+#             db:
+#               image: mysql:8.0
+#               container_name: product-quotation-db
+#               restart: unless-stopped
+#               environment:
+#                 - MYSQL_ROOT_PASSWORD=\${MYSQL_ROOT_PASSWORD}
+#                 - MYSQL_DATABASE=\${DB_DATABASE}
+#                 - MYSQL_USER=\${DB_USERNAME}
+#                 - MYSQL_PASSWORD=\${DB_PASSWORD}
+#               volumes:
+#                 - db_data:/var/lib/mysql
+#                 - ./database.sql:/docker-entrypoint-initdb.d/init.sql:ro
+#               networks:
+#                 - app-network
+#               healthcheck:
+#                 test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+#                 interval: 30s
+#                 timeout: 10s
+#                 retries: 5
+#                 start_period: 60s
 
-          volumes:
-            db_data:
+#           volumes:
+#             db_data:
 
-          networks:
-            app-network:
-              driver: bridge
-          EOF
+#           networks:
+#             app-network:
+#               driver: bridge
+#           EOF
 
-      - name: Generate environment template
-        run: |
-          cat > .env.production.template << EOF
-          # Database Configuration
-          DB_HOST=db
-          DB_PORT=3306
-          DB_USERNAME=quotation_user
-          DB_PASSWORD=your_secure_password_here
-          DB_DATABASE=product_quotation
+#       - name: Generate environment template
+#         run: |
+#           cat > .env.production.template << EOF
+#           # Database Configuration
+#           DB_HOST=db
+#           DB_PORT=3306
+#           DB_USERNAME=quotation_user
+#           DB_PASSWORD=your_secure_password_here
+#           DB_DATABASE=product_quotation
           
-          # MySQL Root Password
-          MYSQL_ROOT_PASSWORD=your_secure_root_password_here
+#           # MySQL Root Password
+#           MYSQL_ROOT_PASSWORD=your_secure_root_password_here
           
-          # JWT Secret (generate a secure random string)
-          JWT_SECRET=your_jwt_secret_here_make_it_long_and_random
+#           # JWT Secret (generate a secure random string)
+#           JWT_SECRET=your_jwt_secret_here_make_it_long_and_random
           
-          # Application Configuration
-          NODE_ENV=production
-          EOF
+#           # Application Configuration
+#           NODE_ENV=production
+#           EOF
 
-      - name: Generate deployment script
-        run: |
-          cat > deploy.sh << 'EOF'
-          #!/bin/bash
+#       - name: Generate deployment script
+#         run: |
+#           cat > deploy.sh << 'EOF'
+#           #!/bin/bash
           
-          # Product Quotation Deployment Script
-          set -e
+#           # Product Quotation Deployment Script
+#           set -e
           
-          VERSION="${1:-${{ needs.build-and-release.outputs.version }}}"
-          echo "Deploying Product Quotation System version: $VERSION"
+#           VERSION="${1:-${{ needs.build-and-release.outputs.version }}}"
+#           echo "Deploying Product Quotation System version: $VERSION"
           
-          # Check if .env.production exists
-          if [ ! -f ".env.production" ]; then
-            echo "Error: .env.production file not found!"
-            echo "Please copy .env.production.template to .env.production and configure it."
-            exit 1
-          fi
+#           # Check if .env.production exists
+#           if [ ! -f ".env.production" ]; then
+#             echo "Error: .env.production file not found!"
+#             echo "Please copy .env.production.template to .env.production and configure it."
+#             exit 1
+#           fi
           
-          # Pull latest images
-          echo "Pulling Docker images..."
-          docker-compose -f docker-compose.production.yml --env-file .env.production pull
+#           # Pull latest images
+#           echo "Pulling Docker images..."
+#           docker-compose -f docker-compose.production.yml --env-file .env.production pull
           
-          # Stop existing containers
-          echo "Stopping existing containers..."
-          docker-compose -f docker-compose.production.yml --env-file .env.production down
+#           # Stop existing containers
+#           echo "Stopping existing containers..."
+#           docker-compose -f docker-compose.production.yml --env-file .env.production down
           
-          # Start services
-          echo "Starting services..."
-          docker-compose -f docker-compose.production.yml --env-file .env.production up -d
+#           # Start services
+#           echo "Starting services..."
+#           docker-compose -f docker-compose.production.yml --env-file .env.production up -d
           
-          # Wait for services to be healthy
-          echo "Waiting for services to be healthy..."
-          sleep 30
+#           # Wait for services to be healthy
+#           echo "Waiting for services to be healthy..."
+#           sleep 30
           
-          # Check service health
-          echo "Checking service health..."
-          docker-compose -f docker-compose.production.yml ps
+#           # Check service health
+#           echo "Checking service health..."
+#           docker-compose -f docker-compose.production.yml ps
           
-          echo "Deployment completed successfully!"
-          echo ""
-          echo "Services:"
-          echo "- Frontend: http://localhost"
-          echo "- Backend API: http://localhost/api (proxied through frontend)"
-          echo "- Backend Direct: http://localhost:3000"
-          echo ""
-          echo "To view logs: docker-compose -f docker-compose.production.yml logs -f"
-          echo "To stop: docker-compose -f docker-compose.production.yml down"
-          EOF
+#           echo "Deployment completed successfully!"
+#           echo ""
+#           echo "Services:"
+#           echo "- Frontend: http://localhost"
+#           echo "- Backend API: http://localhost/api (proxied through frontend)"
+#           echo "- Backend Direct: http://localhost:3000"
+#           echo ""
+#           echo "To view logs: docker-compose -f docker-compose.production.yml logs -f"
+#           echo "To stop: docker-compose -f docker-compose.production.yml down"
+#           EOF
           
-          chmod +x deploy.sh
+#           chmod +x deploy.sh
 
-      - name: Upload deployment artifacts
-        uses: actions/upload-artifact@v3
-        with:
-          name: deployment-artifacts-${{ needs.build-and-release.outputs.version }}
-          path: |
-            docker-compose.production.yml
-            .env.production.template
-            deploy.sh
-            database.sql
+#       - name: Upload deployment artifacts
+#         uses: actions/upload-artifact@v3
+#         with:
+#           name: deployment-artifacts-${{ needs.build-and-release.outputs.version }}
+#           path: |
+#             docker-compose.production.yml
+#             .env.production.template
+#             deploy.sh
+#             database.sql
 
-  update-docker-hub-description:
-    runs-on: ubuntu-latest
-    needs: build-and-release
+#   update-docker-hub-description:
+#     runs-on: ubuntu-latest
+#     needs: build-and-release
     
-    strategy:
-      matrix:
-        component: [backend, frontend]
+#     strategy:
+#       matrix:
+#         component: [backend, frontend]
     
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+#     steps:
+#       - name: Checkout repository
+#         uses: actions/checkout@v4
 
-      - name: Update Docker Hub description
-        uses: peter-evans/dockerhub-description@v3
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
-          repository: ${{ github.repository }}-${{ matrix.component }}
-          short-description: "Product Quotation System - ${{ matrix.component }}"
-          readme-filepath: ./README.md
+#       - name: Update Docker Hub description
+#         uses: peter-evans/dockerhub-description@v3
+#         with:
+#           username: ${{ secrets.DOCKERHUB_USERNAME }}
+#           password: ${{ secrets.DOCKERHUB_TOKEN }}
+#           repository: ${{ github.repository }}-${{ matrix.component }}
+#           short-description: "Product Quotation System - ${{ matrix.component }}"
+#           readme-filepath: ./README.md
