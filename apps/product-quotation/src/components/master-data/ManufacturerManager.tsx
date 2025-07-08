@@ -1,8 +1,21 @@
-
-import React, { useState, useEffect } from 'react';
-import { Table, Button, Modal, Typography, Space, Tag, message, Spin, Popconfirm } from 'antd';
-import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
-import { apiClient, Manufacturer, CreateMasterDataDto, UpdateMasterDataDto } from '../../services/api-client';
+import React, { useEffect, useState } from 'react';
+import {
+  Button,
+  message,
+  Modal,
+  Popconfirm,
+  Space,
+  Table,
+  Tag,
+  Typography,
+} from 'antd';
+import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons';
+import {
+  apiClient,
+  CreateMasterDataDto,
+  Manufacturer,
+  UpdateMasterDataDto,
+} from '../../services/api-client';
 import MasterDataForm from './MasterDataForm';
 
 const { Title } = Typography;
@@ -11,7 +24,8 @@ const ManufacturerManager = () => {
   const [manufacturers, setManufacturers] = useState<Manufacturer[]>([]);
   const [loading, setLoading] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [editingManufacturer, setEditingManufacturer] = useState<Manufacturer | null>(null);
+  const [editingManufacturer, setEditingManufacturer] =
+    useState<Manufacturer | null>(null);
 
   const fetchManufacturers = async () => {
     setLoading(true);
@@ -32,7 +46,7 @@ const ManufacturerManager = () => {
   const handleCreate = async (data: CreateMasterDataDto) => {
     try {
       const newManufacturer = await apiClient.manufacturers.create(data);
-      setManufacturers(prev => [...prev, newManufacturer]);
+      setManufacturers((prev) => [...prev, newManufacturer]);
       setIsModalVisible(false);
       message.success('Manufacturer created successfully');
     } catch (error) {
@@ -42,12 +56,19 @@ const ManufacturerManager = () => {
 
   const handleUpdate = async (data: UpdateMasterDataDto) => {
     if (!editingManufacturer) return;
-    
+
     try {
-      const updatedManufacturer = await apiClient.manufacturers.update(editingManufacturer.id, data);
-      setManufacturers(prev => prev.map(manufacturer => 
-        manufacturer.id === editingManufacturer.id ? updatedManufacturer : manufacturer
-      ));
+      const updatedManufacturer = await apiClient.manufacturers.update(
+        editingManufacturer.id,
+        data
+      );
+      setManufacturers((prev) =>
+        prev.map((manufacturer) =>
+          manufacturer.id === editingManufacturer.id
+            ? updatedManufacturer
+            : manufacturer
+        )
+      );
       setIsModalVisible(false);
       setEditingManufacturer(null);
       message.success('Manufacturer updated successfully');
@@ -59,7 +80,9 @@ const ManufacturerManager = () => {
   const handleDelete = async (id: number) => {
     try {
       await apiClient.manufacturers.delete(id);
-      setManufacturers(prev => prev.filter(manufacturer => manufacturer.id !== id));
+      setManufacturers((prev) =>
+        prev.filter((manufacturer) => manufacturer.id !== id)
+      );
       message.success('Manufacturer deleted successfully');
     } catch (error) {
       message.error('Failed to delete manufacturer');
@@ -121,12 +144,7 @@ const ManufacturerManager = () => {
             okText="Yes"
             cancelText="No"
           >
-            <Button
-              icon={<DeleteOutlined />}
-              type="link"
-              size="small"
-              danger
-            >
+            <Button icon={<DeleteOutlined />} type="link" size="small" danger>
               Delete
             </Button>
           </Popconfirm>
@@ -139,31 +157,31 @@ const ManufacturerManager = () => {
     <div>
       <div className="mb-4 flex justify-between items-center">
         <Title level={3}>Manufacturer Management</Title>
-        <Button 
-          type="primary" 
+        <Button
+          type="primary"
           icon={<PlusOutlined />}
           onClick={() => setIsModalVisible(true)}
         >
           Add Manufacturer
         </Button>
       </div>
-      
-      <Table 
-        dataSource={manufacturers} 
-        columns={columns} 
+
+      <Table
+        dataSource={manufacturers}
+        columns={columns}
         loading={loading}
         rowKey="id"
         pagination={{ pageSize: 10 }}
       />
-      
-      <Modal 
-        title={editingManufacturer ? 'Edit Manufacturer' : 'Add Manufacturer'} 
-        open={isModalVisible} 
-        onCancel={handleModalClose} 
+
+      <Modal
+        title={editingManufacturer ? 'Edit Manufacturer' : 'Add Manufacturer'}
+        open={isModalVisible}
+        onCancel={handleModalClose}
         footer={null}
         width={600}
       >
-        <MasterDataForm 
+        <MasterDataForm
           onSubmit={editingManufacturer ? handleUpdate : handleCreate}
           initialData={editingManufacturer}
         />

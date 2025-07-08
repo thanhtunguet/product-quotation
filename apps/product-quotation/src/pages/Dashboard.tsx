@@ -1,7 +1,11 @@
-
 import React, { useEffect, useState } from 'react';
-import { Typography, Card, Row, Col, Statistic, Spin } from 'antd';
-import { ProductOutlined, FileTextOutlined, SettingOutlined, UserOutlined } from '@ant-design/icons';
+import { Card, Col, Row, Statistic, Typography } from 'antd';
+import {
+  FileTextOutlined,
+  ProductOutlined,
+  SettingOutlined,
+  UserOutlined,
+} from '@ant-design/icons';
 import { useTranslation } from 'react-i18next';
 import { apiClient } from '../services/api-client';
 
@@ -28,22 +32,35 @@ const Dashboard = () => {
     const fetchDashboardStats = async () => {
       try {
         setLoading(true);
-        
+
         // Fetch all data in parallel
-        const [products, quotations, categories, brands] = await Promise.allSettled([
-          apiClient.getProducts().catch(() => []), // Products API might not be implemented yet
-          apiClient.getQuotations().catch(() => []), // Quotations API might not be implemented yet
-          apiClient.getCategories(),
-          apiClient.brands.getAll(),
-        ]);
+        const [products, quotations, categories, brands] =
+          await Promise.allSettled([
+            apiClient.getProducts().catch(() => []), // Products API might not be implemented yet
+            apiClient.getQuotations().catch(() => []), // Quotations API might not be implemented yet
+            apiClient.getCategories(),
+            apiClient.brands.getAll(),
+          ]);
 
         const newStats: DashboardStats = {
-          totalProducts: products.status === 'fulfilled' && Array.isArray(products.value) ? products.value.length : 0,
-          activeQuotations: quotations.status === 'fulfilled' && Array.isArray(quotations.value)
-            ? quotations.value.filter(q => q.status !== 'EXPIRED' && q.status !== 'REJECTED').length 
-            : 0,
-          categories: categories.status === 'fulfilled' && Array.isArray(categories.value) ? categories.value.length : 0,
-          brands: brands.status === 'fulfilled' && Array.isArray(brands.value) ? brands.value.length : 0,
+          totalProducts:
+            products.status === 'fulfilled' && Array.isArray(products.value)
+              ? products.value.length
+              : 0,
+          activeQuotations:
+            quotations.status === 'fulfilled' && Array.isArray(quotations.value)
+              ? quotations.value.filter(
+                  (q) => q.status !== 'EXPIRED' && q.status !== 'REJECTED'
+                ).length
+              : 0,
+          categories:
+            categories.status === 'fulfilled' && Array.isArray(categories.value)
+              ? categories.value.length
+              : 0,
+          brands:
+            brands.status === 'fulfilled' && Array.isArray(brands.value)
+              ? brands.value.length
+              : 0,
         };
 
         setStats(newStats);
@@ -56,14 +73,12 @@ const Dashboard = () => {
 
     fetchDashboardStats();
   }, []);
-  
+
   return (
     <div>
       <Title level={2}>{t('dashboard.title')}</Title>
-      <Paragraph>
-        {t('dashboard.welcome')}
-      </Paragraph>
-      
+      <Paragraph>{t('dashboard.welcome')}</Paragraph>
+
       <Row gutter={16} className="mt-6">
         <Col span={6}>
           <Card>

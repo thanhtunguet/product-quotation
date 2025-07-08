@@ -1,4 +1,10 @@
-import { IsString, IsBoolean, IsOptional, IsNotEmpty, MaxLength } from 'class-validator';
+import {
+  IsBoolean,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  MaxLength,
+} from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateMasterDataDto {

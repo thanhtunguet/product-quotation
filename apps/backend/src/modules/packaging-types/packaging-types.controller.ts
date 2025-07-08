@@ -1,17 +1,20 @@
 import {
-  Controller,
-  Get,
-  Post,
   Body,
-  Patch,
-  Param,
+  Controller,
   Delete,
+  Get,
+  Param,
   ParseIntPipe,
+  Patch,
+  Post,
   Query,
 } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { PackagingTypesService } from './packaging-types.service';
-import { CreateMasterDataDto, UpdateMasterDataDto } from '../../dto/master-data.dto';
+import {
+  CreateMasterDataDto,
+  UpdateMasterDataDto,
+} from '../../dto/master-data.dto';
 
 @ApiTags('packaging-types')
 @Controller('packaging-types')
@@ -20,7 +23,10 @@ export class PackagingTypesController {
 
   @Post()
   @ApiOperation({ summary: 'Create a new packaging type' })
-  @ApiResponse({ status: 201, description: 'Packaging type created successfully' })
+  @ApiResponse({
+    status: 201,
+    description: 'Packaging type created successfully',
+  })
   create(@Body() createPackagingTypeDto: CreateMasterDataDto) {
     return this.packagingTypesService.create(createPackagingTypeDto);
   }
@@ -49,18 +55,24 @@ export class PackagingTypesController {
 
   @Patch(':id')
   @ApiOperation({ summary: 'Update a packaging type' })
-  @ApiResponse({ status: 200, description: 'Packaging type updated successfully' })
+  @ApiResponse({
+    status: 200,
+    description: 'Packaging type updated successfully',
+  })
   @ApiResponse({ status: 404, description: 'Packaging type not found' })
   update(
     @Param('id', ParseIntPipe) id: number,
-    @Body() updatePackagingTypeDto: UpdateMasterDataDto,
+    @Body() updatePackagingTypeDto: UpdateMasterDataDto
   ) {
     return this.packagingTypesService.update(id, updatePackagingTypeDto);
   }
 
   @Delete(':id')
   @ApiOperation({ summary: 'Delete a packaging type' })
-  @ApiResponse({ status: 200, description: 'Packaging type deleted successfully' })
+  @ApiResponse({
+    status: 200,
+    description: 'Packaging type deleted successfully',
+  })
   @ApiResponse({ status: 404, description: 'Packaging type not found' })
   remove(@Param('id', ParseIntPipe) id: number) {
     return this.packagingTypesService.remove(id);

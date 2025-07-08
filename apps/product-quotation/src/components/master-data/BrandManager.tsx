@@ -1,9 +1,22 @@
-
-import React, { useState, useEffect } from 'react';
-import { Table, Button, Modal, Typography, Space, Tag, message, Spin, Popconfirm } from 'antd';
-import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
+import React, { useEffect, useState } from 'react';
+import {
+  Button,
+  message,
+  Modal,
+  Popconfirm,
+  Space,
+  Table,
+  Tag,
+  Typography,
+} from 'antd';
+import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons';
 import { useTranslation } from 'react-i18next';
-import { apiClient, Brand, CreateMasterDataDto, UpdateMasterDataDto } from '../../services/api-client';
+import {
+  apiClient,
+  Brand,
+  CreateMasterDataDto,
+  UpdateMasterDataDto,
+} from '../../services/api-client';
 import MasterDataForm from './MasterDataForm';
 
 const { Title } = Typography;
@@ -34,7 +47,7 @@ const BrandManager = () => {
   const handleCreate = async (data: CreateMasterDataDto) => {
     try {
       const newBrand = await apiClient.brands.create(data);
-      setBrands(prev => [...prev, newBrand]);
+      setBrands((prev) => [...prev, newBrand]);
       setIsModalVisible(false);
       message.success(t('brands.createSuccess'));
     } catch (error) {
@@ -44,12 +57,14 @@ const BrandManager = () => {
 
   const handleUpdate = async (data: UpdateMasterDataDto) => {
     if (!editingBrand) return;
-    
+
     try {
       const updatedBrand = await apiClient.brands.update(editingBrand.id, data);
-      setBrands(prev => prev.map(brand => 
-        brand.id === editingBrand.id ? updatedBrand : brand
-      ));
+      setBrands((prev) =>
+        prev.map((brand) =>
+          brand.id === editingBrand.id ? updatedBrand : brand
+        )
+      );
       setIsModalVisible(false);
       setEditingBrand(null);
       message.success(t('brands.updateSuccess'));
@@ -61,7 +76,7 @@ const BrandManager = () => {
   const handleDelete = async (id: number) => {
     try {
       await apiClient.brands.delete(id);
-      setBrands(prev => prev.filter(brand => brand.id !== id));
+      setBrands((prev) => prev.filter((brand) => brand.id !== id));
       message.success(t('brands.deleteSuccess'));
     } catch (error) {
       message.error(t('brands.deleteError'));
@@ -123,12 +138,7 @@ const BrandManager = () => {
             okText={t('common.yes')}
             cancelText={t('common.no')}
           >
-            <Button
-              icon={<DeleteOutlined />}
-              type="link"
-              size="small"
-              danger
-            >
+            <Button icon={<DeleteOutlined />} type="link" size="small" danger>
               {t('common.delete')}
             </Button>
           </Popconfirm>
@@ -141,31 +151,31 @@ const BrandManager = () => {
     <div>
       <div className="mb-4 flex justify-between items-center">
         <Title level={3}>{t('brands.management')}</Title>
-        <Button 
-          type="primary" 
+        <Button
+          type="primary"
           icon={<PlusOutlined />}
           onClick={() => setIsModalVisible(true)}
         >
           {t('brands.add')}
         </Button>
       </div>
-      
-      <Table 
-        dataSource={brands} 
-        columns={columns} 
+
+      <Table
+        dataSource={brands}
+        columns={columns}
         loading={loading}
         rowKey="id"
         pagination={{ pageSize: 10 }}
       />
-      
-      <Modal 
-        title={editingBrand ? t('brands.edit') : t('brands.add')} 
-        open={isModalVisible} 
-        onCancel={handleModalClose} 
+
+      <Modal
+        title={editingBrand ? t('brands.edit') : t('brands.add')}
+        open={isModalVisible}
+        onCancel={handleModalClose}
         footer={null}
         width={600}
       >
-        <MasterDataForm 
+        <MasterDataForm
           onSubmit={editingBrand ? handleUpdate : handleCreate}
           initialData={editingBrand}
         />

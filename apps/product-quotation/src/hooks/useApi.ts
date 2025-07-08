@@ -1,5 +1,4 @@
-
-import { useState, useEffect, useCallback } from 'react';
+import { useCallback, useState } from 'react';
 
 export const useApi = <T>(apiCall: () => Promise<T>) => {
   const [data, setData] = useState<T | null>(null);

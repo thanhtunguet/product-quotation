@@ -2,17 +2,24 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ManufacturingMethods } from '../../entities';
-import { CreateMasterDataDto, UpdateMasterDataDto } from '../../dto/master-data.dto';
+import {
+  CreateMasterDataDto,
+  UpdateMasterDataDto,
+} from '../../dto/master-data.dto';
 
 @Injectable()
 export class ManufacturingMethodsService {
   constructor(
     @InjectRepository(ManufacturingMethods)
-    private readonly manufacturingMethodRepository: Repository<ManufacturingMethods>,
+    private readonly manufacturingMethodRepository: Repository<ManufacturingMethods>
   ) {}
 
-  async create(createManufacturingMethodDto: CreateMasterDataDto): Promise<ManufacturingMethods> {
-    const manufacturingMethod = this.manufacturingMethodRepository.create(createManufacturingMethodDto);
+  async create(
+    createManufacturingMethodDto: CreateMasterDataDto
+  ): Promise<ManufacturingMethods> {
+    const manufacturingMethod = this.manufacturingMethodRepository.create(
+      createManufacturingMethodDto
+    );
     return await this.manufacturingMethodRepository.save(manufacturingMethod);
   }
 
@@ -24,16 +31,22 @@ export class ManufacturingMethodsService {
   }
 
   async findOne(id: number): Promise<ManufacturingMethods> {
-    const manufacturingMethod = await this.manufacturingMethodRepository.findOne({
-      where: { id, isActive: true },
-    });
+    const manufacturingMethod =
+      await this.manufacturingMethodRepository.findOne({
+        where: { id, isActive: true },
+      });
     if (!manufacturingMethod) {
-      throw new NotFoundException(`Manufacturing method with ID ${id} not found`);
+      throw new NotFoundException(
+        `Manufacturing method with ID ${id} not found`
+      );
     }
     return manufacturingMethod;
   }
 
-  async update(id: number, updateManufacturingMethodDto: UpdateMasterDataDto): Promise<ManufacturingMethods> {
+  async update(
+    id: number,
+    updateManufacturingMethodDto: UpdateMasterDataDto
+  ): Promise<ManufacturingMethods> {
     const manufacturingMethod = await this.findOne(id);
     Object.assign(manufacturingMethod, updateManufacturingMethodDto);
     return await this.manufacturingMethodRepository.save(manufacturingMethod);
@@ -54,9 +67,12 @@ export class ManufacturingMethodsService {
     return await this.manufacturingMethodRepository
       .createQueryBuilder('manufacturingMethod')
       .where('manufacturingMethod.isActive = true')
-      .andWhere('(manufacturingMethod.name LIKE :term OR manufacturingMethod.code LIKE :term)', {
-        term: `%${term}%`,
-      })
+      .andWhere(
+        '(manufacturingMethod.name LIKE :term OR manufacturingMethod.code LIKE :term)',
+        {
+          term: `%${term}%`,
+        }
+      )
       .orderBy('manufacturingMethod.name', 'ASC')
       .getMany();
   }

@@ -1,28 +1,38 @@
 import {
-  Controller,
-  Get,
-  Post,
   Body,
-  Patch,
-  Param,
+  Controller,
   Delete,
+  Get,
+  Param,
   ParseIntPipe,
+  Patch,
+  Post,
   Query,
 } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { ManufacturingMethodsService } from './manufacturing-methods.service';
-import { CreateMasterDataDto, UpdateMasterDataDto } from '../../dto/master-data.dto';
+import {
+  CreateMasterDataDto,
+  UpdateMasterDataDto,
+} from '../../dto/master-data.dto';
 
 @ApiTags('manufacturing-methods')
 @Controller('manufacturing-methods')
 export class ManufacturingMethodsController {
-  constructor(private readonly manufacturingMethodsService: ManufacturingMethodsService) {}
+  constructor(
+    private readonly manufacturingMethodsService: ManufacturingMethodsService
+  ) {}
 
   @Post()
   @ApiOperation({ summary: 'Create a new manufacturing method' })
-  @ApiResponse({ status: 201, description: 'Manufacturing method created successfully' })
+  @ApiResponse({
+    status: 201,
+    description: 'Manufacturing method created successfully',
+  })
   create(@Body() createManufacturingMethodDto: CreateMasterDataDto) {
-    return this.manufacturingMethodsService.create(createManufacturingMethodDto);
+    return this.manufacturingMethodsService.create(
+      createManufacturingMethodDto
+    );
   }
 
   @Get()
@@ -49,18 +59,27 @@ export class ManufacturingMethodsController {
 
   @Patch(':id')
   @ApiOperation({ summary: 'Update a manufacturing method' })
-  @ApiResponse({ status: 200, description: 'Manufacturing method updated successfully' })
+  @ApiResponse({
+    status: 200,
+    description: 'Manufacturing method updated successfully',
+  })
   @ApiResponse({ status: 404, description: 'Manufacturing method not found' })
   update(
     @Param('id', ParseIntPipe) id: number,
-    @Body() updateManufacturingMethodDto: UpdateMasterDataDto,
+    @Body() updateManufacturingMethodDto: UpdateMasterDataDto
   ) {
-    return this.manufacturingMethodsService.update(id, updateManufacturingMethodDto);
+    return this.manufacturingMethodsService.update(
+      id,
+      updateManufacturingMethodDto
+    );
   }
 
   @Delete(':id')
   @ApiOperation({ summary: 'Delete a manufacturing method' })
-  @ApiResponse({ status: 200, description: 'Manufacturing method deleted successfully' })
+  @ApiResponse({
+    status: 200,
+    description: 'Manufacturing method deleted successfully',
+  })
   @ApiResponse({ status: 404, description: 'Manufacturing method not found' })
   remove(@Param('id', ParseIntPipe) id: number) {
     return this.manufacturingMethodsService.remove(id);

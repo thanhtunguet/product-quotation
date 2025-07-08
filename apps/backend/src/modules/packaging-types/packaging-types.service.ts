@@ -2,17 +2,24 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { PackagingTypes } from '../../entities';
-import { CreateMasterDataDto, UpdateMasterDataDto } from '../../dto/master-data.dto';
+import {
+  CreateMasterDataDto,
+  UpdateMasterDataDto,
+} from '../../dto/master-data.dto';
 
 @Injectable()
 export class PackagingTypesService {
   constructor(
     @InjectRepository(PackagingTypes)
-    private readonly packagingTypeRepository: Repository<PackagingTypes>,
+    private readonly packagingTypeRepository: Repository<PackagingTypes>
   ) {}
 
-  async create(createPackagingTypeDto: CreateMasterDataDto): Promise<PackagingTypes> {
-    const packagingType = this.packagingTypeRepository.create(createPackagingTypeDto);
+  async create(
+    createPackagingTypeDto: CreateMasterDataDto
+  ): Promise<PackagingTypes> {
+    const packagingType = this.packagingTypeRepository.create(
+      createPackagingTypeDto
+    );
     return await this.packagingTypeRepository.save(packagingType);
   }
 
@@ -33,7 +40,10 @@ export class PackagingTypesService {
     return packagingType;
   }
 
-  async update(id: number, updatePackagingTypeDto: UpdateMasterDataDto): Promise<PackagingTypes> {
+  async update(
+    id: number,
+    updatePackagingTypeDto: UpdateMasterDataDto
+  ): Promise<PackagingTypes> {
     const packagingType = await this.findOne(id);
     Object.assign(packagingType, updatePackagingTypeDto);
     return await this.packagingTypeRepository.save(packagingType);
@@ -54,9 +64,12 @@ export class PackagingTypesService {
     return await this.packagingTypeRepository
       .createQueryBuilder('packagingType')
       .where('packagingType.isActive = true')
-      .andWhere('(packagingType.name LIKE :term OR packagingType.code LIKE :term)', {
-        term: `%${term}%`,
-      })
+      .andWhere(
+        '(packagingType.name LIKE :term OR packagingType.code LIKE :term)',
+        {
+          term: `%${term}%`,
+        }
+      )
       .orderBy('packagingType.name', 'ASC')
       .getMany();
   }

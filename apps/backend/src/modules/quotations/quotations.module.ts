@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { QuotationsService } from './quotations.service';
 import { QuotationsController } from './quotations.controller';
-import { Quotations, QuotationItems } from '../../entities';
+import { QuotationItems, Quotations } from '../../entities';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Quotations, QuotationItems])],

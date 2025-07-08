@@ -1,9 +1,17 @@
-import { IsString, IsBoolean, IsOptional, IsNotEmpty, MaxLength, IsEnum } from 'class-validator';
+import {
+  IsBoolean,
+  IsEnum,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  MaxLength,
+} from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
+
 // Define the enum based on the new entity structure
 export enum AttributeDataType {
   TEXT = 'TEXT',
-  NUMBER = 'NUMBER'
+  NUMBER = 'NUMBER',
 }
 
 export class CreateProductAttributeDto {

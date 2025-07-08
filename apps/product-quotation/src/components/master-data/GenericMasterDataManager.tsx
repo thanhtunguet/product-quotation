@@ -1,7 +1,28 @@
-import React, { useState, useEffect } from 'react';
-import { Table, Button, Modal, Typography, Space, Tag, message, Popconfirm, Alert } from 'antd';
-import { PlusOutlined, EditOutlined, DeleteOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
-import { apiClient, MasterDataEntity, CreateMasterDataDto, UpdateMasterDataDto, Color } from '../../services/api-client';
+import React, { useEffect, useState } from 'react';
+import {
+  Alert,
+  Button,
+  message,
+  Modal,
+  Popconfirm,
+  Space,
+  Table,
+  Tag,
+  Typography,
+} from 'antd';
+import {
+  DeleteOutlined,
+  EditOutlined,
+  ExclamationCircleOutlined,
+  PlusOutlined,
+} from '@ant-design/icons';
+import {
+  apiClient,
+  Color,
+  CreateMasterDataDto,
+  MasterDataEntity,
+  UpdateMasterDataDto,
+} from '../../services/api-client';
 import GenericMasterDataForm from './GenericMasterDataForm';
 
 const { Title } = Typography;
@@ -13,11 +34,11 @@ interface GenericMasterDataManagerProps {
   hasHexCode?: boolean;
 }
 
-const GenericMasterDataManager: React.FC<GenericMasterDataManagerProps> = ({ 
-  title, 
-  apiEndpoint, 
+const GenericMasterDataManager: React.FC<GenericMasterDataManagerProps> = ({
+  title,
+  apiEndpoint,
   entityName,
-  hasHexCode = false 
+  hasHexCode = false,
 }) => {
   const [data, setData] = useState<MasterDataEntity[]>([]);
   const [loading, setLoading] = useState(false);
@@ -32,7 +53,10 @@ const GenericMasterDataManager: React.FC<GenericMasterDataManagerProps> = ({
         getAll: (search?: string) => Promise<MasterDataEntity[]>;
         getById: (id: number) => Promise<MasterDataEntity>;
         create: (data: CreateMasterDataDto) => Promise<MasterDataEntity>;
-        update: (id: number, data: UpdateMasterDataDto) => Promise<MasterDataEntity>;
+        update: (
+          id: number,
+          data: UpdateMasterDataDto
+        ) => Promise<MasterDataEntity>;
         delete: (id: number) => Promise<void>;
       };
     }
@@ -42,19 +66,24 @@ const GenericMasterDataManager: React.FC<GenericMasterDataManagerProps> = ({
   const fetchData = async () => {
     setLoading(true);
     setApiError(null);
-    
+
     try {
       const api = getApiMethods();
       if (!api) {
         throw new Error(`API methods not found for ${apiEndpoint}`);
       }
-      
+
       const result = await api.getAll();
       setData(result);
     } catch (error: any) {
       console.error(`Failed to fetch ${entityName}s:`, error);
-      if (error.message?.includes('fetch') || error.message?.includes('API Error: 404')) {
-        setApiError(`${title} API is not yet implemented in the backend. This feature will be available once the backend developer implements the ${apiEndpoint} endpoints.`);
+      if (
+        error.message?.includes('fetch') ||
+        error.message?.includes('API Error: 404')
+      ) {
+        setApiError(
+          `${title} API is not yet implemented in the backend. This feature will be available once the backend developer implements the ${apiEndpoint} endpoints.`
+        );
       } else {
         setApiError(`Failed to fetch ${entityName}s: ${error.message}`);
       }
@@ -74,14 +103,17 @@ const GenericMasterDataManager: React.FC<GenericMasterDataManagerProps> = ({
       if (!api) {
         throw new Error(`API methods not found for ${apiEndpoint}`);
       }
-      
+
       const newItem = await api.create(formData);
-      setData(prev => [...prev, newItem]);
+      setData((prev) => [...prev, newItem]);
       setIsModalVisible(false);
       message.success(`${entityName} created successfully`);
     } catch (error: any) {
       console.error(`Failed to create ${entityName}:`, error);
-      if (error.message?.includes('fetch') || error.message?.includes('API Error: 404')) {
+      if (
+        error.message?.includes('fetch') ||
+        error.message?.includes('API Error: 404')
+      ) {
         message.error(`${title} API is not yet implemented in the backend`);
       } else {
         message.error(`Failed to create ${entityName}`);
@@ -91,23 +123,26 @@ const GenericMasterDataManager: React.FC<GenericMasterDataManagerProps> = ({
 
   const handleUpdate = async (formData: UpdateMasterDataDto) => {
     if (!editingItem) return;
-    
+
     try {
       const api = getApiMethods();
       if (!api) {
         throw new Error(`API methods not found for ${apiEndpoint}`);
       }
-      
+
       const updatedItem = await api.update(editingItem.id, formData);
-      setData(prev => prev.map(item => 
-        item.id === editingItem.id ? updatedItem : item
-      ));
+      setData((prev) =>
+        prev.map((item) => (item.id === editingItem.id ? updatedItem : item))
+      );
       setIsModalVisible(false);
       setEditingItem(null);
       message.success(`${entityName} updated successfully`);
     } catch (error: any) {
       console.error(`Failed to update ${entityName}:`, error);
-      if (error.message?.includes('fetch') || error.message?.includes('API Error: 404')) {
+      if (
+        error.message?.includes('fetch') ||
+        error.message?.includes('API Error: 404')
+      ) {
         message.error(`${title} API is not yet implemented in the backend`);
       } else {
         message.error(`Failed to update ${entityName}`);
@@ -121,13 +156,16 @@ const GenericMasterDataManager: React.FC<GenericMasterDataManagerProps> = ({
       if (!api) {
         throw new Error(`API methods not found for ${apiEndpoint}`);
       }
-      
+
       await api.delete(id);
-      setData(prev => prev.filter(item => item.id !== id));
+      setData((prev) => prev.filter((item) => item.id !== id));
       message.success(`${entityName} deleted successfully`);
     } catch (error: any) {
       console.error(`Failed to delete ${entityName}:`, error);
-      if (error.message?.includes('fetch') || error.message?.includes('API Error: 404')) {
+      if (
+        error.message?.includes('fetch') ||
+        error.message?.includes('API Error: 404')
+      ) {
         message.error(`${title} API is not yet implemented in the backend`);
       } else {
         message.error(`Failed to delete ${entityName}`);
@@ -163,22 +201,26 @@ const GenericMasterDataManager: React.FC<GenericMasterDataManagerProps> = ({
     },
   ];
 
-  const hexCodeColumn = hasHexCode ? [{
-    title: 'Color',
-    dataIndex: 'hexCode',
-    key: 'hexCode',
-    render: (hexCode: string, record: Color) => (
-      <Space>
-        {hexCode && (
-          <div 
-            className="w-5 h-5 border border-gray-300 rounded"
-            style={{ backgroundColor: hexCode }} 
-          />
-        )}
-        <span>{hexCode || 'No color'}</span>
-      </Space>
-    ),
-  }] : [];
+  const hexCodeColumn = hasHexCode
+    ? [
+        {
+          title: 'Color',
+          dataIndex: 'hexCode',
+          key: 'hexCode',
+          render: (hexCode: string, record: Color) => (
+            <Space>
+              {hexCode && (
+                <div
+                  className="w-5 h-5 border border-gray-300 rounded"
+                  style={{ backgroundColor: hexCode }}
+                />
+              )}
+              <span>{hexCode || 'No color'}</span>
+            </Space>
+          ),
+        },
+      ]
+    : [];
 
   const statusColumn = {
     title: 'Status',
@@ -238,15 +280,11 @@ const GenericMasterDataManager: React.FC<GenericMasterDataManagerProps> = ({
       <div>
         <div className="mb-4 flex justify-between items-center">
           <Title level={3}>{title}</Title>
-          <Button 
-            type="primary" 
-            icon={<PlusOutlined />}
-            disabled
-          >
+          <Button type="primary" icon={<PlusOutlined />} disabled>
             Add {entityName}
           </Button>
         </div>
-        
+
         <Alert
           message="API Not Implemented"
           description={apiError}
@@ -267,31 +305,31 @@ const GenericMasterDataManager: React.FC<GenericMasterDataManagerProps> = ({
     <div>
       <div className="mb-4 flex justify-between items-center">
         <Title level={3}>{title}</Title>
-        <Button 
-          type="primary" 
+        <Button
+          type="primary"
           icon={<PlusOutlined />}
           onClick={() => setIsModalVisible(true)}
         >
           Add {entityName}
         </Button>
       </div>
-      
-      <Table 
-        dataSource={data} 
-        columns={columns} 
+
+      <Table
+        dataSource={data}
+        columns={columns}
         loading={loading}
         rowKey="id"
         pagination={{ pageSize: 10 }}
       />
-      
-      <Modal 
-        title={editingItem ? `Edit ${entityName}` : `Add ${entityName}`} 
-        open={isModalVisible} 
-        onCancel={handleModalClose} 
+
+      <Modal
+        title={editingItem ? `Edit ${entityName}` : `Add ${entityName}`}
+        open={isModalVisible}
+        onCancel={handleModalClose}
         footer={null}
         width={600}
       >
-        <GenericMasterDataForm 
+        <GenericMasterDataForm
           onSubmit={editingItem ? handleUpdate : handleCreate}
           initialData={editingItem}
           hasHexCode={hasHexCode}

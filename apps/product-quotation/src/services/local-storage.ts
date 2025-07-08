@@ -1,5 +1,5 @@
 // Local Storage Service for offline data persistence
-import { Quotation, CreateQuotationDto, QuotationStatus } from './api-client';
+import { CreateQuotationDto, Quotation, QuotationStatus } from './api-client';
 
 const STORAGE_KEYS = {
   QUOTATIONS: 'product-quotation-quotations',
@@ -30,7 +30,10 @@ export class LocalStorageService {
     try {
       const counter = localStorage.getItem(STORAGE_KEYS.QUOTATION_COUNTER);
       const nextNumber = counter ? parseInt(counter, 10) + 1 : 1;
-      localStorage.setItem(STORAGE_KEYS.QUOTATION_COUNTER, nextNumber.toString());
+      localStorage.setItem(
+        STORAGE_KEYS.QUOTATION_COUNTER,
+        nextNumber.toString()
+      );
       return `QT${String(nextNumber).padStart(6, '0')}`;
     } catch (error) {
       console.error('Error generating quotation number:', error);
@@ -40,7 +43,7 @@ export class LocalStorageService {
 
   static createQuotation(data: CreateQuotationDto): Quotation {
     const quotations = this.getQuotations();
-    const newId = Math.max(0, ...quotations.map(q => q.id)) + 1;
+    const newId = Math.max(0, ...quotations.map((q) => q.id)) + 1;
     const now = new Date().toISOString();
 
     const newQuotation: Quotation = {
@@ -52,7 +55,10 @@ export class LocalStorageService {
       quotationDate: data.quotationDate,
       validUntil: data.validUntil,
       status: QuotationStatus.DRAFT,
-      totalAmount: data.items.reduce((total, item) => total + (item.quantity * item.unitPrice), 0),
+      totalAmount: data.items.reduce(
+        (total, item) => total + item.quantity * item.unitPrice,
+        0
+      ),
       notes: data.notes,
       quotationItems: data.items.map((item, index) => ({
         id: index + 1,
@@ -95,10 +101,13 @@ export class LocalStorageService {
     return newQuotation;
   }
 
-  static updateQuotation(id: number, data: Partial<CreateQuotationDto>): Quotation | null {
+  static updateQuotation(
+    id: number,
+    data: Partial<CreateQuotationDto>
+  ): Quotation | null {
     const quotations = this.getQuotations();
-    const index = quotations.findIndex(q => q.id === id);
-    
+    const index = quotations.findIndex((q) => q.id === id);
+
     if (index === -1) {
       return null;
     }
@@ -107,10 +116,12 @@ export class LocalStorageService {
     const now = new Date().toISOString();
 
     // Update basic fields
-    if (data.customerName !== undefined) existing.customerName = data.customerName;
+    if (data.customerName !== undefined)
+      existing.customerName = data.customerName;
     if (data.companyName !== undefined) existing.companyName = data.companyName;
     if (data.phoneNumber !== undefined) existing.phoneNumber = data.phoneNumber;
-    if (data.quotationDate !== undefined) existing.quotationDate = data.quotationDate;
+    if (data.quotationDate !== undefined)
+      existing.quotationDate = data.quotationDate;
     if (data.validUntil !== undefined) existing.validUntil = data.validUntil;
     if (data.notes !== undefined) existing.notes = data.notes;
 
@@ -149,7 +160,10 @@ export class LocalStorageService {
         updatedAt: now,
       }));
 
-      existing.totalAmount = data.items.reduce((total, item) => total + (item.quantity * item.unitPrice), 0);
+      existing.totalAmount = data.items.reduce(
+        (total, item) => total + item.quantity * item.unitPrice,
+        0
+      );
     }
 
     existing.updatedAt = now;
@@ -160,8 +174,8 @@ export class LocalStorageService {
 
   static deleteQuotation(id: number): boolean {
     const quotations = this.getQuotations();
-    const filteredQuotations = quotations.filter(q => q.id !== id);
-    
+    const filteredQuotations = quotations.filter((q) => q.id !== id);
+
     if (filteredQuotations.length === quotations.length) {
       return false; // Not found
     }
@@ -172,22 +186,23 @@ export class LocalStorageService {
 
   static getQuotation(id: number): Quotation | null {
     const quotations = this.getQuotations();
-    return quotations.find(q => q.id === id) || null;
+    return quotations.find((q) => q.id === id) || null;
   }
 
   static searchQuotations(searchTerm?: string): Quotation[] {
     const quotations = this.getQuotations();
-    
+
     if (!searchTerm) {
       return quotations;
     }
 
     const term = searchTerm.toLowerCase();
-    return quotations.filter(q => 
-      q.quotationNumber.toLowerCase().includes(term) ||
-      q.customerName.toLowerCase().includes(term) ||
-      (q.companyName && q.companyName.toLowerCase().includes(term)) ||
-      q.phoneNumber.includes(term)
+    return quotations.filter(
+      (q) =>
+        q.quotationNumber.toLowerCase().includes(term) ||
+        q.customerName.toLowerCase().includes(term) ||
+        (q.companyName && q.companyName.toLowerCase().includes(term)) ||
+        q.phoneNumber.includes(term)
     );
   }
 
@@ -203,11 +218,15 @@ export class LocalStorageService {
 
   static exportData(): string {
     const quotations = this.getQuotations();
-    return JSON.stringify({
-      quotations,
-      exportedAt: new Date().toISOString(),
-      version: '1.0'
-    }, null, 2);
+    return JSON.stringify(
+      {
+        quotations,
+        exportedAt: new Date().toISOString(),
+        version: '1.0',
+      },
+      null,
+      2
+    );
   }
 
   static importData(jsonData: string): boolean {

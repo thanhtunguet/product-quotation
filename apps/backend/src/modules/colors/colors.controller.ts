@@ -1,17 +1,20 @@
 import {
-  Controller,
-  Get,
-  Post,
   Body,
-  Patch,
-  Param,
+  Controller,
   Delete,
+  Get,
+  Param,
   ParseIntPipe,
+  Patch,
+  Post,
   Query,
 } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { ColorsService } from './colors.service';
-import { CreateMasterDataDto, UpdateMasterDataDto } from '../../dto/master-data.dto';
+import {
+  CreateMasterDataDto,
+  UpdateMasterDataDto,
+} from '../../dto/master-data.dto';
 
 @ApiTags('colors')
 @Controller('colors')
@@ -53,7 +56,7 @@ export class ColorsController {
   @ApiResponse({ status: 404, description: 'Color not found' })
   update(
     @Param('id', ParseIntPipe) id: number,
-    @Body() updateColorDto: UpdateMasterDataDto & { hexCode?: string },
+    @Body() updateColorDto: UpdateMasterDataDto & { hexCode?: string }
   ) {
     return this.colorsService.update(id, updateColorDto);
   }

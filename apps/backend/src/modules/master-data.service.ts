@@ -1,7 +1,10 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { Repository, FindManyOptions } from 'typeorm';
+import { FindManyOptions, Repository } from 'typeorm';
 import { MasterDataEntity } from '../entities/base.interface';
-import { CreateMasterDataDto, UpdateMasterDataDto } from '../dto/master-data.dto';
+import {
+  CreateMasterDataDto,
+  UpdateMasterDataDto,
+} from '../dto/master-data.dto';
 
 @Injectable()
 export abstract class MasterDataService<T extends MasterDataEntity> {
@@ -47,7 +50,8 @@ export abstract class MasterDataService<T extends MasterDataEntity> {
   }
 
   async search(term: string): Promise<T[]> {
-    return await this.repository.createQueryBuilder('entity')
+    return await this.repository
+      .createQueryBuilder('entity')
       .where('entity.isActive = true')
       .andWhere('(entity.name LIKE :term OR entity.code LIKE :term)', {
         term: `%${term}%`,

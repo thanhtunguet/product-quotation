@@ -1,17 +1,20 @@
 import {
-  Controller,
-  Get,
-  Post,
   Body,
-  Patch,
-  Param,
+  Controller,
   Delete,
+  Get,
+  Param,
   ParseIntPipe,
+  Patch,
+  Post,
   Query,
 } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { SizesService } from './sizes.service';
-import { CreateMasterDataDto, UpdateMasterDataDto } from '../../dto/master-data.dto';
+import {
+  CreateMasterDataDto,
+  UpdateMasterDataDto,
+} from '../../dto/master-data.dto';
 
 @ApiTags('sizes')
 @Controller('sizes')
@@ -53,7 +56,7 @@ export class SizesController {
   @ApiResponse({ status: 404, description: 'Size not found' })
   update(
     @Param('id', ParseIntPipe) id: number,
-    @Body() updateSizeDto: UpdateMasterDataDto,
+    @Body() updateSizeDto: UpdateMasterDataDto
   ) {
     return this.sizesService.update(id, updateSizeDto);
   }

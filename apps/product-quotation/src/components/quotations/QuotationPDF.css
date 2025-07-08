@@ -1,6 +1,7 @@
 /* QuotationPDF.css */
 /* Vietnamese font support */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
 .quotation-pdf {
   width: 210mm;
   min-height: 297mm;
@@ -122,11 +123,25 @@
   color: #333;
 }
 
-.status-draft { color: #6c757d; }
-.status-sent { color: #007bff; }
-.status-accepted { color: #28a745; }
-.status-rejected { color: #dc3545; }
-.status-expired { color: #fd7e14; }
+.status-draft {
+  color: #6c757d;
+}
+
+.status-sent {
+  color: #007bff;
+}
+
+.status-accepted {
+  color: #28a745;
+}
+
+.status-rejected {
+  color: #dc3545;
+}
+
+.status-expired {
+  color: #fd7e14;
+}
 
 /* Customer Section */
 .customer-section {
@@ -216,11 +231,29 @@
 }
 
 /* Table Columns */
-.item-col { width: 25%; }
-.desc-col { width: 30%; }
-.qty-col { width: 10%; text-align: center; }
-.price-col { width: 15%; text-align: right; }
-.total-col { width: 20%; text-align: right; font-weight: 600; }
+.item-col {
+  width: 25%;
+}
+
+.desc-col {
+  width: 30%;
+}
+
+.qty-col {
+  width: 10%;
+  text-align: center;
+}
+
+.price-col {
+  width: 15%;
+  text-align: right;
+}
+
+.total-col {
+  width: 20%;
+  text-align: right;
+  font-weight: 600;
+}
 
 .product-name {
   font-weight: 600;
@@ -512,23 +545,23 @@
     box-shadow: none;
     padding: 15mm;
   }
-  
+
   .quotation-pdf::before {
     display: none;
   }
-  
+
   .pdf-header {
     page-break-inside: avoid;
   }
-  
+
   .items-table {
     page-break-inside: avoid;
   }
-  
+
   .totals-section {
     page-break-inside: avoid;
   }
-  
+
   .item-row:hover {
     background-color: transparent;
   }
@@ -541,29 +574,29 @@
     padding: 15px;
     font-size: 12px;
   }
-  
+
   .pdf-header {
     flex-direction: column;
     gap: 20px;
   }
-  
+
   .company-info {
     flex-direction: column;
     text-align: center;
   }
-  
+
   .quotation-info {
     text-align: left;
   }
-  
+
   .document-title {
     font-size: 24px;
   }
-  
+
   .items-table {
     font-size: 11px;
   }
-  
+
   .footer-content {
     flex-direction: column;
     gap: 20px;

@@ -1,9 +1,32 @@
-
-import { ApartmentOutlined, DeleteOutlined, EditOutlined, PlusOutlined, ReloadOutlined, UnorderedListOutlined } from '@ant-design/icons';
-import { Button, Card, message, Modal, Popconfirm, Space, Table, Tabs, Tag, Tree, Typography } from 'antd';
+import {
+  ApartmentOutlined,
+  DeleteOutlined,
+  EditOutlined,
+  PlusOutlined,
+  ReloadOutlined,
+  UnorderedListOutlined,
+} from '@ant-design/icons';
+import {
+  Button,
+  Card,
+  message,
+  Modal,
+  Popconfirm,
+  Space,
+  Table,
+  Tabs,
+  Tag,
+  Tree,
+  Typography,
+} from 'antd';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { apiClient, Category, CreateCategoryDto, UpdateCategoryDto } from '../../services/api-client';
+import {
+  apiClient,
+  Category,
+  CreateCategoryDto,
+  UpdateCategoryDto,
+} from '../../services/api-client';
 import CategoryForm from './CategoryForm';
 
 const { Title } = Typography;
@@ -21,7 +44,7 @@ const CategoryManager = () => {
     try {
       const [flatData, treeData] = await Promise.all([
         apiClient.getCategories(),
-        apiClient.getCategoryTree()
+        apiClient.getCategoryTree(),
       ]);
       setCategories(Array.isArray(flatData) ? flatData : []);
       setTreeData(Array.isArray(treeData) ? treeData : []);
@@ -29,7 +52,9 @@ const CategoryManager = () => {
       console.error('Failed to fetch categories:', error);
       setCategories([]);
       setTreeData([]);
-      message.error(`${t('categories.fetchError')}: ${error.message || 'Unknown error'}`);
+      message.error(
+        `${t('categories.fetchError')}: ${error.message || 'Unknown error'}`
+      );
     } finally {
       setLoading(false);
     }
@@ -47,13 +72,15 @@ const CategoryManager = () => {
       message.success(t('categories.createSuccess'));
     } catch (error: any) {
       console.error('Failed to create category:', error);
-      message.error(`${t('categories.createError')}: ${error.message || 'Unknown error'}`);
+      message.error(
+        `${t('categories.createError')}: ${error.message || 'Unknown error'}`
+      );
     }
   };
 
   const handleUpdate = async (data: UpdateCategoryDto) => {
     if (!editingCategory) return;
-    
+
     try {
       await apiClient.updateCategory(editingCategory.id, data);
       await fetchCategories();
@@ -62,7 +89,9 @@ const CategoryManager = () => {
       message.success(t('categories.updateSuccess'));
     } catch (error: any) {
       console.error('Failed to update category:', error);
-      message.error(`${t('categories.updateError')}: ${error.message || 'Unknown error'}`);
+      message.error(
+        `${t('categories.updateError')}: ${error.message || 'Unknown error'}`
+      );
     }
   };
 
@@ -73,7 +102,9 @@ const CategoryManager = () => {
       message.success(t('categories.deleteSuccess'));
     } catch (error: any) {
       console.error('Failed to delete category:', error);
-      message.error(`${t('categories.deleteError')}: ${error.message || 'Unknown error'}`);
+      message.error(
+        `${t('categories.deleteError')}: ${error.message || 'Unknown error'}`
+      );
     }
   };
 
@@ -88,7 +119,7 @@ const CategoryManager = () => {
   };
 
   const transformToAntdTree = (categories: Category[]): any[] => {
-    return categories.map(cat => ({
+    return categories.map((cat) => ({
       title: (
         <div className="flex justify-between items-center p-2 min-h-8">
           <span className="text-sm font-medium">{cat.name}</span>
@@ -128,7 +159,7 @@ const CategoryManager = () => {
         </div>
       ),
       key: cat.id,
-      children: transformToAntdTree(cat.children || [])
+      children: transformToAntdTree(cat.children || []),
     }));
   };
 
@@ -183,12 +214,7 @@ const CategoryManager = () => {
             okText={t('common.yes')}
             cancelText={t('common.no')}
           >
-            <Button
-              icon={<DeleteOutlined />}
-              type="link"
-              size="small"
-              danger
-            >
+            <Button icon={<DeleteOutlined />} type="link" size="small" danger>
               {t('common.delete')}
             </Button>
           </Popconfirm>
@@ -237,16 +263,20 @@ const CategoryManager = () => {
           columns={tableColumns}
           loading={loading}
           rowKey="id"
-          pagination={{ 
+          pagination={{
             pageSize: 10,
             showSizeChanger: true,
             showQuickJumper: true,
-            showTotal: (total, range) => `${range[0]}-${range[1]} ${t('common.of')} ${total} ${t('common.items')}`
+            showTotal: (total, range) =>
+              `${range[0]}-${range[1]} ${t('common.of')} ${total} ${t(
+                'common.items'
+              )}`,
           }}
           locale={{
-            emptyText: categories.length === 0 && !loading ? 
-              t('categories.noCategories') : 
-              t('common.noData')
+            emptyText:
+              categories.length === 0 && !loading
+                ? t('categories.noCategories')
+                : t('common.noData'),
           }}
           className="mt-4"
           size="middle"
@@ -260,15 +290,15 @@ const CategoryManager = () => {
       <div className="mb-4 flex justify-between items-center">
         <Title level={3}>{t('categories.management')}</Title>
         <Space>
-          <Button 
+          <Button
             icon={<ReloadOutlined />}
             onClick={fetchCategories}
             loading={loading}
           >
             {t('common.refresh')}
           </Button>
-          <Button 
-            type="primary" 
+          <Button
+            type="primary"
             icon={<PlusOutlined />}
             onClick={() => setIsModalVisible(true)}
           >
@@ -276,24 +306,23 @@ const CategoryManager = () => {
           </Button>
         </Space>
       </div>
-      
-      <Tabs
-        defaultActiveKey="tree"
-        items={tabItems}
-        type="card"
-      />
-      
-      <Modal 
-        title={editingCategory ? t('categories.edit') : t('categories.add')} 
-        open={isModalVisible} 
-        onCancel={handleModalClose} 
+
+      <Tabs defaultActiveKey="tree" items={tabItems} type="card" />
+
+      <Modal
+        title={editingCategory ? t('categories.edit') : t('categories.add')}
+        open={isModalVisible}
+        onCancel={handleModalClose}
         footer={null}
         width={600}
       >
-        <CategoryForm 
-          onSubmit={editingCategory ? 
-            (data: CreateCategoryDto | UpdateCategoryDto) => handleUpdate(data as UpdateCategoryDto) : 
-            (data: CreateCategoryDto | UpdateCategoryDto) => handleCreate(data as CreateCategoryDto)
+        <CategoryForm
+          onSubmit={
+            editingCategory
+              ? (data: CreateCategoryDto | UpdateCategoryDto) =>
+                  handleUpdate(data as UpdateCategoryDto)
+              : (data: CreateCategoryDto | UpdateCategoryDto) =>
+                  handleCreate(data as CreateCategoryDto)
           }
           initialData={editingCategory}
           categories={categories}

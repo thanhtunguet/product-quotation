@@ -1,7 +1,37 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { Table, Button, Modal, Typography, Space, Tag, message, Popconfirm, Alert, Card, Input, DatePicker, Select, Dropdown } from 'antd';
-import { PlusOutlined, EditOutlined, DeleteOutlined, ExclamationCircleOutlined, SearchOutlined, FilePdfOutlined, DownOutlined, EyeOutlined, DownloadOutlined, ExportOutlined, ImportOutlined, SyncOutlined, FileExcelOutlined } from '@ant-design/icons';
-import { apiClient, Quotation, CreateQuotationDto, QuotationStatus } from '../../services/api-client';
+import React, { useEffect, useRef, useState } from 'react';
+import {
+  Alert,
+  Button,
+  DatePicker,
+  Dropdown,
+  Input,
+  message,
+  Modal,
+  Popconfirm,
+  Space,
+  Table,
+  Tag,
+  Typography,
+} from 'antd';
+import {
+  DeleteOutlined,
+  DownloadOutlined,
+  DownOutlined,
+  EditOutlined,
+  ExclamationCircleOutlined,
+  ExportOutlined,
+  EyeOutlined,
+  FileExcelOutlined,
+  FilePdfOutlined,
+  ImportOutlined,
+  PlusOutlined,
+  SyncOutlined,
+} from '@ant-design/icons';
+import {
+  CreateQuotationDto,
+  Quotation,
+  QuotationStatus,
+} from '../../services/api-client';
 import { enhancedApiClient } from '../../services/enhanced-api-client';
 import QuotationForm from './QuotationForm';
 import QuotationPDF from './QuotationPDF';
@@ -20,20 +50,25 @@ const QuotationManager = () => {
   const [quotations, setQuotations] = useState<Quotation[]>([]);
   const [loading, setLoading] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [editingQuotation, setEditingQuotation] = useState<Quotation | null>(null);
+  const [editingQuotation, setEditingQuotation] = useState<Quotation | null>(
+    null
+  );
   const [apiError, setApiError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [pdfModalVisible, setPdfModalVisible] = useState(false);
-  const [selectedQuotationForPdf, setSelectedQuotationForPdf] = useState<Quotation | null>(null);
+  const [selectedQuotationForPdf, setSelectedQuotationForPdf] =
+    useState<Quotation | null>(null);
   const [generatingPdf, setGeneratingPdf] = useState(false);
   const pdfRef = useRef<HTMLDivElement>(null);
 
   const fetchQuotations = async () => {
     setLoading(true);
     setApiError(null);
-    
+
     try {
-      const result = await enhancedApiClient.getQuotations(searchTerm || undefined);
+      const result = await enhancedApiClient.getQuotations(
+        searchTerm || undefined
+      );
       setQuotations(Array.isArray(result) ? result : []);
     } catch (error: any) {
       console.error('Failed to fetch quotations:', error);
@@ -54,7 +89,7 @@ const QuotationManager = () => {
   const handleCreate = async (formData: CreateQuotationDto) => {
     try {
       const newQuotation = await enhancedApiClient.createQuotation(formData);
-      setQuotations(prev => [...prev, newQuotation]);
+      setQuotations((prev) => [...prev, newQuotation]);
       setIsModalVisible(false);
       message.success(t('quotations.createSuccess'));
     } catch (error: any) {
@@ -65,12 +100,17 @@ const QuotationManager = () => {
 
   const handleUpdate = async (formData: Partial<CreateQuotationDto>) => {
     if (!editingQuotation) return;
-    
+
     try {
-      const updatedQuotation = await enhancedApiClient.updateQuotation(editingQuotation.id, formData);
-      setQuotations(prev => prev.map(quotation => 
-        quotation.id === editingQuotation.id ? updatedQuotation : quotation
-      ));
+      const updatedQuotation = await enhancedApiClient.updateQuotation(
+        editingQuotation.id,
+        formData
+      );
+      setQuotations((prev) =>
+        prev.map((quotation) =>
+          quotation.id === editingQuotation.id ? updatedQuotation : quotation
+        )
+      );
       setIsModalVisible(false);
       setEditingQuotation(null);
       message.success(t('quotations.updateSuccess'));
@@ -83,7 +123,7 @@ const QuotationManager = () => {
   const handleDelete = async (id: number) => {
     try {
       await enhancedApiClient.deleteQuotation(id);
-      setQuotations(prev => prev.filter(quotation => quotation.id !== id));
+      setQuotations((prev) => prev.filter((quotation) => quotation.id !== id));
       message.success(t('quotations.deleteSuccess'));
     } catch (error: any) {
       console.error('Failed to delete quotation:', error);
@@ -114,14 +154,10 @@ const QuotationManager = () => {
 
     try {
       setGeneratingPdf(true);
-      await PDFGenerator.generateQuotationPDF(
-        pdfRef.current,
-        quotation,
-        {
-          filename: `quotation-${quotation.quotationNumber}.pdf`,
-          quality: 1.0,
-        }
-      );
+      await PDFGenerator.generateQuotationPDF(pdfRef.current, quotation, {
+        filename: `quotation-${quotation.quotationNumber}.pdf`,
+        quality: 1.0,
+      });
       message.success('PDF downloaded successfully');
     } catch (error) {
       console.error('PDF generation error:', error);
@@ -139,13 +175,9 @@ const QuotationManager = () => {
 
     try {
       setGeneratingPdf(true);
-      await PDFGenerator.previewQuotationPDF(
-        pdfRef.current,
-        quotation,
-        {
-          quality: 1.0,
-        }
-      );
+      await PDFGenerator.previewQuotationPDF(pdfRef.current, quotation, {
+        quality: 1.0,
+      });
     } catch (error) {
       console.error('PDF preview error:', error);
       message.error('Failed to preview PDF');
@@ -154,7 +186,10 @@ const QuotationManager = () => {
     }
   };
 
-  const handlePdfAction = async (action: 'preview' | 'download' | 'open', quotation: Quotation) => {
+  const handlePdfAction = async (
+    action: 'preview' | 'download' | 'open',
+    quotation: Quotation
+  ) => {
     // First, open the modal to render the PDF component
     setSelectedQuotationForPdf(quotation);
     setPdfModalVisible(true);
@@ -181,7 +216,9 @@ const QuotationManager = () => {
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = `quotations-export-${new Date().toISOString().split('T')[0]}.json`;
+      a.download = `quotations-export-${
+        new Date().toISOString().split('T')[0]
+      }.json`;
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
@@ -224,7 +261,9 @@ const QuotationManager = () => {
     try {
       setLoading(true);
       const result = await enhancedApiClient.syncLocalDataToBackend();
-      message.success(`Sync completed: ${result.success} successful, ${result.failed} failed`);
+      message.success(
+        `Sync completed: ${result.success} successful, ${result.failed} failed`
+      );
       if (result.errors.length > 0) {
         console.log('Sync errors:', result.errors);
       }
@@ -299,12 +338,18 @@ const QuotationManager = () => {
 
   const getStatusColor = (status: QuotationStatus) => {
     switch (status) {
-      case QuotationStatus.DRAFT: return 'default';
-      case QuotationStatus.SENT: return 'processing';
-      case QuotationStatus.ACCEPTED: return 'success';
-      case QuotationStatus.REJECTED: return 'error';
-      case QuotationStatus.EXPIRED: return 'warning';
-      default: return 'default';
+      case QuotationStatus.DRAFT:
+        return 'default';
+      case QuotationStatus.SENT:
+        return 'processing';
+      case QuotationStatus.ACCEPTED:
+        return 'success';
+      case QuotationStatus.REJECTED:
+        return 'error';
+      case QuotationStatus.EXPIRED:
+        return 'warning';
+      default:
+        return 'default';
     }
   };
 
@@ -313,13 +358,15 @@ const QuotationManager = () => {
       title: t('quotations.quotationNumber'),
       dataIndex: 'quotationNumber',
       key: 'quotationNumber',
-      sorter: (a: Quotation, b: Quotation) => a.quotationNumber.localeCompare(b.quotationNumber),
+      sorter: (a: Quotation, b: Quotation) =>
+        a.quotationNumber.localeCompare(b.quotationNumber),
     },
     {
       title: t('quotations.customer'),
       dataIndex: 'customerName',
       key: 'customerName',
-      sorter: (a: Quotation, b: Quotation) => a.customerName.localeCompare(b.customerName),
+      sorter: (a: Quotation, b: Quotation) =>
+        a.customerName.localeCompare(b.customerName),
     },
     {
       title: t('quotations.company'),
@@ -337,21 +384,23 @@ const QuotationManager = () => {
       dataIndex: 'quotationDate',
       key: 'quotationDate',
       render: (date: string) => moment(date).format('DD/MM/YYYY'),
-      sorter: (a: Quotation, b: Quotation) => 
+      sorter: (a: Quotation, b: Quotation) =>
         moment(a.quotationDate).unix() - moment(b.quotationDate).unix(),
     },
     {
       title: t('quotations.validUntil'),
       dataIndex: 'validUntil',
       key: 'validUntil',
-      render: (date: string) => date ? moment(date).format('DD/MM/YYYY') : '-',
+      render: (date: string) =>
+        date ? moment(date).format('DD/MM/YYYY') : '-',
     },
     {
       title: t('quotations.totalAmount'),
       dataIndex: 'totalAmount',
       key: 'totalAmount',
       render: (amount: number | string) => {
-        const numAmount = typeof amount === 'string' ? parseFloat(amount) : amount;
+        const numAmount =
+          typeof amount === 'string' ? parseFloat(amount) : amount;
         return new Intl.NumberFormat('vi-VN', {
           style: 'currency',
           currency: 'VND',
@@ -359,8 +408,14 @@ const QuotationManager = () => {
         }).format(numAmount || 0);
       },
       sorter: (a: Quotation, b: Quotation) => {
-        const aAmount = typeof a.totalAmount === 'string' ? parseFloat(a.totalAmount) : a.totalAmount;
-        const bAmount = typeof b.totalAmount === 'string' ? parseFloat(b.totalAmount) : b.totalAmount;
+        const aAmount =
+          typeof a.totalAmount === 'string'
+            ? parseFloat(a.totalAmount)
+            : a.totalAmount;
+        const bAmount =
+          typeof b.totalAmount === 'string'
+            ? parseFloat(b.totalAmount)
+            : b.totalAmount;
         return (aAmount || 0) - (bAmount || 0);
       },
     },
@@ -369,11 +424,9 @@ const QuotationManager = () => {
       dataIndex: 'status',
       key: 'status',
       render: (status: QuotationStatus) => (
-        <Tag color={getStatusColor(status)}>
-          {status}
-        </Tag>
+        <Tag color={getStatusColor(status)}>{status}</Tag>
       ),
-      filters: Object.values(QuotationStatus).map(status => ({
+      filters: Object.values(QuotationStatus).map((status) => ({
         text: status,
         value: status,
       })),
@@ -383,7 +436,8 @@ const QuotationManager = () => {
       title: t('quotations.items'),
       dataIndex: 'quotationItems',
       key: 'quotationItems',
-      render: (quotationItems: any[]) => `${quotationItems?.length || 0} ${t('quotations.itemsCount')}`,
+      render: (quotationItems: any[]) =>
+        `${quotationItems?.length || 0} ${t('quotations.itemsCount')}`,
     },
     {
       title: t('common.actions'),
@@ -431,7 +485,9 @@ const QuotationManager = () => {
                 type="link"
                 size="small"
                 disabled={generatingPdf}
-                loading={generatingPdf && selectedQuotationForPdf?.id === record.id}
+                loading={
+                  generatingPdf && selectedQuotationForPdf?.id === record.id
+                }
               >
                 Export <DownOutlined />
               </Button>
@@ -529,12 +585,10 @@ const QuotationManager = () => {
             }}
             trigger={['click']}
           >
-            <Button icon={<DownOutlined />}>
-              Data Management
-            </Button>
+            <Button icon={<DownOutlined />}>Data Management</Button>
           </Dropdown>
-          <Button 
-            type="primary" 
+          <Button
+            type="primary"
             icon={<PlusOutlined />}
             onClick={() => setIsModalVisible(true)}
           >
@@ -559,30 +613,33 @@ const QuotationManager = () => {
           }
         />
       )}
-      
-      <Table 
-        dataSource={quotations} 
-        columns={columns} 
+
+      <Table
+        dataSource={quotations}
+        columns={columns}
         loading={loading}
         rowKey="id"
-        pagination={{ 
+        pagination={{
           pageSize: 20,
           showSizeChanger: true,
           showQuickJumper: true,
-          showTotal: (total, range) => `${range[0]}-${range[1]} ${t('common.of')} ${total} ${t('common.items')}`,
+          showTotal: (total, range) =>
+            `${range[0]}-${range[1]} ${t('common.of')} ${total} ${t(
+              'common.items'
+            )}`,
         }}
         scroll={{ x: 'max-content' }}
       />
-      
-      <Modal 
-        title={editingQuotation ? t('quotations.edit') : t('quotations.create')} 
-        open={isModalVisible} 
-        onCancel={handleModalClose} 
+
+      <Modal
+        title={editingQuotation ? t('quotations.edit') : t('quotations.create')}
+        open={isModalVisible}
+        onCancel={handleModalClose}
         footer={null}
         width={900}
         className="top-5"
       >
-        <QuotationForm 
+        <QuotationForm
           onSubmit={editingQuotation ? handleUpdate : handleCreate}
           initialData={editingQuotation}
         />
@@ -608,7 +665,10 @@ const QuotationManager = () => {
             key="download"
             type="primary"
             icon={<DownloadOutlined />}
-            onClick={() => selectedQuotationForPdf && handlePdfDownload(selectedQuotationForPdf)}
+            onClick={() =>
+              selectedQuotationForPdf &&
+              handlePdfDownload(selectedQuotationForPdf)
+            }
             loading={generatingPdf}
           >
             Download PDF
@@ -616,7 +676,10 @@ const QuotationManager = () => {
           <Button
             key="open"
             icon={<FilePdfOutlined />}
-            onClick={() => selectedQuotationForPdf && handlePdfOpenInNewTab(selectedQuotationForPdf)}
+            onClick={() =>
+              selectedQuotationForPdf &&
+              handlePdfOpenInNewTab(selectedQuotationForPdf)
+            }
             loading={generatingPdf}
           >
             Open in New Tab
@@ -625,9 +688,11 @@ const QuotationManager = () => {
       >
         {selectedQuotationForPdf && (
           <div className="max-h-[70vh] overflow-auto border border-gray-300 rounded-md">
-            <QuotationPDF 
-              quotation={selectedQuotationForPdf} 
-              onRef={(ref) => { if (ref) pdfRef.current = ref; }}
+            <QuotationPDF
+              quotation={selectedQuotationForPdf}
+              onRef={(ref) => {
+                if (ref) pdfRef.current = ref;
+              }}
             />
           </div>
         )}
@@ -636,9 +701,11 @@ const QuotationManager = () => {
       {/* Hidden PDF Component for Generation */}
       {selectedQuotationForPdf && !pdfModalVisible && (
         <div className="absolute -left-[9999px] -top-[9999px]">
-          <QuotationPDF 
-            quotation={selectedQuotationForPdf} 
-            onRef={(ref) => { if (ref) pdfRef.current = ref; }}
+          <QuotationPDF
+            quotation={selectedQuotationForPdf}
+            onRef={(ref) => {
+              if (ref) pdfRef.current = ref;
+            }}
           />
         </div>
       )}

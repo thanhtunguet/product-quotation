@@ -1,13 +1,24 @@
-import { IsString, IsOptional, IsNotEmpty, MaxLength, IsNumber, IsEnum, IsArray, ValidateNested, IsDateString } from 'class-validator';
+import {
+  IsArray,
+  IsDateString,
+  IsEnum,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsString,
+  MaxLength,
+  ValidateNested,
+} from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
+
 // Define the enum based on the new entity structure
 export enum QuotationStatus {
   DRAFT = 'DRAFT',
   SENT = 'SENT',
   ACCEPTED = 'ACCEPTED',
   REJECTED = 'REJECTED',
-  EXPIRED = 'EXPIRED'
+  EXPIRED = 'EXPIRED',
 }
 
 export class QuotationItemDto {

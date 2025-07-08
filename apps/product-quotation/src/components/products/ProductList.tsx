@@ -1,6 +1,5 @@
-
-import React, { useState, useEffect } from 'react';
-import { Table, Button } from 'antd';
+import React, { useEffect, useState } from 'react';
+import { Button, Table } from 'antd';
 import { apiClient, Product } from '../../services/api-client';
 import { Link } from 'react-router-dom';
 

@@ -1,4 +1,3 @@
-
 import {
   ApartmentOutlined,
   AppstoreOutlined,
@@ -8,7 +7,7 @@ import {
   InboxOutlined,
   ShopOutlined,
   TagOutlined,
-  ToolOutlined
+  ToolOutlined,
 } from '@ant-design/icons';
 import { Tabs, Typography } from 'antd';
 import { useTranslation } from 'react-i18next';
@@ -21,7 +20,7 @@ const { Title } = Typography;
 
 const MasterDataPage = () => {
   const { t } = useTranslation();
-  
+
   const items = [
     {
       key: 'brands',
@@ -61,11 +60,13 @@ const MasterDataPage = () => {
           {t('masterData.materials')}
         </span>
       ),
-      children: <GenericMasterDataManager 
-        title={t('masterData.materialManagement')}
-        apiEndpoint="materials"
-        entityName="material"
-      />,
+      children: (
+        <GenericMasterDataManager
+          title={t('masterData.materialManagement')}
+          apiEndpoint="materials"
+          entityName="material"
+        />
+      ),
     },
     {
       key: 'manufacturing-methods',
@@ -75,11 +76,13 @@ const MasterDataPage = () => {
           {t('masterData.methods')}
         </span>
       ),
-      children: <GenericMasterDataManager 
-        title={t('masterData.methodManagement')}
-        apiEndpoint="manufacturingMethods"
-        entityName="manufacturing method"
-      />,
+      children: (
+        <GenericMasterDataManager
+          title={t('masterData.methodManagement')}
+          apiEndpoint="manufacturingMethods"
+          entityName="manufacturing method"
+        />
+      ),
     },
     {
       key: 'colors',
@@ -89,12 +92,14 @@ const MasterDataPage = () => {
           {t('masterData.colors')}
         </span>
       ),
-      children: <GenericMasterDataManager 
-        title={t('masterData.colorManagement')}
-        apiEndpoint="colors"
-        entityName="color"
-        hasHexCode={true}
-      />,
+      children: (
+        <GenericMasterDataManager
+          title={t('masterData.colorManagement')}
+          apiEndpoint="colors"
+          entityName="color"
+          hasHexCode={true}
+        />
+      ),
     },
     {
       key: 'sizes',
@@ -104,11 +109,13 @@ const MasterDataPage = () => {
           {t('masterData.sizes')}
         </span>
       ),
-      children: <GenericMasterDataManager 
-        title={t('masterData.sizeManagement')}
-        apiEndpoint="sizes"
-        entityName="size"
-      />,
+      children: (
+        <GenericMasterDataManager
+          title={t('masterData.sizeManagement')}
+          apiEndpoint="sizes"
+          entityName="size"
+        />
+      ),
     },
     {
       key: 'product-types',
@@ -118,11 +125,13 @@ const MasterDataPage = () => {
           {t('masterData.types')}
         </span>
       ),
-      children: <GenericMasterDataManager 
-        title={t('masterData.typeManagement')}
-        apiEndpoint="productTypes"
-        entityName="product type"
-      />,
+      children: (
+        <GenericMasterDataManager
+          title={t('masterData.typeManagement')}
+          apiEndpoint="productTypes"
+          entityName="product type"
+        />
+      ),
     },
     {
       key: 'packaging-types',
@@ -132,11 +141,13 @@ const MasterDataPage = () => {
           {t('masterData.packaging')}
         </span>
       ),
-      children: <GenericMasterDataManager 
-        title={t('masterData.packagingManagement')}
-        apiEndpoint="packagingTypes"
-        entityName="packaging type"
-      />,
+      children: (
+        <GenericMasterDataManager
+          title={t('masterData.packagingManagement')}
+          apiEndpoint="packagingTypes"
+          entityName="packaging type"
+        />
+      ),
     },
   ];
 

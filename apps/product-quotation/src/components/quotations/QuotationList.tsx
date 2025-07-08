@@ -1,6 +1,5 @@
-
-import React, { useState, useEffect } from 'react';
-import { Table, Button } from 'antd';
+import React, { useEffect, useState } from 'react';
+import { Button, Table } from 'antd';
 import { apiClient, Quotation } from '../../services/api-client';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -14,9 +13,21 @@ const QuotationList = () => {
   }, []);
 
   const columns = [
-    { title: t('quotations.quotationNumber'), dataIndex: 'quotationNumber', key: 'quotationNumber' },
-    { title: t('quotations.customer'), dataIndex: 'customerName', key: 'customerName' },
-    { title: t('quotations.totalAmount'), dataIndex: 'totalAmount', key: 'totalAmount' },
+    {
+      title: t('quotations.quotationNumber'),
+      dataIndex: 'quotationNumber',
+      key: 'quotationNumber',
+    },
+    {
+      title: t('quotations.customer'),
+      dataIndex: 'customerName',
+      key: 'customerName',
+    },
+    {
+      title: t('quotations.totalAmount'),
+      dataIndex: 'totalAmount',
+      key: 'totalAmount',
+    },
     {
       title: t('common.actions'),
       key: 'action',

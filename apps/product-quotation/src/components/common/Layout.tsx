@@ -1,4 +1,3 @@
-
 import { Layout as AntdLayout } from 'antd';
 import { Outlet } from 'react-router-dom';
 import LanguageSwitcher from './LanguageSwitcher';

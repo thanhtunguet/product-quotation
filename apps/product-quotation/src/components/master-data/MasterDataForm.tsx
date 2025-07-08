@@ -1,14 +1,20 @@
-
 import React, { useEffect } from 'react';
-import { Form, Input, Button, Switch, Space } from 'antd';
-import { CreateMasterDataDto, UpdateMasterDataDto, MasterDataEntity } from '../../services/api-client';
+import { Button, Form, Input, Space, Switch } from 'antd';
+import {
+  CreateMasterDataDto,
+  MasterDataEntity,
+  UpdateMasterDataDto,
+} from '../../services/api-client';
 
 interface MasterDataFormProps {
   onSubmit: (data: CreateMasterDataDto | UpdateMasterDataDto) => void;
   initialData?: MasterDataEntity | null;
 }
 
-const MasterDataForm: React.FC<MasterDataFormProps> = ({ onSubmit, initialData }) => {
+const MasterDataForm: React.FC<MasterDataFormProps> = ({
+  onSubmit,
+  initialData,
+}) => {
   const [form] = Form.useForm();
 
   useEffect(() => {
@@ -51,18 +57,11 @@ const MasterDataForm: React.FC<MasterDataFormProps> = ({ onSubmit, initialData }
         <Input placeholder="Enter code" />
       </Form.Item>
 
-      <Form.Item
-        name="description"
-        label="Description"
-      >
+      <Form.Item name="description" label="Description">
         <Input.TextArea placeholder="Enter description" rows={3} />
       </Form.Item>
 
-      <Form.Item
-        name="isActive"
-        label="Status"
-        valuePropName="checked"
-      >
+      <Form.Item name="isActive" label="Status" valuePropName="checked">
         <Switch checkedChildren="Active" unCheckedChildren="Inactive" />
       </Form.Item>
 
@@ -71,9 +70,7 @@ const MasterDataForm: React.FC<MasterDataFormProps> = ({ onSubmit, initialData }
           <Button type="primary" htmlType="submit">
             {initialData ? 'Update' : 'Create'}
           </Button>
-          <Button onClick={() => form.resetFields()}>
-            Reset
-          </Button>
+          <Button onClick={() => form.resetFields()}>Reset</Button>
         </Space>
       </Form.Item>
     </Form>

@@ -1,6 +1,10 @@
 import { Button, Form, Input, Select, Space, Switch } from 'antd';
 import React, { useEffect } from 'react';
-import { Category, CreateCategoryDto, UpdateCategoryDto } from '../../services/api-client';
+import {
+  Category,
+  CreateCategoryDto,
+  UpdateCategoryDto,
+} from '../../services/api-client';
 
 interface CategoryFormProps {
   onSubmit: (data: CreateCategoryDto | UpdateCategoryDto) => void;
@@ -8,7 +12,11 @@ interface CategoryFormProps {
   categories: Category[];
 }
 
-const CategoryForm: React.FC<CategoryFormProps> = ({ onSubmit, initialData, categories }) => {
+const CategoryForm: React.FC<CategoryFormProps> = ({
+  onSubmit,
+  initialData,
+  categories,
+}) => {
   const [form] = Form.useForm();
 
   useEffect(() => {
@@ -56,25 +64,16 @@ const CategoryForm: React.FC<CategoryFormProps> = ({ onSubmit, initialData, cate
         <Input placeholder="Enter category code" />
       </Form.Item>
 
-      <Form.Item
-        name="description"
-        label="Description"
-      >
+      <Form.Item name="description" label="Description">
         <Input.TextArea placeholder="Enter description" rows={3} />
       </Form.Item>
 
-      <Form.Item
-        name="parentId"
-        label="Parent Category"
-      >
-        <Select
-          placeholder="Select parent category (optional)"
-          allowClear
-        >
+      <Form.Item name="parentId" label="Parent Category">
+        <Select placeholder="Select parent category (optional)" allowClear>
           <Select.Option value={undefined}>None (Root Category)</Select.Option>
           {categories
-            .filter(cat => cat.id !== initialData?.id)
-            .map(cat => (
+            .filter((cat) => cat.id !== initialData?.id)
+            .map((cat) => (
               <Select.Option key={cat.id} value={cat.id}>
                 {cat.name}
               </Select.Option>
@@ -82,11 +81,7 @@ const CategoryForm: React.FC<CategoryFormProps> = ({ onSubmit, initialData, cate
         </Select>
       </Form.Item>
 
-      <Form.Item
-        name="isActive"
-        label="Status"
-        valuePropName="checked"
-      >
+      <Form.Item name="isActive" label="Status" valuePropName="checked">
         <Switch checkedChildren="Active" unCheckedChildren="Inactive" />
       </Form.Item>
 
@@ -95,9 +90,7 @@ const CategoryForm: React.FC<CategoryFormProps> = ({ onSubmit, initialData, cate
           <Button type="primary" htmlType="submit">
             {initialData ? 'Update' : 'Create'}
           </Button>
-          <Button onClick={() => form.resetFields()}>
-            Reset
-          </Button>
+          <Button onClick={() => form.resetFields()}>Reset</Button>
         </Space>
       </Form.Item>
     </Form>

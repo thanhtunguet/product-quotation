@@ -11,7 +11,7 @@ interface QuotationPDFProps {
 const QuotationPDF: React.FC<QuotationPDFProps> = ({ quotation, onRef }) => {
   const calculateSubtotal = () => {
     return quotation.quotationItems.reduce(
-      (total, item) => total + (item.quantity * item.unitPrice), 
+      (total, item) => total + item.quantity * item.unitPrice,
       0
     );
   };
@@ -34,11 +34,11 @@ const QuotationPDF: React.FC<QuotationPDFProps> = ({ quotation, onRef }) => {
 
   const getStatusText = (status: string) => {
     const statusMap: { [key: string]: string } = {
-      'DRAFT': 'Nháp',
-      'SENT': 'Đã gửi',
-      'ACCEPTED': 'Đã chấp nhận',
-      'REJECTED': 'Đã từ chối',
-      'EXPIRED': 'Hết hạn',
+      DRAFT: 'Nháp',
+      SENT: 'Đã gửi',
+      ACCEPTED: 'Đã chấp nhận',
+      REJECTED: 'Đã từ chối',
+      EXPIRED: 'Hết hạn',
     };
     return statusMap[status.toUpperCase()] || status;
   };
@@ -74,17 +74,23 @@ const QuotationPDF: React.FC<QuotationPDFProps> = ({ quotation, onRef }) => {
             </div>
             <div className="detail-row">
               <span className="label">Ngày:</span>
-              <span className="value">{moment(quotation.quotationDate).format('DD/MM/YYYY')}</span>
+              <span className="value">
+                {moment(quotation.quotationDate).format('DD/MM/YYYY')}
+              </span>
             </div>
             {quotation.validUntil && (
               <div className="detail-row">
                 <span className="label">Có hiệu lực đến:</span>
-                <span className="value">{moment(quotation.validUntil).format('DD/MM/YYYY')}</span>
+                <span className="value">
+                  {moment(quotation.validUntil).format('DD/MM/YYYY')}
+                </span>
               </div>
             )}
             <div className="detail-row">
               <span className="label">Trạng thái:</span>
-              <span className={`value status-${quotation.status.toLowerCase()}`}>
+              <span
+                className={`value status-${quotation.status.toLowerCase()}`}
+              >
                 {getStatusText(quotation.status)}
               </span>
             </div>
@@ -100,7 +106,9 @@ const QuotationPDF: React.FC<QuotationPDFProps> = ({ quotation, onRef }) => {
           {quotation.companyName && (
             <div className="customer-company">{quotation.companyName}</div>
           )}
-          <div className="customer-phone">Điện thoại: {quotation.phoneNumber}</div>
+          <div className="customer-phone">
+            Điện thoại: {quotation.phoneNumber}
+          </div>
         </div>
       </div>
 
@@ -117,28 +125,34 @@ const QuotationPDF: React.FC<QuotationPDFProps> = ({ quotation, onRef }) => {
             </tr>
           </thead>
           <tbody>
-            {quotation.quotationItems.map((item: QuotationItem, index: number) => {
-              const itemTotal = item.quantity * item.unitPrice;
-              return (
-                <tr key={index} className="item-row">
-                  <td className="item-col">
-                    <div className="product-name">{item.product?.name || `Mã sản phẩm: ${item.productId}`}</div>
-                    <div className="product-code">{item.product?.code}</div>
-                  </td>
-                  <td className="desc-col">
-                    <div className="product-description">
-                      {item.product?.description || ''}
-                    </div>
-                    {item.notes && (
-                      <div className="item-notes">{item.notes}</div>
-                    )}
-                  </td>
-                  <td className="qty-col">{item.quantity}</td>
-                  <td className="price-col">{formatCurrency(item.unitPrice)}</td>
-                  <td className="total-col">{formatCurrency(itemTotal)}</td>
-                </tr>
-              );
-            })}
+            {quotation.quotationItems.map(
+              (item: QuotationItem, index: number) => {
+                const itemTotal = item.quantity * item.unitPrice;
+                return (
+                  <tr key={index} className="item-row">
+                    <td className="item-col">
+                      <div className="product-name">
+                        {item.product?.name || `Mã sản phẩm: ${item.productId}`}
+                      </div>
+                      <div className="product-code">{item.product?.code}</div>
+                    </td>
+                    <td className="desc-col">
+                      <div className="product-description">
+                        {item.product?.description || ''}
+                      </div>
+                      {item.notes && (
+                        <div className="item-notes">{item.notes}</div>
+                      )}
+                    </td>
+                    <td className="qty-col">{item.quantity}</td>
+                    <td className="price-col">
+                      {formatCurrency(item.unitPrice)}
+                    </td>
+                    <td className="total-col">{formatCurrency(itemTotal)}</td>
+                  </tr>
+                );
+              }
+            )}
           </tbody>
         </table>
       </div>
@@ -173,11 +187,25 @@ const QuotationPDF: React.FC<QuotationPDFProps> = ({ quotation, onRef }) => {
       <div className="terms-section">
         <h3 className="section-title">Điều khoản & Điều kiện:</h3>
         <div className="terms-content">
-          <p>• Báo giá này có hiệu lực trong vòng {quotation.validUntil ? moment(quotation.validUntil).diff(moment(quotation.quotationDate), 'days') : '30'} ngày kể từ ngày phát hành.</p>
-          <p>• Giá đã bao gồm thuế VAT 10%, chưa bao gồm phí vận chuyển (nếu có).</p>
+          <p>
+            • Báo giá này có hiệu lực trong vòng{' '}
+            {quotation.validUntil
+              ? moment(quotation.validUntil).diff(
+                  moment(quotation.quotationDate),
+                  'days'
+                )
+              : '30'}{' '}
+            ngày kể từ ngày phát hành.
+          </p>
+          <p>
+            • Giá đã bao gồm thuế VAT 10%, chưa bao gồm phí vận chuyển (nếu có).
+          </p>
           <p>• Điều kiện thanh toán: 50% tạm ứng, 50% khi giao hàng.</p>
           <p>• Thời gian giao hàng sẽ được xác nhận khi đặt hàng.</p>
-          <p>• Báo giá này tuân theo các điều khoản và điều kiện tiêu chuẩn của chúng tôi.</p>
+          <p>
+            • Báo giá này tuân theo các điều khoản và điều kiện tiêu chuẩn của
+            chúng tôi.
+          </p>
         </div>
       </div>
 

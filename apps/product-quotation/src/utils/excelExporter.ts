@@ -25,7 +25,7 @@ export class ExcelExporter {
   ): Promise<void> {
     const config = { ...this.DEFAULT_OPTIONS, ...options };
     const workbook = new ExcelJS.Workbook();
-    
+
     // Set workbook properties
     workbook.creator = 'Product Quotation System';
     workbook.lastModifiedBy = 'Product Quotation System';
@@ -33,14 +33,17 @@ export class ExcelExporter {
     workbook.modified = new Date();
     workbook.lastPrinted = new Date();
 
-    const worksheet = workbook.addWorksheet(config.vietnameseLabels ? 'Báo Giá' : 'Quotation');
-    
+    const worksheet = workbook.addWorksheet(
+      config.vietnameseLabels ? 'Báo Giá' : 'Quotation'
+    );
+
     // Set up the worksheet
     this.setupQuotationWorksheet(worksheet, quotation, config);
-    
+
     // Generate and download the file
     const buffer = await workbook.xlsx.writeBuffer();
-    const filename = config.filename || `quotation-${quotation.quotationNumber}.xlsx`;
+    const filename =
+      config.filename || `quotation-${quotation.quotationNumber}.xlsx`;
     this.downloadFile(buffer, filename);
   }
 
@@ -53,7 +56,7 @@ export class ExcelExporter {
   ): Promise<void> {
     const config = { ...this.DEFAULT_OPTIONS, ...options };
     const workbook = new ExcelJS.Workbook();
-    
+
     workbook.creator = 'Product Quotation System';
     workbook.created = new Date();
 
@@ -64,7 +67,8 @@ export class ExcelExporter {
     }
 
     const buffer = await workbook.xlsx.writeBuffer();
-    const filename = config.filename || `quotations-${moment().format('YYYY-MM-DD')}.xlsx`;
+    const filename =
+      config.filename || `quotations-${moment().format('YYYY-MM-DD')}.xlsx`;
     this.downloadFile(buffer, filename);
   }
 
@@ -77,16 +81,20 @@ export class ExcelExporter {
   ): Promise<void> {
     const config = { ...this.DEFAULT_OPTIONS, ...options };
     const workbook = new ExcelJS.Workbook();
-    
+
     workbook.creator = 'Product Quotation System';
     workbook.created = new Date();
 
-    const worksheet = workbook.addWorksheet(config.vietnameseLabels ? 'Tổng Hợp Báo Giá' : 'Quotations Summary');
-    
+    const worksheet = workbook.addWorksheet(
+      config.vietnameseLabels ? 'Tổng Hợp Báo Giá' : 'Quotations Summary'
+    );
+
     this.setupSummaryWorksheet(worksheet, quotations, config);
 
     const buffer = await workbook.xlsx.writeBuffer();
-    const filename = config.filename || `quotations-summary-${moment().format('YYYY-MM-DD')}.xlsx`;
+    const filename =
+      config.filename ||
+      `quotations-summary-${moment().format('YYYY-MM-DD')}.xlsx`;
     this.downloadFile(buffer, filename);
   }
 
@@ -96,16 +104,16 @@ export class ExcelExporter {
     config: Required<ExcelExportOptions>
   ): void {
     const labels = this.getLabels(config.vietnameseLabels);
-    
+
     // Set column widths
     worksheet.columns = [
-      { width: 5 },   // A: Row numbers
-      { width: 25 },  // B: Product names
-      { width: 35 },  // C: Descriptions
-      { width: 10 },  // D: Quantity
-      { width: 15 },  // E: Unit Price
-      { width: 15 },  // F: Total Price
-      { width: 25 },  // G: Notes
+      { width: 5 }, // A: Row numbers
+      { width: 25 }, // B: Product names
+      { width: 35 }, // C: Descriptions
+      { width: 10 }, // D: Quantity
+      { width: 15 }, // E: Unit Price
+      { width: 15 }, // F: Total Price
+      { width: 25 }, // G: Notes
     ];
 
     let currentRow = 1;
@@ -129,7 +137,12 @@ export class ExcelExporter {
 
     // Add empty rows for user to add more items
     for (let i = 0; i < 5; i++) {
-      this.addEmptyItemRow(worksheet, currentRow, quotation.quotationItems.length + i + 1, config);
+      this.addEmptyItemRow(
+        worksheet,
+        currentRow,
+        quotation.quotationItems.length + i + 1,
+        config
+      );
       currentRow++;
     }
 
@@ -137,7 +150,14 @@ export class ExcelExporter {
 
     // Totals Section with Formulas
     currentRow += 2;
-    this.addTotalsSection(worksheet, labels, currentRow, itemsStartRow, itemsEndRow, config);
+    this.addTotalsSection(
+      worksheet,
+      labels,
+      currentRow,
+      itemsStartRow,
+      itemsEndRow,
+      config
+    );
 
     // Terms and Conditions
     currentRow += 8;
@@ -156,11 +176,17 @@ export class ExcelExporter {
     // Company Header
     const companyHeaderCell = worksheet.getCell(`B${startRow}`);
     companyHeaderCell.value = 'CÔNG TY TNHH ABC';
-    companyHeaderCell.font = { bold: true, size: 16, color: { argb: '1a365d' } };
-    
+    companyHeaderCell.font = {
+      bold: true,
+      size: 16,
+      color: { argb: '1a365d' },
+    };
+
     // Company Details
-    worksheet.getCell(`B${startRow + 1}`).value = '123 Đường Nguyễn Văn Cừ, Quận 1';
-    worksheet.getCell(`B${startRow + 2}`).value = 'Thành phố Hồ Chí Minh, Việt Nam';
+    worksheet.getCell(`B${startRow + 1}`).value =
+      '123 Đường Nguyễn Văn Cừ, Quận 1';
+    worksheet.getCell(`B${startRow + 2}`).value =
+      'Thành phố Hồ Chí Minh, Việt Nam';
     worksheet.getCell(`B${startRow + 3}`).value = 'Điện thoại: (028) 123-4567';
     worksheet.getCell(`B${startRow + 4}`).value = 'Email: info@abc.com.vn';
 
@@ -171,22 +197,36 @@ export class ExcelExporter {
     titleCell.alignment = { horizontal: 'center' };
 
     // Quotation Details
-    worksheet.getCell(`E${startRow + 2}`).value = `${labels.quotationNumber}: ${quotation.quotationNumber}`;
-    worksheet.getCell(`E${startRow + 3}`).value = `${labels.date}: ${moment(quotation.quotationDate).format('DD/MM/YYYY')}`;
+    worksheet.getCell(
+      `E${startRow + 2}`
+    ).value = `${labels.quotationNumber}: ${quotation.quotationNumber}`;
+    worksheet.getCell(`E${startRow + 3}`).value = `${labels.date}: ${moment(
+      quotation.quotationDate
+    ).format('DD/MM/YYYY')}`;
     if (quotation.validUntil) {
-      worksheet.getCell(`E${startRow + 4}`).value = `${labels.validUntil}: ${moment(quotation.validUntil).format('DD/MM/YYYY')}`;
+      worksheet.getCell(`E${startRow + 4}`).value = `${
+        labels.validUntil
+      }: ${moment(quotation.validUntil).format('DD/MM/YYYY')}`;
     }
-    worksheet.getCell(`E${startRow + 5}`).value = `${labels.status}: ${this.getStatusText(quotation.status)}`;
+    worksheet.getCell(`E${startRow + 5}`).value = `${
+      labels.status
+    }: ${this.getStatusText(quotation.status)}`;
 
     // Customer Information
     worksheet.getCell(`B${startRow + 7}`).value = labels.customerInfo;
     worksheet.getCell(`B${startRow + 7}`).font = { bold: true, size: 14 };
-    
-    worksheet.getCell(`B${startRow + 8}`).value = `${labels.customerName}: ${quotation.customerName}`;
+
+    worksheet.getCell(
+      `B${startRow + 8}`
+    ).value = `${labels.customerName}: ${quotation.customerName}`;
     if (quotation.companyName) {
-      worksheet.getCell(`B${startRow + 9}`).value = `${labels.companyName}: ${quotation.companyName}`;
+      worksheet.getCell(
+        `B${startRow + 9}`
+      ).value = `${labels.companyName}: ${quotation.companyName}`;
     }
-    worksheet.getCell(`B${startRow + 10}`).value = `${labels.phoneNumber}: ${quotation.phoneNumber}`;
+    worksheet.getCell(
+      `B${startRow + 10}`
+    ).value = `${labels.phoneNumber}: ${quotation.phoneNumber}`;
   }
 
   private static addItemsTableHeader(
@@ -232,27 +272,30 @@ export class ExcelExporter {
   ): void {
     // Row number
     worksheet.getCell(row, 1).value = index;
-    
+
     // Product name
-    worksheet.getCell(row, 2).value = item.product?.name || `Product ID: ${item.productId}`;
-    
+    worksheet.getCell(row, 2).value =
+      item.product?.name || `Product ID: ${item.productId}`;
+
     // Description
     const description = [
       item.product?.description,
       item.product?.code ? `Mã: ${item.product.code}` : null,
       item.notes,
-    ].filter(Boolean).join('\n');
+    ]
+      .filter(Boolean)
+      .join('\n');
     worksheet.getCell(row, 3).value = description;
-    
+
     // Quantity (editable)
     worksheet.getCell(row, 4).value = item.quantity;
     worksheet.getCell(row, 4).numFmt = '#,##0';
-    
+
     // Unit Price (editable)
     const unitPriceCell = worksheet.getCell(row, 5);
     unitPriceCell.value = item.unitPrice;
     unitPriceCell.numFmt = '#,##0" VND"';
-    
+
     // Total Price (formula)
     const totalPriceCell = worksheet.getCell(row, 6);
     if (config.includeFormulas) {
@@ -261,7 +304,7 @@ export class ExcelExporter {
       totalPriceCell.value = item.quantity * item.unitPrice;
     }
     totalPriceCell.numFmt = '#,##0" VND"';
-    
+
     // Notes
     worksheet.getCell(row, 7).value = item.notes || '';
 
@@ -278,10 +321,22 @@ export class ExcelExporter {
     }
 
     // Center align numeric columns
-    worksheet.getCell(row, 1).alignment = { horizontal: 'center', vertical: 'middle' };
-    worksheet.getCell(row, 4).alignment = { horizontal: 'right', vertical: 'middle' };
-    worksheet.getCell(row, 5).alignment = { horizontal: 'right', vertical: 'middle' };
-    worksheet.getCell(row, 6).alignment = { horizontal: 'right', vertical: 'middle' };
+    worksheet.getCell(row, 1).alignment = {
+      horizontal: 'center',
+      vertical: 'middle',
+    };
+    worksheet.getCell(row, 4).alignment = {
+      horizontal: 'right',
+      vertical: 'middle',
+    };
+    worksheet.getCell(row, 5).alignment = {
+      horizontal: 'right',
+      vertical: 'middle',
+    };
+    worksheet.getCell(row, 6).alignment = {
+      horizontal: 'right',
+      vertical: 'middle',
+    };
   }
 
   private static addEmptyItemRow(
@@ -292,11 +347,13 @@ export class ExcelExporter {
   ): void {
     // Row number
     worksheet.getCell(row, 1).value = index;
-    
+
     // Leave other cells empty but add formulas where needed
     if (config.includeFormulas) {
       const totalPriceCell = worksheet.getCell(row, 6);
-      totalPriceCell.value = { formula: `IF(AND(D${row}<>"",E${row}<>""),D${row}*E${row},"")` };
+      totalPriceCell.value = {
+        formula: `IF(AND(D${row}<>"",E${row}<>""),D${row}*E${row},"")`,
+      };
       totalPriceCell.numFmt = '#,##0" VND"';
     }
 
@@ -315,12 +372,24 @@ export class ExcelExporter {
     // Format numeric columns
     worksheet.getCell(row, 4).numFmt = '#,##0';
     worksheet.getCell(row, 5).numFmt = '#,##0" VND"';
-    
+
     // Center align
-    worksheet.getCell(row, 1).alignment = { horizontal: 'center', vertical: 'middle' };
-    worksheet.getCell(row, 4).alignment = { horizontal: 'right', vertical: 'middle' };
-    worksheet.getCell(row, 5).alignment = { horizontal: 'right', vertical: 'middle' };
-    worksheet.getCell(row, 6).alignment = { horizontal: 'right', vertical: 'middle' };
+    worksheet.getCell(row, 1).alignment = {
+      horizontal: 'center',
+      vertical: 'middle',
+    };
+    worksheet.getCell(row, 4).alignment = {
+      horizontal: 'right',
+      vertical: 'middle',
+    };
+    worksheet.getCell(row, 5).alignment = {
+      horizontal: 'right',
+      vertical: 'middle',
+    };
+    worksheet.getCell(row, 6).alignment = {
+      horizontal: 'right',
+      vertical: 'middle',
+    };
   }
 
   private static addTotalsSection(
@@ -335,10 +404,12 @@ export class ExcelExporter {
     worksheet.getCell(startRow, 5).value = labels.subtotal;
     worksheet.getCell(startRow, 5).font = { bold: true };
     worksheet.getCell(startRow, 5).alignment = { horizontal: 'right' };
-    
+
     const subtotalCell = worksheet.getCell(startRow, 6);
     if (config.includeFormulas) {
-      subtotalCell.value = { formula: `SUM(F${itemsStartRow}:F${itemsEndRow})` };
+      subtotalCell.value = {
+        formula: `SUM(F${itemsStartRow}:F${itemsEndRow})`,
+      };
     } else {
       // Calculate from existing items only
       subtotalCell.value = 0; // Will be calculated by formula
@@ -351,7 +422,7 @@ export class ExcelExporter {
     worksheet.getCell(startRow + 1, 5).value = labels.tax;
     worksheet.getCell(startRow + 1, 5).font = { bold: true };
     worksheet.getCell(startRow + 1, 5).alignment = { horizontal: 'right' };
-    
+
     const taxCell = worksheet.getCell(startRow + 1, 6);
     if (config.includeFormulas) {
       taxCell.value = { formula: `F${startRow}*0.1` };
@@ -366,7 +437,7 @@ export class ExcelExporter {
     worksheet.getCell(startRow + 2, 5).value = labels.total;
     worksheet.getCell(startRow + 2, 5).font = { bold: true, size: 14 };
     worksheet.getCell(startRow + 2, 5).alignment = { horizontal: 'right' };
-    
+
     const totalCell = worksheet.getCell(startRow + 2, 6);
     if (config.includeFormulas) {
       totalCell.value = { formula: `F${startRow}+F${startRow + 1}` };
@@ -424,18 +495,18 @@ export class ExcelExporter {
     config: Required<ExcelExportOptions>
   ): void {
     const labels = this.getLabels(config.vietnameseLabels);
-    
+
     // Set column widths
     worksheet.columns = [
-      { width: 15 },  // A: Quotation Number
-      { width: 12 },  // B: Date
-      { width: 20 },  // C: Customer Name
-      { width: 20 },  // D: Company Name
-      { width: 15 },  // E: Phone Number
-      { width: 12 },  // F: Valid Until
-      { width: 12 },  // G: Status
-      { width: 10 },  // H: Items Count
-      { width: 15 },  // I: Total Amount
+      { width: 15 }, // A: Quotation Number
+      { width: 12 }, // B: Date
+      { width: 20 }, // C: Customer Name
+      { width: 20 }, // D: Company Name
+      { width: 15 }, // E: Phone Number
+      { width: 12 }, // F: Valid Until
+      { width: 12 }, // G: Status
+      { width: 10 }, // H: Items Count
+      { width: 15 }, // I: Total Amount
     ];
 
     // Header
@@ -472,13 +543,17 @@ export class ExcelExporter {
     // Data rows
     quotations.forEach((quotation, index) => {
       const row = index + 2;
-      
+
       worksheet.getCell(row, 1).value = quotation.quotationNumber;
-      worksheet.getCell(row, 2).value = moment(quotation.quotationDate).format('DD/MM/YYYY');
+      worksheet.getCell(row, 2).value = moment(quotation.quotationDate).format(
+        'DD/MM/YYYY'
+      );
       worksheet.getCell(row, 3).value = quotation.customerName;
       worksheet.getCell(row, 4).value = quotation.companyName || '';
       worksheet.getCell(row, 5).value = quotation.phoneNumber;
-      worksheet.getCell(row, 6).value = quotation.validUntil ? moment(quotation.validUntil).format('DD/MM/YYYY') : '';
+      worksheet.getCell(row, 6).value = quotation.validUntil
+        ? moment(quotation.validUntil).format('DD/MM/YYYY')
+        : '';
       worksheet.getCell(row, 7).value = this.getStatusText(quotation.status);
       worksheet.getCell(row, 8).value = quotation.quotationItems.length;
       worksheet.getCell(row, 9).value = quotation.totalAmount;
@@ -497,15 +572,24 @@ export class ExcelExporter {
       }
 
       // Right align numeric columns
-      worksheet.getCell(row, 8).alignment = { horizontal: 'center', vertical: 'middle' };
-      worksheet.getCell(row, 9).alignment = { horizontal: 'right', vertical: 'middle' };
+      worksheet.getCell(row, 8).alignment = {
+        horizontal: 'center',
+        vertical: 'middle',
+      };
+      worksheet.getCell(row, 9).alignment = {
+        horizontal: 'right',
+        vertical: 'middle',
+      };
     });
 
     // Add total row
     const totalRow = quotations.length + 3;
     worksheet.getCell(totalRow, 8).value = 'TỔNG CỘNG:';
     worksheet.getCell(totalRow, 8).font = { bold: true };
-    worksheet.getCell(totalRow, 8).alignment = { horizontal: 'right', vertical: 'middle' };
+    worksheet.getCell(totalRow, 8).alignment = {
+      horizontal: 'right',
+      vertical: 'middle',
+    };
 
     const totalCell = worksheet.getCell(totalRow, 9);
     if (config.includeFormulas) {
@@ -594,11 +678,11 @@ export class ExcelExporter {
 
   private static getStatusText(status: string): string {
     const statusMap: { [key: string]: string } = {
-      'DRAFT': 'Nháp',
-      'SENT': 'Đã gửi',
-      'ACCEPTED': 'Đã chấp nhận',
-      'REJECTED': 'Đã từ chối',
-      'EXPIRED': 'Hết hạn',
+      DRAFT: 'Nháp',
+      SENT: 'Đã gửi',
+      ACCEPTED: 'Đã chấp nhận',
+      REJECTED: 'Đã từ chối',
+      EXPIRED: 'Hết hạn',
     };
     return statusMap[status.toUpperCase()] || status;
   }

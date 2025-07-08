@@ -1,6 +1,11 @@
 import React, { useEffect } from 'react';
-import { Form, Input, Button, Switch, Space } from 'antd';
-import { CreateMasterDataDto, UpdateMasterDataDto, MasterDataEntity, Color } from '../../services/api-client';
+import { Button, Form, Input, Space, Switch } from 'antd';
+import {
+  Color,
+  CreateMasterDataDto,
+  MasterDataEntity,
+  UpdateMasterDataDto,
+} from '../../services/api-client';
 
 interface GenericMasterDataFormProps {
   onSubmit: (data: CreateMasterDataDto | UpdateMasterDataDto) => void;
@@ -9,11 +14,11 @@ interface GenericMasterDataFormProps {
   entityName: string;
 }
 
-const GenericMasterDataForm: React.FC<GenericMasterDataFormProps> = ({ 
-  onSubmit, 
-  initialData, 
+const GenericMasterDataForm: React.FC<GenericMasterDataFormProps> = ({
+  onSubmit,
+  initialData,
   hasHexCode = false,
-  entityName 
+  entityName,
 }) => {
   const [form] = Form.useForm();
 
@@ -51,7 +56,8 @@ const GenericMasterDataForm: React.FC<GenericMasterDataFormProps> = ({
     onSubmit(data);
   };
 
-  const capitalizedEntityName = entityName.charAt(0).toUpperCase() + entityName.slice(1);
+  const capitalizedEntityName =
+    entityName.charAt(0).toUpperCase() + entityName.slice(1);
 
   return (
     <Form
@@ -78,11 +84,11 @@ const GenericMasterDataForm: React.FC<GenericMasterDataFormProps> = ({
         <Input placeholder={`Enter ${entityName} code`} />
       </Form.Item>
 
-      <Form.Item
-        name="description"
-        label="Description"
-      >
-        <Input.TextArea placeholder={`Enter ${entityName} description`} rows={3} />
+      <Form.Item name="description" label="Description">
+        <Input.TextArea
+          placeholder={`Enter ${entityName} description`}
+          rows={3}
+        />
       </Form.Item>
 
       {hasHexCode && (
@@ -96,23 +102,21 @@ const GenericMasterDataForm: React.FC<GenericMasterDataFormProps> = ({
             },
           ]}
         >
-          <Input 
-            placeholder="#FF0000" 
+          <Input
+            placeholder="#FF0000"
             addonBefore={
-              <div 
+              <div
                 className="w-5 h-5 border border-gray-300 rounded-sm"
-                style={{ backgroundColor: Form.useWatch('hexCode', form) || '#ccc' }} 
+                style={{
+                  backgroundColor: Form.useWatch('hexCode', form) || '#ccc',
+                }}
               />
             }
           />
         </Form.Item>
       )}
 
-      <Form.Item
-        name="isActive"
-        label="Status"
-        valuePropName="checked"
-      >
+      <Form.Item name="isActive" label="Status" valuePropName="checked">
         <Switch checkedChildren="Active" unCheckedChildren="Inactive" />
       </Form.Item>
 
@@ -121,9 +125,7 @@ const GenericMasterDataForm: React.FC<GenericMasterDataFormProps> = ({
           <Button type="primary" htmlType="submit">
             {initialData ? 'Update' : 'Create'} {capitalizedEntityName}
           </Button>
-          <Button onClick={() => form.resetFields()}>
-            Reset
-          </Button>
+          <Button onClick={() => form.resetFields()}>Reset</Button>
         </Space>
       </Form.Item>
     </Form>

@@ -1,6 +1,22 @@
 import React, { useState } from 'react';
-import { Modal, Button, Upload, message, Progress, Typography, Space, Card, Alert } from 'antd';
-import { UploadOutlined, DownloadOutlined, FileExcelOutlined, CheckCircleOutlined, CloseCircleOutlined } from '@ant-design/icons';
+import {
+  Alert,
+  Button,
+  Card,
+  message,
+  Modal,
+  Progress,
+  Space,
+  Typography,
+  Upload,
+} from 'antd';
+import {
+  CheckCircleOutlined,
+  CloseCircleOutlined,
+  DownloadOutlined,
+  FileExcelOutlined,
+  UploadOutlined,
+} from '@ant-design/icons';
 import { useTranslation } from 'react-i18next';
 import { apiClient, ExcelImportResultDto } from '../../services/api-client';
 
@@ -48,28 +64,32 @@ export const ExcelImportModal: React.FC<ExcelImportModalProps> = ({
   };
 
   const handleFileUpload = async (file: File) => {
-    setState(prev => ({ ...prev, uploading: true, showResult: false }));
+    setState((prev) => ({ ...prev, uploading: true, showResult: false }));
 
     try {
       const result = await apiClient.importProducts(file);
-      setState(prev => ({ 
-        ...prev, 
-        uploading: false, 
-        importResult: result, 
-        showResult: true 
+      setState((prev) => ({
+        ...prev,
+        uploading: false,
+        importResult: result,
+        showResult: true,
       }));
 
       if (result.errorCount === 0) {
-        message.success(t('excel.importSuccess', { count: result.successCount }));
+        message.success(
+          t('excel.importSuccess', { count: result.successCount })
+        );
         onImportSuccess();
       } else {
-        message.warning(t('excel.importPartialSuccess', { 
-          success: result.successCount, 
-          error: result.errorCount 
-        }));
+        message.warning(
+          t('excel.importPartialSuccess', {
+            success: result.successCount,
+            error: result.errorCount,
+          })
+        );
       }
     } catch (error) {
-      setState(prev => ({ ...prev, uploading: false }));
+      setState((prev) => ({ ...prev, uploading: false }));
       console.error('Error importing products:', error);
       message.error(t('excel.importError'));
     }
@@ -105,27 +125,31 @@ export const ExcelImportModal: React.FC<ExcelImportModalProps> = ({
           <FileExcelOutlined className="mr-2" />
           {t('excel.importResults')}
         </Title>
-        
+
         <Space direction="vertical" className="w-full">
           <div className="flex justify-between items-center">
             <Text>{t('excel.totalRows')}:</Text>
             <Text strong>{importResult.totalRows}</Text>
           </div>
-          
+
           <div className="flex justify-between items-center">
             <Text className="text-green-600">
               <CheckCircleOutlined className="mr-1" />
               {t('excel.successCount')}:
             </Text>
-            <Text strong className="text-green-600">{importResult.successCount}</Text>
+            <Text strong className="text-green-600">
+              {importResult.successCount}
+            </Text>
           </div>
-          
+
           <div className="flex justify-between items-center">
             <Text className="text-red-600">
               <CloseCircleOutlined className="mr-1" />
               {t('excel.errorCount')}:
             </Text>
-            <Text strong className="text-red-600">{importResult.errorCount}</Text>
+            <Text strong className="text-red-600">
+              {importResult.errorCount}
+            </Text>
           </div>
 
           {hasErrors && (
@@ -137,8 +161,13 @@ export const ExcelImportModal: React.FC<ExcelImportModalProps> = ({
                 <div className="mt-2 max-h-60 overflow-y-auto">
                   {importResult.errors.map((error, index) => (
                     <div key={index} className="mb-1 text-sm">
-                      <Text strong>Row {error.row}:</Text> {error.field} - {error.message}
-                      {error.value && <Text className="ml-2 text-gray-500">({error.value})</Text>}
+                      <Text strong>Row {error.row}:</Text> {error.field} -{' '}
+                      {error.message}
+                      {error.value && (
+                        <Text className="ml-2 text-gray-500">
+                          ({error.value})
+                        </Text>
+                      )}
                     </div>
                   ))}
                 </div>
@@ -174,8 +203,8 @@ export const ExcelImportModal: React.FC<ExcelImportModalProps> = ({
           <Text className="text-gray-600 mb-4 block">
             {t('excel.downloadTemplateDescription')}
           </Text>
-          <Button 
-            type="primary" 
+          <Button
+            type="primary"
             icon={<DownloadOutlined />}
             onClick={handleDownloadTemplate}
             className="w-full"
@@ -190,7 +219,7 @@ export const ExcelImportModal: React.FC<ExcelImportModalProps> = ({
           <Text className="text-gray-600 mb-4 block">
             {t('excel.uploadFileDescription')}
           </Text>
-          
+
           <Upload.Dragger {...uploadProps}>
             <p className="ant-upload-drag-icon">
               <UploadOutlined />
@@ -198,11 +227,13 @@ export const ExcelImportModal: React.FC<ExcelImportModalProps> = ({
             <p className="ant-upload-text">{t('excel.uploadText')}</p>
             <p className="ant-upload-hint">{t('excel.uploadHint')}</p>
           </Upload.Dragger>
-          
+
           {state.uploading && (
             <div className="mt-4">
               <Progress percent={100} status="active" />
-              <Text className="text-center block mt-2">{t('excel.importing')}</Text>
+              <Text className="text-center block mt-2">
+                {t('excel.importing')}
+              </Text>
             </div>
           )}
         </Card>

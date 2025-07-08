@@ -242,30 +242,22 @@ export interface CreateQuotationDto {
 
 // API Client Class
 export class ProductQuotationApiClient {
+  // Master Data APIs
+  brands = this.createMasterDataMethods<Brand>('brands');
+  manufacturers = this.createMasterDataMethods<Manufacturer>('manufacturers');
+  materials = this.createMasterDataMethods<Material>('materials');
+  manufacturingMethods = this.createMasterDataMethods<ManufacturingMethod>(
+    'manufacturing-methods'
+  );
+  colors = this.createMasterDataMethods<Color>('colors');
+  sizes = this.createMasterDataMethods<Size>('sizes');
+  productTypes = this.createMasterDataMethods<ProductType>('product-types');
+  packagingTypes =
+    this.createMasterDataMethods<PackagingType>('packaging-types');
   private baseUrl: string;
 
   constructor(baseUrl: string = API_BASE_URL) {
     this.baseUrl = baseUrl;
-  }
-
-  private async request<T>(
-    endpoint: string,
-    options: RequestInit = {}
-  ): Promise<T> {
-    const url = `${this.baseUrl}${endpoint}`;
-    const response = await fetch(url, {
-      headers: {
-        'Content-Type': 'application/json',
-        ...options.headers,
-      },
-      ...options,
-    });
-
-    if (!response.ok) {
-      throw new Error(`API Error: ${response.status} ${response.statusText}`);
-    }
-
-    return response.json();
   }
 
   // Categories API
@@ -285,69 +277,22 @@ export class ProductQuotationApiClient {
   async createCategory(data: CreateCategoryDto): Promise<Category> {
     return this.request('/categories', {
       method: 'POST',
-      body: JSON.stringify(data),
+      body: JSON.stringify(data)
     });
   }
 
   async updateCategory(id: number, data: UpdateCategoryDto): Promise<Category> {
     return this.request(`/categories/${id}`, {
       method: 'PATCH',
-      body: JSON.stringify(data),
+      body: JSON.stringify(data)
     });
   }
 
   async deleteCategory(id: number): Promise<void> {
     return this.request(`/categories/${id}`, {
-      method: 'DELETE',
+      method: 'DELETE'
     });
   }
-
-  // Generic Master Data API methods
-  private createMasterDataMethods<T extends MasterDataEntity>(
-    endpoint: string
-  ) {
-    return {
-      getAll: async (search?: string): Promise<T[]> => {
-        const queryParam = search
-          ? `?search=${encodeURIComponent(search)}`
-          : '';
-        return this.request(`/${endpoint}${queryParam}`);
-      },
-      getById: async (id: number): Promise<T> => {
-        return this.request(`/${endpoint}/${id}`);
-      },
-      create: async (data: CreateMasterDataDto): Promise<T> => {
-        return this.request(`/${endpoint}`, {
-          method: 'POST',
-          body: JSON.stringify(data),
-        });
-      },
-      update: async (id: number, data: UpdateMasterDataDto): Promise<T> => {
-        return this.request(`/${endpoint}/${id}`, {
-          method: 'PATCH',
-          body: JSON.stringify(data),
-        });
-      },
-      delete: async (id: number): Promise<void> => {
-        return this.request(`/${endpoint}/${id}`, {
-          method: 'DELETE',
-        });
-      },
-    };
-  }
-
-  // Master Data APIs
-  brands = this.createMasterDataMethods<Brand>('brands');
-  manufacturers = this.createMasterDataMethods<Manufacturer>('manufacturers');
-  materials = this.createMasterDataMethods<Material>('materials');
-  manufacturingMethods = this.createMasterDataMethods<ManufacturingMethod>(
-    'manufacturing-methods'
-  );
-  colors = this.createMasterDataMethods<Color>('colors');
-  sizes = this.createMasterDataMethods<Size>('sizes');
-  productTypes = this.createMasterDataMethods<ProductType>('product-types');
-  packagingTypes =
-    this.createMasterDataMethods<PackagingType>('packaging-types');
 
   // Products API
   async getProducts(search?: string): Promise<Product[]> {
@@ -362,7 +307,7 @@ export class ProductQuotationApiClient {
   async createProduct(data: CreateProductDto): Promise<Product> {
     return this.request('/products', {
       method: 'POST',
-      body: JSON.stringify(data),
+      body: JSON.stringify(data)
     });
   }
 
@@ -372,13 +317,13 @@ export class ProductQuotationApiClient {
   ): Promise<Product> {
     return this.request(`/products/${id}`, {
       method: 'PATCH',
-      body: JSON.stringify(data),
+      body: JSON.stringify(data)
     });
   }
 
   async deleteProduct(id: number): Promise<void> {
     return this.request(`/products/${id}`, {
-      method: 'DELETE',
+      method: 'DELETE'
     });
   }
 
@@ -399,7 +344,7 @@ export class ProductQuotationApiClient {
 
     const response = await fetch(`${this.baseUrl}/products/excel/import`, {
       method: 'POST',
-      body: formData,
+      body: formData
     });
 
     if (!response.ok) {
@@ -423,7 +368,7 @@ export class ProductQuotationApiClient {
   async createQuotation(data: CreateQuotationDto): Promise<Quotation> {
     return this.request('/quotations', {
       method: 'POST',
-      body: JSON.stringify(data),
+      body: JSON.stringify(data)
     });
   }
 
@@ -433,13 +378,13 @@ export class ProductQuotationApiClient {
   ): Promise<Quotation> {
     return this.request(`/quotations/${id}`, {
       method: 'PATCH',
-      body: JSON.stringify(data),
+      body: JSON.stringify(data)
     });
   }
 
   async deleteQuotation(id: number): Promise<void> {
     return this.request(`/quotations/${id}`, {
-      method: 'DELETE',
+      method: 'DELETE'
     });
   }
 
@@ -458,7 +403,7 @@ export class ProductQuotationApiClient {
   ): Promise<ProductAttribute> {
     return this.request('/product-attributes', {
       method: 'POST',
-      body: JSON.stringify(data),
+      body: JSON.stringify(data)
     });
   }
 
@@ -466,6 +411,60 @@ export class ProductQuotationApiClient {
     attributeId: number
   ): Promise<ProductAttributeValue[]> {
     return this.request(`/product-attributes/${attributeId}/values`);
+  }
+
+  private async request<T>(
+    endpoint: string,
+    options: RequestInit = {}
+  ): Promise<T> {
+    const url = `${this.baseUrl}${endpoint}`;
+    const response = await fetch(url, {
+      headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+      },
+      ...options
+    });
+
+    if (!response.ok) {
+      throw new Error(`API Error: ${response.status} ${response.statusText}`);
+    }
+
+    return response.json();
+  }
+
+  // Generic Master Data API methods
+  private createMasterDataMethods<T extends MasterDataEntity>(
+    endpoint: string
+  ) {
+    return {
+      getAll: async (search?: string): Promise<T[]> => {
+        const queryParam = search
+          ? `?search=${encodeURIComponent(search)}`
+          : '';
+        return this.request(`/${endpoint}${queryParam}`);
+      },
+      getById: async (id: number): Promise<T> => {
+        return this.request(`/${endpoint}/${id}`);
+      },
+      create: async (data: CreateMasterDataDto): Promise<T> => {
+        return this.request(`/${endpoint}`, {
+          method: 'POST',
+          body: JSON.stringify(data)
+        });
+      },
+      update: async (id: number, data: UpdateMasterDataDto): Promise<T> => {
+        return this.request(`/${endpoint}/${id}`, {
+          method: 'PATCH',
+          body: JSON.stringify(data)
+        });
+      },
+      delete: async (id: number): Promise<void> => {
+        return this.request(`/${endpoint}/${id}`, {
+          method: 'DELETE'
+        });
+      }
+    };
   }
 }
 
@@ -488,7 +487,7 @@ useEffect(() => {
       console.error('Failed to fetch categories:', error);
     }
   };
-  
+
   fetchCategories();
 }, []);
 

@@ -8,7 +8,7 @@ import { MasterDataService } from '../master-data.service';
 export class BrandsService extends MasterDataService<Brands> {
   constructor(
     @InjectRepository(Brands)
-    repository: Repository<Brands>,
+    repository: Repository<Brands>
   ) {
     super(repository);
   }

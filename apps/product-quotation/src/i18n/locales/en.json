@@ -212,6 +212,7 @@
     "selectProduct": "Select product",
     "qty": "Qty",
     "addItem": "Add Item",
+    "addProducts": "Add Products",
     "noProductsAvailable": "No products available. The Products API needs to be implemented first.",
     "selectProductAndEnterDetails": "Please select a product and enter valid quantity and price",
     "selectedProductNotFound": "Selected product not found",

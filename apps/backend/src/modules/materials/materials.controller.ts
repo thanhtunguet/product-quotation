@@ -1,17 +1,20 @@
 import {
-  Controller,
-  Get,
-  Post,
   Body,
-  Patch,
-  Param,
+  Controller,
   Delete,
+  Get,
+  Param,
   ParseIntPipe,
+  Patch,
+  Post,
   Query,
 } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { MaterialsService } from './materials.service';
-import { CreateMasterDataDto, UpdateMasterDataDto } from '../../dto/master-data.dto';
+import {
+  CreateMasterDataDto,
+  UpdateMasterDataDto,
+} from '../../dto/master-data.dto';
 
 @ApiTags('materials')
 @Controller('materials')
@@ -53,7 +56,7 @@ export class MaterialsController {
   @ApiResponse({ status: 404, description: 'Material not found' })
   update(
     @Param('id', ParseIntPipe) id: number,
-    @Body() updateMaterialDto: UpdateMasterDataDto,
+    @Body() updateMaterialDto: UpdateMasterDataDto
   ) {
     return this.materialsService.update(id, updateMaterialDto);
   }

@@ -1,17 +1,20 @@
 import {
-  Controller,
-  Get,
-  Post,
   Body,
-  Patch,
-  Param,
+  Controller,
   Delete,
+  Get,
+  Param,
   ParseIntPipe,
+  Patch,
+  Post,
   Query,
 } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { ProductTypesService } from './product-types.service';
-import { CreateMasterDataDto, UpdateMasterDataDto } from '../../dto/master-data.dto';
+import {
+  CreateMasterDataDto,
+  UpdateMasterDataDto,
+} from '../../dto/master-data.dto';
 
 @ApiTags('product-types')
 @Controller('product-types')
@@ -20,7 +23,10 @@ export class ProductTypesController {
 
   @Post()
   @ApiOperation({ summary: 'Create a new product type' })
-  @ApiResponse({ status: 201, description: 'Product type created successfully' })
+  @ApiResponse({
+    status: 201,
+    description: 'Product type created successfully',
+  })
   create(@Body() createProductTypeDto: CreateMasterDataDto) {
     return this.productTypesService.create(createProductTypeDto);
   }
@@ -49,18 +55,24 @@ export class ProductTypesController {
 
   @Patch(':id')
   @ApiOperation({ summary: 'Update a product type' })
-  @ApiResponse({ status: 200, description: 'Product type updated successfully' })
+  @ApiResponse({
+    status: 200,
+    description: 'Product type updated successfully',
+  })
   @ApiResponse({ status: 404, description: 'Product type not found' })
   update(
     @Param('id', ParseIntPipe) id: number,
-    @Body() updateProductTypeDto: UpdateMasterDataDto,
+    @Body() updateProductTypeDto: UpdateMasterDataDto
   ) {
     return this.productTypesService.update(id, updateProductTypeDto);
   }
 
   @Delete(':id')
   @ApiOperation({ summary: 'Delete a product type' })
-  @ApiResponse({ status: 200, description: 'Product type deleted successfully' })
+  @ApiResponse({
+    status: 200,
+    description: 'Product type deleted successfully',
+  })
   @ApiResponse({ status: 404, description: 'Product type not found' })
   remove(@Param('id', ParseIntPipe) id: number) {
     return this.productTypesService.remove(id);

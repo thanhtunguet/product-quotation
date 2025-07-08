@@ -1,4 +1,3 @@
-
 import { message, Tree } from 'antd';
 import { useEffect, useState } from 'react';
 import { apiClient, Category } from '../../services/api-client';
@@ -14,18 +13,20 @@ const CategoryTree = () => {
       } catch (error: any) {
         console.error('Failed to fetch category tree:', error);
         setTreeData([]);
-        message.error(`Failed to fetch categories: ${error.message || 'Unknown error'}`);
+        message.error(
+          `Failed to fetch categories: ${error.message || 'Unknown error'}`
+        );
       }
     };
-    
+
     fetchTreeData();
   }, []);
 
   const transformToAntdTree = (categories: Category[]): any[] => {
-    return categories.map(cat => ({
+    return categories.map((cat) => ({
       title: cat.name,
       key: cat.id,
-      children: transformToAntdTree(cat.children || [])
+      children: transformToAntdTree(cat.children || []),
     }));
   };
 

@@ -44,7 +44,7 @@ export class PDFGenerator {
     const imgWidth = config.format === 'a4' ? 210 : 216; // mm
     const pageHeight = config.format === 'a4' ? 297 : 279; // mm
     const imgHeight = (canvas.height * imgWidth) / canvas.width;
-    
+
     // Create PDF
     const pdf = new jsPDF({
       orientation: config.orientation,
@@ -81,9 +81,13 @@ export class PDFGenerator {
     options: PDFGeneratorOptions = {}
   ): Promise<void> {
     try {
-      const filename = options.filename || `quotation-${quotation.quotationNumber}.pdf`;
-      const pdf = await this.generateFromElement(element, { ...options, filename });
-      
+      const filename =
+        options.filename || `quotation-${quotation.quotationNumber}.pdf`;
+      const pdf = await this.generateFromElement(element, {
+        ...options,
+        filename,
+      });
+
       // Download the PDF
       pdf.save(filename);
     } catch (error) {
@@ -120,13 +124,13 @@ export class PDFGenerator {
       const pdf = await this.generateFromElement(element, options);
       const pdfBlob = pdf.output('blob');
       const pdfUrl = URL.createObjectURL(pdfBlob);
-      
+
       // Open in new window
       const newWindow = window.open(pdfUrl, '_blank');
       if (!newWindow) {
         throw new Error('Popup blocked. Please allow popups for this site.');
       }
-      
+
       // Clean up the URL after a delay
       setTimeout(() => {
         URL.revokeObjectURL(pdfUrl);
@@ -143,46 +147,41 @@ export class PDFGenerator {
   static async generateWithWatermark(
     element: HTMLElement,
     quotation: Quotation,
-    watermarkText: string = 'DRAFT',
+    watermarkText = 'DRAFT',
     options: PDFGeneratorOptions = {}
   ): Promise<jsPDF> {
     const pdf = await this.generateFromElement(element, options);
-    
+
     // Add watermark
     const pageCount = pdf.getNumberOfPages();
-    
+
     for (let i = 1; i <= pageCount; i++) {
       pdf.setPage(i);
-      
+
       // Set watermark style
       pdf.setTextColor(200, 200, 200);
       pdf.setFontSize(50);
       pdf.setFont(undefined, 'bold');
-      
+
       // Calculate position for center of page
       const pageWidth = pdf.internal.pageSize.getWidth();
       const pageHeight = pdf.internal.pageSize.getHeight();
       const textWidth = pdf.getTextWidth(watermarkText);
-      
+
       // Save current transformation matrix
       pdf.saveGraphicsState();
-      
+
       // Rotate and position watermark
       pdf.setGState(pdf.gState);
-      pdf.text(
-        watermarkText,
-        pageWidth / 2 - textWidth / 2,
-        pageHeight / 2,
-        {
-          angle: 45,
-          align: 'center',
-        }
-      );
-      
+      pdf.text(watermarkText, pageWidth / 2 - textWidth / 2, pageHeight / 2, {
+        angle: 45,
+        align: 'center',
+      });
+
       // Restore transformation matrix
       pdf.restoreGraphicsState();
     }
-    
+
     return pdf;
   }
 
@@ -194,7 +193,7 @@ export class PDFGenerator {
     options: PDFGeneratorOptions = {}
   ): Promise<jsPDF[]> {
     const pdfs: jsPDF[] = [];
-    
+
     for (const { element, quotation } of quotations) {
       try {
         const pdf = await this.generateFromElement(element, {
@@ -203,43 +202,51 @@ export class PDFGenerator {
         });
         pdfs.push(pdf);
       } catch (error) {
-        console.error(`Error generating PDF for quotation ${quotation.quotationNumber}:`, error);
+        console.error(
+          `Error generating PDF for quotation ${quotation.quotationNumber}:`,
+          error
+        );
         // Continue with other quotations
       }
     }
-    
+
     return pdfs;
   }
 
   /**
    * Combine multiple PDFs into one
    */
-  static combinePDFs(pdfs: jsPDF[], filename: string = 'combined-quotations.pdf'): jsPDF {
+  static combinePDFs(
+    pdfs: jsPDF[],
+    filename = 'combined-quotations.pdf'
+  ): jsPDF {
     if (pdfs.length === 0) {
       throw new Error('No PDFs to combine');
     }
-    
+
     const combinedPdf = new jsPDF();
     let isFirstPdf = true;
-    
+
     pdfs.forEach((pdf) => {
       const pageCount = pdf.getNumberOfPages();
-      
+
       for (let i = 1; i <= pageCount; i++) {
         if (!isFirstPdf || i > 1) {
           combinedPdf.addPage();
         }
-        
+
         // This is a simplified approach - in practice, you might need more sophisticated merging
         const pageData = pdf.internal.pages[i];
         if (pageData) {
-          combinedPdf.internal.pages[combinedPdf.getCurrentPageInfo().pageNumber] = pageData;
+          combinedPdf.internal.pages[
+            combinedPdf.getCurrentPageInfo().pageNumber
+          ] = pageData;
         }
       }
-      
+
       isFirstPdf = false;
     });
-    
+
     return combinedPdf;
   }
 }

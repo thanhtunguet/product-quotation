@@ -2,13 +2,16 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Materials } from '../../entities';
-import { CreateMasterDataDto, UpdateMasterDataDto } from '../../dto/master-data.dto';
+import {
+  CreateMasterDataDto,
+  UpdateMasterDataDto,
+} from '../../dto/master-data.dto';
 
 @Injectable()
 export class MaterialsService {
   constructor(
     @InjectRepository(Materials)
-    private readonly materialRepository: Repository<Materials>,
+    private readonly materialRepository: Repository<Materials>
   ) {}
 
   async create(createMaterialDto: CreateMasterDataDto): Promise<Materials> {
@@ -33,7 +36,10 @@ export class MaterialsService {
     return material;
   }
 
-  async update(id: number, updateMaterialDto: UpdateMasterDataDto): Promise<Materials> {
+  async update(
+    id: number,
+    updateMaterialDto: UpdateMasterDataDto
+  ): Promise<Materials> {
     const material = await this.findOne(id);
     Object.assign(material, updateMaterialDto);
     return await this.materialRepository.save(material);

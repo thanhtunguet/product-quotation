@@ -1,4 +1,11 @@
-import { IsString, IsBoolean, IsOptional, IsNotEmpty, MaxLength, IsNumber } from 'class-validator';
+import {
+  IsBoolean,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsString,
+  MaxLength,
+} from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateProductAttributeValueDto {

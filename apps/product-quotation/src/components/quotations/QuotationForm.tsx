@@ -1,8 +1,25 @@
-
 import React, { useEffect, useState } from 'react';
-import { Form, Input, Button, Space, DatePicker, Card, Row, Col, Table, message, InputNumber } from 'antd';
-import { PlusOutlined, DeleteOutlined, MinusOutlined } from '@ant-design/icons';
-import { CreateQuotationDto, Quotation, QuotationItemDto, Product, apiClient } from '../../services/api-client';
+import {
+  Button,
+  Card,
+  Col,
+  DatePicker,
+  Form,
+  Input,
+  InputNumber,
+  message,
+  Row,
+  Space,
+  Table,
+} from 'antd';
+import { DeleteOutlined, MinusOutlined, PlusOutlined } from '@ant-design/icons';
+import {
+  apiClient,
+  CreateQuotationDto,
+  Product,
+  Quotation,
+  QuotationItemDto,
+} from '../../services/api-client';
 import { useTranslation } from 'react-i18next';
 import moment from 'moment';
 import ProductSelectionModal from './ProductSelectionModal';
@@ -14,7 +31,10 @@ interface QuotationFormProps {
   initialData?: Quotation | null;
 }
 
-const QuotationForm: React.FC<QuotationFormProps> = ({ onSubmit, initialData }) => {
+const QuotationForm: React.FC<QuotationFormProps> = ({
+  onSubmit,
+  initialData,
+}) => {
   const { t } = useTranslation();
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
@@ -24,25 +44,28 @@ const QuotationForm: React.FC<QuotationFormProps> = ({ onSubmit, initialData }) 
 
   useEffect(() => {
     loadProducts();
-    
+
     if (initialData) {
       form.setFieldsValue({
         customerName: initialData.customerName,
         companyName: initialData.companyName,
         phoneNumber: initialData.phoneNumber,
         quotationDate: moment(initialData.quotationDate),
-        validUntil: initialData.validUntil ? moment(initialData.validUntil) : undefined,
+        validUntil: initialData.validUntil
+          ? moment(initialData.validUntil)
+          : undefined,
         notes: initialData.notes,
       });
-      
+
       // Convert existing items to QuotationItemDto format
-      const items: QuotationItemDto[] = initialData.quotationItems?.map(item => ({
-        productId: item.productId,
-        quantity: item.quantity,
-        unitPrice: item.unitPrice,
-        notes: item.notes,
-      })) || [];
-      
+      const items: QuotationItemDto[] =
+        initialData.quotationItems?.map((item) => ({
+          productId: item.productId,
+          quantity: item.quantity,
+          unitPrice: item.unitPrice,
+          notes: item.notes,
+        })) || [];
+
       setQuotationItems(items);
     }
   }, [initialData, form]);
@@ -59,34 +82,41 @@ const QuotationForm: React.FC<QuotationFormProps> = ({ onSubmit, initialData }) 
   };
 
   const handleAddProducts = (newItems: QuotationItemDto[]) => {
-    setQuotationItems(prev => [...prev, ...newItems]);
+    setQuotationItems((prev) => [...prev, ...newItems]);
     message.success(`${newItems.length} product(s) added to quotation`);
   };
 
   const removeItem = (index: number) => {
-    setQuotationItems(prev => prev.filter((_, i) => i !== index));
+    setQuotationItems((prev) => prev.filter((_, i) => i !== index));
   };
 
   const updateItemNotes = (index: number, notes: string) => {
-    setQuotationItems(prev => 
-      prev.map((item, i) => i === index ? { ...item, notes } : item)
+    setQuotationItems((prev) =>
+      prev.map((item, i) => (i === index ? { ...item, notes } : item))
     );
   };
 
   const updateItemQuantity = (index: number, quantity: number) => {
-    setQuotationItems(prev => 
-      prev.map((item, i) => i === index ? { ...item, quantity: Math.max(1, quantity) } : item)
+    setQuotationItems((prev) =>
+      prev.map((item, i) =>
+        i === index ? { ...item, quantity: Math.max(1, quantity) } : item
+      )
     );
   };
 
   const updateItemPrice = (index: number, unitPrice: number) => {
-    setQuotationItems(prev => 
-      prev.map((item, i) => i === index ? { ...item, unitPrice: Math.max(0, unitPrice) } : item)
+    setQuotationItems((prev) =>
+      prev.map((item, i) =>
+        i === index ? { ...item, unitPrice: Math.max(0, unitPrice) } : item
+      )
     );
   };
 
   const calculateTotal = () => {
-    return quotationItems.reduce((total, item) => total + (item.quantity * item.unitPrice), 0);
+    return quotationItems.reduce(
+      (total, item) => total + item.quantity * item.unitPrice,
+      0
+    );
   };
 
   const generateQuotationNumber = () => {
@@ -98,7 +128,7 @@ const QuotationForm: React.FC<QuotationFormProps> = ({ onSubmit, initialData }) 
     const hours = String(now.getHours()).padStart(2, '0');
     const minutes = String(now.getMinutes()).padStart(2, '0');
     const seconds = String(now.getSeconds()).padStart(2, '0');
-    
+
     return `QT-${year}${month}${day}-${hours}${minutes}${seconds}`;
   };
 
@@ -117,7 +147,9 @@ const QuotationForm: React.FC<QuotationFormProps> = ({ onSubmit, initialData }) 
         companyName: values.companyName || undefined,
         phoneNumber: values.phoneNumber,
         quotationDate: values.quotationDate.format('YYYY-MM-DD'),
-        validUntil: values.validUntil ? values.validUntil.format('YYYY-MM-DD') : undefined,
+        validUntil: values.validUntil
+          ? values.validUntil.format('YYYY-MM-DD')
+          : undefined,
         notes: values.notes || undefined,
         items: quotationItems,
       };
@@ -136,8 +168,10 @@ const QuotationForm: React.FC<QuotationFormProps> = ({ onSubmit, initialData }) 
       dataIndex: 'productId',
       key: 'productId',
       render: (productId: number) => {
-        const product = products.find(p => p.id === productId);
-        return product ? `${product.name} (${product.code})` : `Product ID: ${productId}`;
+        const product = products.find((p) => p.id === productId);
+        return product
+          ? `${product.name} (${product.code})`
+          : `Product ID: ${productId}`;
       },
     },
     {
@@ -193,7 +227,8 @@ const QuotationForm: React.FC<QuotationFormProps> = ({ onSubmit, initialData }) 
       title: t('common.total'),
       key: 'total',
       width: 120,
-      render: (_: any, record: QuotationItemDto) => `$${(record.quantity * record.unitPrice).toFixed(2)}`,
+      render: (_: any, record: QuotationItemDto) =>
+        `$${(record.quantity * record.unitPrice).toFixed(2)}`,
     },
     {
       title: t('common.notes'),
@@ -241,16 +276,15 @@ const QuotationForm: React.FC<QuotationFormProps> = ({ onSubmit, initialData }) 
             <Form.Item
               name="customerName"
               label={t('forms.customerName')}
-              rules={[{ required: true, message: t('forms.customerNameRequired') }]}
+              rules={[
+                { required: true, message: t('forms.customerNameRequired') },
+              ]}
             >
               <Input placeholder={t('forms.enterCustomerName')} />
             </Form.Item>
           </Col>
           <Col span={12}>
-            <Form.Item
-              name="companyName"
-              label={t('forms.companyName')}
-            >
+            <Form.Item name="companyName" label={t('forms.companyName')}>
               <Input placeholder={t('forms.enterCompanyName')} />
             </Form.Item>
           </Col>
@@ -270,41 +304,37 @@ const QuotationForm: React.FC<QuotationFormProps> = ({ onSubmit, initialData }) 
             <Form.Item
               name="quotationDate"
               label={t('forms.quotationDate')}
-              rules={[{ required: true, message: t('forms.quotationDateRequired') }]}
+              rules={[
+                { required: true, message: t('forms.quotationDateRequired') },
+              ]}
             >
-              <DatePicker style={{ width: '100%' }} />
+              <DatePicker className="w-full" />
             </Form.Item>
           </Col>
         </Row>
 
         <Row gutter={16}>
           <Col span={12}>
-            <Form.Item
-              name="validUntil"
-              label={t('quotations.validUntil')}
-            >
-              <DatePicker style={{ width: '100%' }} />
+            <Form.Item name="validUntil" label={t('quotations.validUntil')}>
+              <DatePicker className="w-full" />
             </Form.Item>
           </Col>
         </Row>
 
-        <Form.Item
-          name="notes"
-          label={t('common.notes')}
-        >
+        <Form.Item name="notes" label={t('common.notes')}>
           <TextArea placeholder={t('forms.enterQuotationNotes')} rows={3} />
         </Form.Item>
       </Card>
 
       <Card title={t('sections.quotationItems')} className="mb-4">
         <div className="mb-4">
-          <Button 
-            type="primary" 
+          <Button
+            type="primary"
             icon={<PlusOutlined />}
             onClick={() => setProductModalVisible(true)}
             size="large"
           >
-            Add Products
+            {t('forms.addProducts')}
           </Button>
         </div>
 
@@ -333,7 +363,9 @@ const QuotationForm: React.FC<QuotationFormProps> = ({ onSubmit, initialData }) 
             {t('common.reset')}
           </Button>
           <Button type="primary" htmlType="submit" loading={loading}>
-            {initialData ? t('forms.updateQuotation') : t('forms.createQuotation')}
+            {initialData
+              ? t('forms.updateQuotation')
+              : t('forms.createQuotation')}
           </Button>
         </Space>
       </Form.Item>

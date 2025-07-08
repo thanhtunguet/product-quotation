@@ -3,7 +3,9 @@ import { Quotation, QuotationStatus } from '../services/api-client';
 
 export const createDemoQuotations = (): Quotation[] => {
   const now = new Date().toISOString();
-  const validUntil = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(); // 30 days from now
+  const validUntil = new Date(
+    Date.now() + 30 * 24 * 60 * 60 * 1000
+  ).toISOString(); // 30 days from now
 
   return [
     {
@@ -34,7 +36,8 @@ export const createDemoQuotations = (): Quotation[] => {
             categoryId: 1,
             basePrice: '250000',
             isActive: true,
-            description: 'Áo thun cotton 100%, chất lượng cao, thiết kế hiện đại',
+            description:
+              'Áo thun cotton 100%, chất lượng cao, thiết kế hiện đại',
             category: {
               id: 1,
               name: 'Thời trang',
@@ -67,7 +70,8 @@ export const createDemoQuotations = (): Quotation[] => {
             categoryId: 1,
             basePrice: '600000',
             isActive: true,
-            description: 'Quần âu công sở, chất liệu cao cấp, phù hợp môi trường văn phòng',
+            description:
+              'Quần âu công sở, chất liệu cao cấp, phù hợp môi trường văn phòng',
             category: {
               id: 1,
               name: 'Thời trang',
@@ -94,7 +98,9 @@ export const createDemoQuotations = (): Quotation[] => {
       customerName: 'Trần Thị Bình',
       companyName: 'Cửa hàng thời trang XYZ',
       phoneNumber: '0912345678',
-      quotationDate: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(), // 2 days ago
+      quotationDate: new Date(
+        Date.now() - 2 * 24 * 60 * 60 * 1000
+      ).toISOString(), // 2 days ago
       validUntil: new Date(Date.now() + 28 * 24 * 60 * 60 * 1000).toISOString(),
       status: QuotationStatus.SENT,
       totalAmount: 8800000,
@@ -116,7 +122,8 @@ export const createDemoQuotations = (): Quotation[] => {
             categoryId: 1,
             basePrice: '400000',
             isActive: true,
-            description: 'Áo khoác jeans cao cấp, phong cách trẻ trung, hiện đại',
+            description:
+              'Áo khoác jeans cao cấp, phong cách trẻ trung, hiện đại',
             category: {
               id: 1,
               name: 'Thời trang',
@@ -176,7 +183,9 @@ export const createDemoQuotations = (): Quotation[] => {
       customerName: 'Lê Văn Cường',
       companyName: '',
       phoneNumber: '0923456789',
-      quotationDate: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(), // 5 days ago
+      quotationDate: new Date(
+        Date.now() - 5 * 24 * 60 * 60 * 1000
+      ).toISOString(), // 5 days ago
       validUntil: new Date(Date.now() + 25 * 24 * 60 * 60 * 1000).toISOString(),
       status: QuotationStatus.ACCEPTED,
       totalAmount: 1650000,
@@ -226,9 +235,12 @@ export const createDemoQuotations = (): Quotation[] => {
 export const addDemoDataToLocalStorage = (): void => {
   const demoQuotations = createDemoQuotations();
   const existingData = localStorage.getItem('product-quotation-quotations');
-  
+
   if (!existingData || JSON.parse(existingData).length === 0) {
-    localStorage.setItem('product-quotation-quotations', JSON.stringify(demoQuotations));
+    localStorage.setItem(
+      'product-quotation-quotations',
+      JSON.stringify(demoQuotations)
+    );
     localStorage.setItem('product-quotation-counter', '3');
   }
 };

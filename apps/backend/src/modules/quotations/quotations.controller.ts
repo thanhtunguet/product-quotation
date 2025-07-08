@@ -1,17 +1,21 @@
 import {
-  Controller,
-  Get,
-  Post,
   Body,
-  Patch,
-  Param,
-  Delete,
-  ParseIntPipe,
-  Query,
+  Controller,
   DefaultValuePipe,
+  Delete,
+  Get,
+  Param,
+  ParseIntPipe,
+  Patch,
+  Post,
+  Query,
 } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse, ApiQuery } from '@nestjs/swagger';
-import { QuotationsService, CreateQuotationDto, UpdateQuotationDto } from './quotations.service';
+import { ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  CreateQuotationDto,
+  QuotationsService,
+  UpdateQuotationDto,
+} from './quotations.service';
 
 @ApiTags('quotations')
 @Controller('quotations')
@@ -28,11 +32,21 @@ export class QuotationsController {
   @Get()
   @ApiOperation({ summary: 'Get all quotations with pagination' })
   @ApiResponse({ status: 200, description: 'List of quotations' })
-  @ApiQuery({ name: 'page', required: false, type: Number, description: 'Page number' })
-  @ApiQuery({ name: 'limit', required: false, type: Number, description: 'Items per page' })
+  @ApiQuery({
+    name: 'page',
+    required: false,
+    type: Number,
+    description: 'Page number',
+  })
+  @ApiQuery({
+    name: 'limit',
+    required: false,
+    type: Number,
+    description: 'Items per page',
+  })
   findAll(
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
-    @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number,
+    @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number
   ) {
     return this.quotationsService.findAll(page, limit);
   }
@@ -45,15 +59,33 @@ export class QuotationsController {
   }
 
   @Get('search')
-  @ApiOperation({ summary: 'Search quotations by quotation number, customer name, company name, or phone number' })
+  @ApiOperation({
+    summary:
+      'Search quotations by quotation number, customer name, company name, or phone number',
+  })
   @ApiResponse({ status: 200, description: 'Search results' })
-  @ApiQuery({ name: 'term', required: true, type: String, description: 'Search term' })
-  @ApiQuery({ name: 'page', required: false, type: Number, description: 'Page number' })
-  @ApiQuery({ name: 'limit', required: false, type: Number, description: 'Items per page' })
+  @ApiQuery({
+    name: 'term',
+    required: true,
+    type: String,
+    description: 'Search term',
+  })
+  @ApiQuery({
+    name: 'page',
+    required: false,
+    type: Number,
+    description: 'Page number',
+  })
+  @ApiQuery({
+    name: 'limit',
+    required: false,
+    type: Number,
+    description: 'Items per page',
+  })
   search(
     @Query('term') term: string,
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
-    @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number,
+    @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number
   ) {
     return this.quotationsService.search(term, page, limit);
   }
@@ -61,12 +93,23 @@ export class QuotationsController {
   @Get('by-status/:status')
   @ApiOperation({ summary: 'Get quotations by status' })
   @ApiResponse({ status: 200, description: 'Quotations by status' })
-  @ApiQuery({ name: 'page', required: false, type: Number, description: 'Page number' })
-  @ApiQuery({ name: 'limit', required: false, type: Number, description: 'Items per page' })
+  @ApiQuery({
+    name: 'page',
+    required: false,
+    type: Number,
+    description: 'Page number',
+  })
+  @ApiQuery({
+    name: 'limit',
+    required: false,
+    type: Number,
+    description: 'Items per page',
+  })
   findByStatus(
-    @Param('status') status: 'DRAFT' | 'SENT' | 'ACCEPTED' | 'REJECTED' | 'EXPIRED',
+    @Param('status')
+    status: 'DRAFT' | 'SENT' | 'ACCEPTED' | 'REJECTED' | 'EXPIRED',
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
-    @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number,
+    @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number
   ) {
     return this.quotationsService.findByStatus(status, page, limit);
   }
@@ -74,12 +117,22 @@ export class QuotationsController {
   @Get('by-customer/:customerName')
   @ApiOperation({ summary: 'Get quotations by customer name' })
   @ApiResponse({ status: 200, description: 'Quotations by customer' })
-  @ApiQuery({ name: 'page', required: false, type: Number, description: 'Page number' })
-  @ApiQuery({ name: 'limit', required: false, type: Number, description: 'Items per page' })
+  @ApiQuery({
+    name: 'page',
+    required: false,
+    type: Number,
+    description: 'Page number',
+  })
+  @ApiQuery({
+    name: 'limit',
+    required: false,
+    type: Number,
+    description: 'Items per page',
+  })
   findByCustomer(
     @Param('customerName') customerName: string,
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
-    @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number,
+    @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number
   ) {
     return this.quotationsService.findByCustomer(customerName, page, limit);
   }
@@ -106,18 +159,22 @@ export class QuotationsController {
   @ApiResponse({ status: 404, description: 'Quotation not found' })
   update(
     @Param('id', ParseIntPipe) id: number,
-    @Body() updateQuotationDto: UpdateQuotationDto,
+    @Body() updateQuotationDto: UpdateQuotationDto
   ) {
     return this.quotationsService.update(id, updateQuotationDto);
   }
 
   @Patch(':id/status')
   @ApiOperation({ summary: 'Update quotation status' })
-  @ApiResponse({ status: 200, description: 'Quotation status updated successfully' })
+  @ApiResponse({
+    status: 200,
+    description: 'Quotation status updated successfully',
+  })
   @ApiResponse({ status: 404, description: 'Quotation not found' })
   updateStatus(
     @Param('id', ParseIntPipe) id: number,
-    @Body('status') status: 'DRAFT' | 'SENT' | 'ACCEPTED' | 'REJECTED' | 'EXPIRED',
+    @Body('status')
+    status: 'DRAFT' | 'SENT' | 'ACCEPTED' | 'REJECTED' | 'EXPIRED'
   ) {
     return this.quotationsService.updateStatus(id, status);
   }

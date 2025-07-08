@@ -2,19 +2,19 @@ import React from 'react';
 import { Menu } from 'antd';
 import { Link, useLocation } from 'react-router-dom';
 import {
-  HomeOutlined,
-  ProductOutlined,
-  FileTextOutlined,
-  TagOutlined,
   ApartmentOutlined,
-  ShopOutlined,
-  BuildOutlined,
-  ToolOutlined,
-  BgColorsOutlined,
-  ExpandOutlined,
   AppstoreOutlined,
+  BgColorsOutlined,
+  BuildOutlined,
+  ExpandOutlined,
+  FileTextOutlined,
+  HomeOutlined,
   InboxOutlined,
+  ProductOutlined,
   SettingOutlined,
+  ShopOutlined,
+  TagOutlined,
+  ToolOutlined,
 } from '@ant-design/icons';
 import { useTranslation } from 'react-i18next';
 

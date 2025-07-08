@@ -8,7 +8,7 @@ import { CreateCategoryDto, UpdateCategoryDto } from '../../dto/category.dto';
 export class CategoriesService {
   constructor(
     @InjectRepository(Categories)
-    private readonly categoryRepository: Repository<Categories>,
+    private readonly categoryRepository: Repository<Categories>
   ) {}
 
   async create(createCategoryDto: CreateCategoryDto): Promise<Categories> {
@@ -43,7 +43,10 @@ export class CategoriesService {
     return category;
   }
 
-  async update(id: number, updateCategoryDto: UpdateCategoryDto): Promise<Categories> {
+  async update(
+    id: number,
+    updateCategoryDto: UpdateCategoryDto
+  ): Promise<Categories> {
     const category = await this.findOne(id);
     Object.assign(category, updateCategoryDto);
     return await this.categoryRepository.save(category);

@@ -25,11 +25,15 @@ export interface UpdateProductAttributeDto {
 export class ProductAttributesService {
   constructor(
     @InjectRepository(ProductAttributes)
-    private readonly productAttributeRepository: Repository<ProductAttributes>,
+    private readonly productAttributeRepository: Repository<ProductAttributes>
   ) {}
 
-  async create(createProductAttributeDto: CreateProductAttributeDto): Promise<ProductAttributes> {
-    const productAttribute = this.productAttributeRepository.create(createProductAttributeDto);
+  async create(
+    createProductAttributeDto: CreateProductAttributeDto
+  ): Promise<ProductAttributes> {
+    const productAttribute = this.productAttributeRepository.create(
+      createProductAttributeDto
+    );
     return await this.productAttributeRepository.save(productAttribute);
   }
 
@@ -51,7 +55,10 @@ export class ProductAttributesService {
     return productAttribute;
   }
 
-  async update(id: number, updateProductAttributeDto: UpdateProductAttributeDto): Promise<ProductAttributes> {
+  async update(
+    id: number,
+    updateProductAttributeDto: UpdateProductAttributeDto
+  ): Promise<ProductAttributes> {
     const productAttribute = await this.findOne(id);
     Object.assign(productAttribute, updateProductAttributeDto);
     return await this.productAttributeRepository.save(productAttribute);
@@ -80,7 +87,9 @@ export class ProductAttributesService {
       .getMany();
   }
 
-  async findByDataType(dataType: 'TEXT' | 'NUMBER'): Promise<ProductAttributes[]> {
+  async findByDataType(
+    dataType: 'TEXT' | 'NUMBER'
+  ): Promise<ProductAttributes[]> {
     return await this.productAttributeRepository.find({
       where: { dataType, isActive: true },
       order: { name: 'ASC' },

@@ -1,7 +1,37 @@
-import { useState, useEffect, useRef } from 'react';
-import { Table, Button, Modal, Typography, Space, Tag, message, Popconfirm, Alert, Card, Input, Radio, List, Avatar } from 'antd';
-import { PlusOutlined, EditOutlined, DeleteOutlined, ExclamationCircleOutlined, FileExcelOutlined, DownloadOutlined, UnorderedListOutlined, TableOutlined } from '@ant-design/icons';
-import { apiClient, Product, CreateProductDto, Category, Brand, Manufacturer } from '../../services/api-client';
+import { useEffect, useRef, useState } from 'react';
+import {
+  Alert,
+  Avatar,
+  Button,
+  Card,
+  Input,
+  List,
+  message,
+  Modal,
+  Popconfirm,
+  Radio,
+  Space,
+  Table,
+  Tag,
+  Typography,
+} from 'antd';
+import {
+  DeleteOutlined,
+  EditOutlined,
+  ExclamationCircleOutlined,
+  FileExcelOutlined,
+  PlusOutlined,
+  TableOutlined,
+  UnorderedListOutlined,
+} from '@ant-design/icons';
+import {
+  apiClient,
+  Brand,
+  Category,
+  CreateProductDto,
+  Manufacturer,
+  Product,
+} from '../../services/api-client';
 import ProductForm from './ProductForm';
 import { ExcelImportModal } from './ExcelImportModal';
 import { useTranslation } from 'react-i18next';
@@ -17,9 +47,14 @@ const ProductManager = () => {
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [apiError, setApiError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
-  const [isExcelImportModalVisible, setIsExcelImportModalVisible] = useState(false);
-  const [viewMode, setViewMode] = useState<'pagination' | 'virtual'>('pagination');
+  const [isExcelImportModalVisible, setIsExcelImportModalVisible] =
+    useState(false);
+  const [viewMode, setViewMode] = useState<'pagination' | 'virtual'>(
+    'pagination'
+  );
   const [listHeight, setListHeight] = useState(600);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(20);
   const containerRef = useRef<HTMLDivElement>(null);
 
   // Master data for dropdowns
@@ -29,14 +64,18 @@ const ProductManager = () => {
 
   const fetchMasterData = async () => {
     try {
-      const [categoriesData, brandsData, manufacturersData] = await Promise.all([
-        apiClient.getCategories(),
-        apiClient.brands.getAll(),
-        apiClient.manufacturers.getAll(),
-      ]);
+      const [categoriesData, brandsData, manufacturersData] = await Promise.all(
+        [
+          apiClient.getCategories(),
+          apiClient.brands.getAll(),
+          apiClient.manufacturers.getAll(),
+        ]
+      );
       setCategories(Array.isArray(categoriesData) ? categoriesData : []);
       setBrands(Array.isArray(brandsData) ? brandsData : []);
-      setManufacturers(Array.isArray(manufacturersData) ? manufacturersData : []);
+      setManufacturers(
+        Array.isArray(manufacturersData) ? manufacturersData : []
+      );
     } catch (error) {
       console.error('Failed to fetch master data:', error);
       setCategories([]);
@@ -48,17 +87,25 @@ const ProductManager = () => {
   const fetchProducts = async () => {
     setLoading(true);
     setApiError(null);
-    
+
     try {
       const result = await apiClient.getProducts(searchTerm || undefined);
       setProducts(Array.isArray(result) ? result : []);
     } catch (error: unknown) {
       console.error('Failed to fetch products:', error);
       setProducts([]); // Set to empty array on error
-      if (error instanceof Error && (error.message?.includes('fetch') || error.message?.includes('API Error: 404'))) {
+      if (
+        error instanceof Error &&
+        (error.message?.includes('fetch') ||
+          error.message?.includes('API Error: 404'))
+      ) {
         setApiError(t('products.apiNotImplementedMessage'));
       } else {
-        setApiError(`${t('products.fetchError')}: ${error instanceof Error ? error.message : 'Unknown error'}`);
+        setApiError(
+          `${t('products.fetchError')}: ${
+            error instanceof Error ? error.message : 'Unknown error'
+          }`
+        );
       }
       message.error(t('products.fetchError'));
     } finally {
@@ -78,11 +125,12 @@ const ProductManager = () => {
   useEffect(() => {
     fetchMasterData();
     fetchProducts();
+    setCurrentPage(1); // Reset to first page when search changes
   }, [searchTerm]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     calculateListHeight();
-    
+
     const handleResize = () => {
       calculateListHeight();
     };
@@ -101,12 +149,16 @@ const ProductManager = () => {
   const handleCreate = async (formData: CreateProductDto) => {
     try {
       const newProduct = await apiClient.createProduct(formData);
-      setProducts(prev => [...prev, newProduct]);
+      setProducts((prev) => [...prev, newProduct]);
       setIsModalVisible(false);
       message.success(t('products.createSuccess'));
     } catch (error: unknown) {
       console.error('Failed to create product:', error);
-      if (error instanceof Error && (error.message?.includes('fetch') || error.message?.includes('API Error: 404'))) {
+      if (
+        error instanceof Error &&
+        (error.message?.includes('fetch') ||
+          error.message?.includes('API Error: 404'))
+      ) {
         message.error(t('products.apiNotImplemented'));
       } else {
         message.error(t('products.createError'));
@@ -116,18 +168,27 @@ const ProductManager = () => {
 
   const handleUpdate = async (formData: Partial<CreateProductDto>) => {
     if (!editingProduct) return;
-    
+
     try {
-      const updatedProduct = await apiClient.updateProduct(editingProduct.id, formData);
-      setProducts(prev => prev.map(product => 
-        product.id === editingProduct.id ? updatedProduct : product
-      ));
+      const updatedProduct = await apiClient.updateProduct(
+        editingProduct.id,
+        formData
+      );
+      setProducts((prev) =>
+        prev.map((product) =>
+          product.id === editingProduct.id ? updatedProduct : product
+        )
+      );
       setIsModalVisible(false);
       setEditingProduct(null);
       message.success(t('products.updateSuccess'));
     } catch (error: unknown) {
       console.error('Failed to update product:', error);
-      if (error instanceof Error && (error.message?.includes('fetch') || error.message?.includes('API Error: 404'))) {
+      if (
+        error instanceof Error &&
+        (error.message?.includes('fetch') ||
+          error.message?.includes('API Error: 404'))
+      ) {
         message.error(t('products.apiNotImplemented'));
       } else {
         message.error(t('products.updateError'));
@@ -138,11 +199,15 @@ const ProductManager = () => {
   const handleDelete = async (id: number) => {
     try {
       await apiClient.deleteProduct(id);
-      setProducts(prev => prev.filter(product => product.id !== id));
+      setProducts((prev) => prev.filter((product) => product.id !== id));
       message.success(t('products.deleteSuccess'));
     } catch (error: unknown) {
       console.error('Failed to delete product:', error);
-      if (error instanceof Error && (error.message?.includes('fetch') || error.message?.includes('API Error: 404'))) {
+      if (
+        error instanceof Error &&
+        (error.message?.includes('fetch') ||
+          error.message?.includes('API Error: 404'))
+      ) {
         message.error(t('products.apiNotImplemented'));
       } else {
         message.error(t('products.deleteError'));
@@ -158,6 +223,11 @@ const ProductManager = () => {
   const handleModalClose = () => {
     setIsModalVisible(false);
     setEditingProduct(null);
+  };
+
+  const handlePaginationChange = (page: number, size: number) => {
+    setCurrentPage(page);
+    setPageSize(size);
   };
 
   const columns = [
@@ -198,8 +268,14 @@ const ProductManager = () => {
         return `$${(numPrice || 0).toFixed(2)}`;
       },
       sorter: (a: Product, b: Product) => {
-        const priceA = typeof a.basePrice === 'string' ? parseFloat(a.basePrice) : (a.basePrice || 0);
-        const priceB = typeof b.basePrice === 'string' ? parseFloat(b.basePrice) : (b.basePrice || 0);
+        const priceA =
+          typeof a.basePrice === 'string'
+            ? parseFloat(a.basePrice)
+            : a.basePrice || 0;
+        const priceB =
+          typeof b.basePrice === 'string'
+            ? parseFloat(b.basePrice)
+            : b.basePrice || 0;
         return priceA - priceB;
       },
     },
@@ -216,7 +292,8 @@ const ProductManager = () => {
         { text: t('common.active'), value: true },
         { text: t('common.inactive'), value: false },
       ],
-      onFilter: (value: boolean | React.Key, record: Product) => record.isActive === value,
+      onFilter: (value: boolean | React.Key, record: Product) =>
+        record.isActive === value,
     },
     {
       title: t('common.actions'),
@@ -259,15 +336,11 @@ const ProductManager = () => {
       <div>
         <div className="mb-4 flex justify-between items-center">
           <Title level={2}>{t('products.management')}</Title>
-          <Button 
-            type="primary" 
-            icon={<PlusOutlined />}
-            disabled
-          >
+          <Button type="primary" icon={<PlusOutlined />} disabled>
             {t('products.addProduct')}
           </Button>
         </div>
-        
+
         <Alert
           message={t('products.apiNotImplemented')}
           description={apiError}
@@ -285,10 +358,22 @@ const ProductManager = () => {
           <Title level={4}>{t('products.whatsAvailable')}</Title>
           <p>{t('products.availableFeatures')}</p>
           <ul>
-            <li><strong>{t('masterData.categories')}:</strong> {t('products.categoriesFeature')}</li>
-            <li><strong>{t('masterData.brands')}:</strong> {t('products.brandsFeature')}</li>
-            <li><strong>{t('masterData.manufacturers')}:</strong> {t('products.manufacturersFeature')}</li>
-            <li><strong>{t('masterData.materials')}:</strong> {t('products.otherMasterDataFeature')}</li>
+            <li>
+              <strong>{t('masterData.categories')}:</strong>{' '}
+              {t('products.categoriesFeature')}
+            </li>
+            <li>
+              <strong>{t('masterData.brands')}:</strong>{' '}
+              {t('products.brandsFeature')}
+            </li>
+            <li>
+              <strong>{t('masterData.manufacturers')}:</strong>{' '}
+              {t('products.manufacturersFeature')}
+            </li>
+            <li>
+              <strong>{t('masterData.materials')}:</strong>{' '}
+              {t('products.otherMasterDataFeature')}
+            </li>
           </ul>
           <p>{t('products.futureMessage')}</p>
         </Card>
@@ -308,14 +393,14 @@ const ProductManager = () => {
             onSearch={setSearchTerm}
             onChange={(e) => !e.target.value && setSearchTerm('')}
           />
-          <Button 
+          <Button
             icon={<FileExcelOutlined />}
             onClick={() => setIsExcelImportModalVisible(true)}
           >
             {t('excel.importExcel')}
           </Button>
-          <Button 
-            type="primary" 
+          <Button
+            type="primary"
             icon={<PlusOutlined />}
             onClick={() => setIsModalVisible(true)}
           >
@@ -323,10 +408,10 @@ const ProductManager = () => {
           </Button>
         </Space>
       </div>
-      
+
       <div className="mb-4 flex justify-end">
-        <Radio.Group 
-          value={viewMode} 
+        <Radio.Group
+          value={viewMode}
           onChange={(e) => setViewMode(e.target.value)}
           optionType="button"
           buttonStyle="solid"
@@ -339,18 +424,25 @@ const ProductManager = () => {
           </Radio.Button>
         </Radio.Group>
       </div>
-      
+
       {viewMode === 'pagination' ? (
-        <Table 
-          dataSource={products} 
-          columns={columns} 
+        <Table
+          dataSource={products}
+          columns={columns}
           loading={loading}
           rowKey="id"
-          pagination={{ 
-            pageSize: 20,
+          pagination={{
+            current: currentPage,
+            pageSize: pageSize,
             showSizeChanger: true,
             showQuickJumper: true,
-            showTotal: (total, range) => `${range[0]}-${range[1]} ${t('common.of')} ${total} ${t('common.items')}`,
+            pageSizeOptions: ['10', '20', '50', '100'],
+            showTotal: (total, range) =>
+              `${range[0]}-${range[1]} ${t('common.of')} ${total} ${t(
+                'common.items'
+              )}`,
+            onChange: handlePaginationChange,
+            onShowSizeChange: handlePaginationChange,
           }}
           scroll={{ x: 'max-content' }}
         />
@@ -392,7 +484,7 @@ const ProductManager = () => {
                   >
                     {t('common.delete')}
                   </Button>
-                </Popconfirm>
+                </Popconfirm>,
               ]}
             >
               <List.Item.Meta
@@ -409,18 +501,42 @@ const ProductManager = () => {
                   <Space>
                     <span className="font-bold">{product.name}</span>
                     <Tag color={product.isActive ? 'green' : 'red'}>
-                      {product.isActive ? t('common.active') : t('common.inactive')}
+                      {product.isActive
+                        ? t('common.active')
+                        : t('common.inactive')}
                     </Tag>
                   </Space>
                 }
                 description={
                   <div>
-                    <div><strong>{t('common.code')}:</strong> {product.code}</div>
-                    {product.sku && <div><strong>{t('common.sku')}:</strong> {product.sku}</div>}
-                    <div><strong>{t('common.category')}:</strong> {product.category?.name || t('common.noData')}</div>
-                    <div><strong>{t('common.brand')}:</strong> {product.brand?.name || t('common.noData')}</div>
-                    <div><strong>{t('common.price')}:</strong> ${(typeof product.basePrice === 'string' ? parseFloat(product.basePrice) : (product.basePrice || 0)).toFixed(2)}</div>
-                    {product.description && <div className="mt-2 text-gray-600">{product.description}</div>}
+                    <div>
+                      <strong>{t('common.code')}:</strong> {product.code}
+                    </div>
+                    {product.sku && (
+                      <div>
+                        <strong>{t('common.sku')}:</strong> {product.sku}
+                      </div>
+                    )}
+                    <div>
+                      <strong>{t('common.category')}:</strong>{' '}
+                      {product.category?.name || t('common.noData')}
+                    </div>
+                    <div>
+                      <strong>{t('common.brand')}:</strong>{' '}
+                      {product.brand?.name || t('common.noData')}
+                    </div>
+                    <div>
+                      <strong>{t('common.price')}:</strong> $
+                      {(typeof product.basePrice === 'string'
+                        ? parseFloat(product.basePrice)
+                        : product.basePrice || 0
+                      ).toFixed(2)}
+                    </div>
+                    {product.description && (
+                      <div className="mt-2 text-gray-600">
+                        {product.description}
+                      </div>
+                    )}
                   </div>
                 }
               />
@@ -428,16 +544,18 @@ const ProductManager = () => {
           )}
         />
       )}
-      
-      <Modal 
-        title={editingProduct ? t('products.editProduct') : t('products.addProduct')} 
-        open={isModalVisible} 
-        onCancel={handleModalClose} 
+
+      <Modal
+        title={
+          editingProduct ? t('products.editProduct') : t('products.addProduct')
+        }
+        open={isModalVisible}
+        onCancel={handleModalClose}
         footer={null}
         width={800}
         className="top-5"
       >
-        <ProductForm 
+        <ProductForm
           onSubmit={editingProduct ? handleUpdate : handleCreate}
           initialData={editingProduct}
           categories={categories}

@@ -1,5 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsOptional, IsString, IsNumber, IsBoolean, IsArray, ValidateNested } from 'class-validator';
+import {
+  IsArray,
+  IsBoolean,
+  IsNumber,
+  IsOptional,
+  IsString,
+  ValidateNested,
+} from 'class-validator';
 import { Type } from 'class-transformer';
 
 export class ExcelImportResultDto {
@@ -12,7 +19,10 @@ export class ExcelImportResultDto {
   @ApiProperty({ description: 'Number of rows with errors' })
   errorCount: number;
 
-  @ApiProperty({ description: 'List of errors with row numbers', type: [Object] })
+  @ApiProperty({
+    description: 'List of errors with row numbers',
+    type: [Object],
+  })
   errors: Array<{
     row: number;
     field: string;
@@ -116,13 +126,19 @@ export class ProductImportRowDto {
   @IsBoolean()
   isActive?: boolean;
 
-  @ApiProperty({ description: 'Dynamic attributes as key-value pairs', required: false })
+  @ApiProperty({
+    description: 'Dynamic attributes as key-value pairs',
+    required: false,
+  })
   @IsOptional()
   dynamicAttributes?: Record<string, string | number>;
 }
 
 export class ProductImportValidationDto {
-  @ApiProperty({ description: 'Array of product import rows', type: [ProductImportRowDto] })
+  @ApiProperty({
+    description: 'Array of product import rows',
+    type: [ProductImportRowDto],
+  })
   @IsArray()
   @ValidateNested({ each: true })
   @Type(() => ProductImportRowDto)
@@ -147,13 +163,19 @@ export class RelationMappingsDto {
   @ApiProperty({ description: 'Brand mappings', type: [RelationMappingDto] })
   brands: RelationMappingDto[];
 
-  @ApiProperty({ description: 'Manufacturer mappings', type: [RelationMappingDto] })
+  @ApiProperty({
+    description: 'Manufacturer mappings',
+    type: [RelationMappingDto],
+  })
   manufacturers: RelationMappingDto[];
 
   @ApiProperty({ description: 'Material mappings', type: [RelationMappingDto] })
   materials: RelationMappingDto[];
 
-  @ApiProperty({ description: 'Manufacturing method mappings', type: [RelationMappingDto] })
+  @ApiProperty({
+    description: 'Manufacturing method mappings',
+    type: [RelationMappingDto],
+  })
   manufacturingMethods: RelationMappingDto[];
 
   @ApiProperty({ description: 'Color mappings', type: [RelationMappingDto] })
@@ -162,12 +184,21 @@ export class RelationMappingsDto {
   @ApiProperty({ description: 'Size mappings', type: [RelationMappingDto] })
   sizes: RelationMappingDto[];
 
-  @ApiProperty({ description: 'Product type mappings', type: [RelationMappingDto] })
+  @ApiProperty({
+    description: 'Product type mappings',
+    type: [RelationMappingDto],
+  })
   productTypes: RelationMappingDto[];
 
-  @ApiProperty({ description: 'Packaging type mappings', type: [RelationMappingDto] })
+  @ApiProperty({
+    description: 'Packaging type mappings',
+    type: [RelationMappingDto],
+  })
   packagingTypes: RelationMappingDto[];
 
-  @ApiProperty({ description: 'Product attribute mappings', type: [RelationMappingDto] })
+  @ApiProperty({
+    description: 'Product attribute mappings',
+    type: [RelationMappingDto],
+  })
   productAttributes: RelationMappingDto[];
 }

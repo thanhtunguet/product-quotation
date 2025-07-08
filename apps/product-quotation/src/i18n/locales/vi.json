@@ -211,6 +211,7 @@
     "selectProduct": "Chọn sản phẩm",
     "qty": "SL",
     "addItem": "Thêm sản phẩm",
+    "addProducts": "Thêm sản phẩm",
     "noProductsAvailable": "Chưa có sản phẩm nào. Cần phát triển API sản phẩm trước.",
     "selectProductAndEnterDetails": "Vui lòng chọn sản phẩm và nhập số lượng, giá hợp lệ",
     "selectedProductNotFound": "Không tìm thấy sản phẩm đã chọn",

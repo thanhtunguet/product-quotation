@@ -1,7 +1,7 @@
-import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Products, ProductDynamicAttributes } from '../../entities';
+import { ProductDynamicAttributes, Products } from '../../entities';
 
 export interface DynamicAttributeDto {
   attributeId: number;
@@ -54,18 +54,18 @@ export class ProductsService {
     @InjectRepository(Products)
     private readonly productRepository: Repository<Products>,
     @InjectRepository(ProductDynamicAttributes)
-    private readonly productDynamicAttributesRepository: Repository<ProductDynamicAttributes>,
+    private readonly productDynamicAttributesRepository: Repository<ProductDynamicAttributes>
   ) {}
 
   async create(createProductDto: CreateProductDto): Promise<Products> {
     const { dynamicAttributes, ...productData } = createProductDto;
-    
+
     // Create product
     const product = this.productRepository.create({
       ...productData,
       basePrice: productData.basePrice?.toString() || '0.00',
     });
-    
+
     const savedProduct = await this.productRepository.save(product);
 
     // Handle dynamic attributes
@@ -76,7 +76,10 @@ export class ProductsService {
     return this.findOne(savedProduct.id);
   }
 
-  async findAll(page: number = 1, limit: number = 10): Promise<{ products: Products[]; total: number }> {
+  async findAll(
+    page = 1,
+    limit = 10
+  ): Promise<{ products: Products[]; total: number }> {
     const [products, total] = await this.productRepository.findAndCount({
       where: { isActive: true },
       relations: [
@@ -117,21 +120,24 @@ export class ProductsService {
         'productDynamicAttributes.attribute',
       ],
     });
-    
+
     if (!product) {
       throw new NotFoundException(`Product with ID ${id} not found`);
     }
-    
+
     return product;
   }
 
-  async update(id: number, updateProductDto: UpdateProductDto): Promise<Products> {
+  async update(
+    id: number,
+    updateProductDto: UpdateProductDto
+  ): Promise<Products> {
     const { dynamicAttributes, ...productData } = updateProductDto;
-    
+
     const product = await this.productRepository.findOne({
       where: { id, isActive: true },
     });
-    
+
     if (!product) {
       throw new NotFoundException(`Product with ID ${id} not found`);
     }
@@ -141,14 +147,14 @@ export class ProductsService {
       ...productData,
       basePrice: productData.basePrice?.toString() || product.basePrice,
     });
-    
+
     await this.productRepository.save(product);
 
     // Handle dynamic attributes
     if (dynamicAttributes !== undefined) {
       // Remove existing dynamic attributes
       await this.productDynamicAttributesRepository.delete({ productId: id });
-      
+
       // Add new dynamic attributes
       if (dynamicAttributes.length > 0) {
         await this.saveDynamicAttributes(id, dynamicAttributes);
@@ -162,11 +168,11 @@ export class ProductsService {
     const product = await this.productRepository.findOne({
       where: { id, isActive: true },
     });
-    
+
     if (!product) {
       throw new NotFoundException(`Product with ID ${id} not found`);
     }
-    
+
     await this.productRepository.softDelete(id);
   }
 
@@ -210,8 +216,8 @@ export class ProductsService {
 
   async search(
     term: string,
-    page: number = 1,
-    limit: number = 10,
+    page = 1,
+    limit = 10
   ): Promise<{ products: Products[]; total: number }> {
     const queryBuilder = this.productRepository
       .createQueryBuilder('product')
@@ -224,12 +230,15 @@ export class ProductsService {
       .leftJoinAndSelect('product.size', 'size')
       .leftJoinAndSelect('product.productType', 'productType')
       .leftJoinAndSelect('product.packagingType', 'packagingType')
-      .leftJoinAndSelect('product.productDynamicAttributes', 'productDynamicAttributes')
+      .leftJoinAndSelect(
+        'product.productDynamicAttributes',
+        'productDynamicAttributes'
+      )
       .leftJoinAndSelect('productDynamicAttributes.attribute', 'attribute')
       .where('product.isActive = true')
       .andWhere(
         '(product.name LIKE :term OR product.code LIKE :term OR product.sku LIKE :term OR product.description LIKE :term)',
-        { term: `%${term}%` },
+        { term: `%${term}%` }
       )
       .orderBy('product.createdAt', 'DESC')
       .skip((page - 1) * limit)
@@ -242,8 +251,8 @@ export class ProductsService {
 
   async findByCategory(
     categoryId: number,
-    page: number = 1,
-    limit: number = 10,
+    page = 1,
+    limit = 10
   ): Promise<{ products: Products[]; total: number }> {
     const [products, total] = await this.productRepository.findAndCount({
       where: { categoryId, isActive: true },
@@ -270,16 +279,18 @@ export class ProductsService {
 
   private async saveDynamicAttributes(
     productId: number,
-    dynamicAttributes: DynamicAttributeDto[],
+    dynamicAttributes: DynamicAttributeDto[]
   ): Promise<void> {
     const dynamicAttributeEntities = dynamicAttributes.map((attr) =>
       this.productDynamicAttributesRepository.create({
         productId,
         attributeId: attr.attributeId,
         value: attr.value,
-      }),
+      })
     );
 
-    await this.productDynamicAttributesRepository.save(dynamicAttributeEntities);
+    await this.productDynamicAttributesRepository.save(
+      dynamicAttributeEntities
+    );
   }
 }

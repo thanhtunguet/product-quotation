@@ -1,8 +1,21 @@
 import React, { useEffect, useState } from 'react';
-import { Modal, Table, Input, Button, Space, InputNumber, Tag, message } from 'antd';
-import { SearchOutlined, PlusOutlined } from '@ant-design/icons';
+import {
+  Button,
+  Input,
+  InputNumber,
+  message,
+  Modal,
+  Space,
+  Table,
+  Tag,
+} from 'antd';
+import { PlusOutlined } from '@ant-design/icons';
 import { useTranslation } from 'react-i18next';
-import { Product, QuotationItemDto, apiClient } from '../../services/api-client';
+import {
+  apiClient,
+  Product,
+  QuotationItemDto,
+} from '../../services/api-client';
 
 const { Search } = Input;
 
@@ -25,14 +38,21 @@ const ProductSelectionModal: React.FC<ProductSelectionModalProps> = ({
 }) => {
   const { t } = useTranslation();
   const [products, setProducts] = useState<ProductSelectionItem[]>([]);
-  const [filteredProducts, setFilteredProducts] = useState<ProductSelectionItem[]>([]);
+  const [filteredProducts, setFilteredProducts] = useState<
+    ProductSelectionItem[]
+  >([]);
   const [loading, setLoading] = useState(false);
   const [searchText, setSearchText] = useState('');
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
 
   useEffect(() => {
     if (visible) {
       loadProducts();
+      setCurrentPage(1);
+      setSelectedRowKeys([]);
+      setSearchText('');
     }
   }, [visible]);
 
@@ -41,28 +61,35 @@ const ProductSelectionModal: React.FC<ProductSelectionModalProps> = ({
     if (searchText.trim() === '') {
       setFilteredProducts(products);
     } else {
-      const filtered = products.filter(product =>
-        product.name.toLowerCase().includes(searchText.toLowerCase()) ||
-        product.code.toLowerCase().includes(searchText.toLowerCase()) ||
-        product.category?.name?.toLowerCase().includes(searchText.toLowerCase()) ||
-        product.brand?.name?.toLowerCase().includes(searchText.toLowerCase())
+      const filtered = products.filter(
+        (product) =>
+          product.name.toLowerCase().includes(searchText.toLowerCase()) ||
+          product.code.toLowerCase().includes(searchText.toLowerCase()) ||
+          product.category?.name
+            ?.toLowerCase()
+            .includes(searchText.toLowerCase()) ||
+          product.brand?.name?.toLowerCase().includes(searchText.toLowerCase())
       );
       setFilteredProducts(filtered);
     }
+    // Reset to first page when search changes
+    setCurrentPage(1);
   }, [searchText, products]);
 
   const loadProducts = async () => {
     try {
       setLoading(true);
       const productsData = await apiClient.getProducts();
-      
+
       if (Array.isArray(productsData)) {
-        const productsWithSelection: ProductSelectionItem[] = productsData.map(product => ({
-          ...product,
-          selected: false,
-          quantity: 1,
-          unitPrice: parseFloat(product.basePrice || '0'),
-        }));
+        const productsWithSelection: ProductSelectionItem[] = productsData.map(
+          (product) => ({
+            ...product,
+            selected: false,
+            quantity: 1,
+            unitPrice: parseFloat(product.basePrice || '0'),
+          })
+        );
         setProducts(productsWithSelection);
         setFilteredProducts(productsWithSelection);
       } else {
@@ -71,7 +98,9 @@ const ProductSelectionModal: React.FC<ProductSelectionModalProps> = ({
       }
     } catch (error) {
       console.error('Failed to load products:', error);
-      message.error('Failed to load products. Products API might not be implemented yet.');
+      message.error(
+        'Failed to load products. Products API might not be implemented yet.'
+      );
       setProducts([]);
       setFilteredProducts([]);
     } finally {
@@ -80,21 +109,25 @@ const ProductSelectionModal: React.FC<ProductSelectionModalProps> = ({
   };
 
   const updateProductQuantity = (productId: number, quantity: number) => {
-    const updatedProducts = products.map(product =>
-      product.id === productId ? { ...product, quantity: quantity || 1 } : product
+    const updatedProducts = products.map((product) =>
+      product.id === productId
+        ? { ...product, quantity: quantity || 1 }
+        : product
     );
     setProducts(updatedProducts);
   };
 
   const updateProductPrice = (productId: number, unitPrice: number) => {
-    const updatedProducts = products.map(product =>
-      product.id === productId ? { ...product, unitPrice: unitPrice || 0 } : product
+    const updatedProducts = products.map((product) =>
+      product.id === productId
+        ? { ...product, unitPrice: unitPrice || 0 }
+        : product
     );
     setProducts(updatedProducts);
   };
 
   const handleAddSelectedProducts = () => {
-    const selectedProducts = filteredProducts.filter(product => 
+    const selectedProducts = filteredProducts.filter((product) =>
       selectedRowKeys.includes(product.id)
     );
 
@@ -103,19 +136,26 @@ const ProductSelectionModal: React.FC<ProductSelectionModalProps> = ({
       return;
     }
 
-    const quotationItems: QuotationItemDto[] = selectedProducts.map(product => ({
-      productId: product.id,
-      quantity: product.quantity,
-      unitPrice: product.unitPrice,
-      notes: '',
-    }));
+    const quotationItems: QuotationItemDto[] = selectedProducts.map(
+      (product) => ({
+        productId: product.id,
+        quantity: product.quantity,
+        unitPrice: product.unitPrice,
+        notes: '',
+      })
+    );
 
     onAddProducts(quotationItems);
     onCancel();
-    
+
     // Reset selection
     setSelectedRowKeys([]);
     setSearchText('');
+  };
+
+  const handlePaginationChange = (page: number, size: number) => {
+    setCurrentPage(page);
+    setPageSize(size);
   };
 
   const columns = [
@@ -207,14 +247,20 @@ const ProductSelectionModal: React.FC<ProductSelectionModalProps> = ({
       if (selected) {
         // When selecting, set default values if needed
         updateProductQuantity(record.id, record.quantity || 1);
-        updateProductPrice(record.id, record.unitPrice || parseFloat(record.basePrice || '0'));
+        updateProductPrice(
+          record.id,
+          record.unitPrice || parseFloat(record.basePrice || '0')
+        );
       }
     },
   };
 
   const selectedTotal = filteredProducts
-    .filter(product => selectedRowKeys.includes(product.id))
-    .reduce((total, product) => total + (product.quantity * product.unitPrice), 0);
+    .filter((product) => selectedRowKeys.includes(product.id))
+    .reduce(
+      (total, product) => total + product.quantity * product.unitPrice,
+      0
+    );
 
   return (
     <Modal
@@ -267,11 +313,15 @@ const ProductSelectionModal: React.FC<ProductSelectionModalProps> = ({
           rowKey="id"
           loading={loading}
           pagination={{
-            pageSize: 10,
+            current: currentPage,
+            pageSize: pageSize,
             showSizeChanger: true,
             showQuickJumper: true,
+            pageSizeOptions: ['5', '10', '20', '50'],
             showTotal: (total, range) =>
               `${range[0]}-${range[1]} of ${total} products`,
+            onChange: handlePaginationChange,
+            onShowSizeChange: handlePaginationChange,
           }}
           scroll={{ y: 400 }}
           size="small"
@@ -279,8 +329,7 @@ const ProductSelectionModal: React.FC<ProductSelectionModalProps> = ({
       )}
 
       {selectedRowKeys.length > 0 && (
-        <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-md"
-        >
+        <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-md">
           <Space split="|">
             <span>
               <strong>Selected:</strong> {selectedRowKeys.length} product(s)

@@ -1,15 +1,21 @@
-import { Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
+import { Body, Delete, Get, Param, Patch, Post, Query } from '@nestjs/common';
 import { ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { MasterDataService } from './master-data.service';
 import { MasterDataEntity } from '../entities/base.interface';
-import { CreateMasterDataDto, UpdateMasterDataDto } from '../dto/master-data.dto';
+import {
+  CreateMasterDataDto,
+  UpdateMasterDataDto,
+} from '../dto/master-data.dto';
 
 export abstract class MasterDataController<T extends MasterDataEntity> {
   constructor(protected readonly service: MasterDataService<T>) {}
 
   @Post()
   @ApiOperation({ summary: 'Create a new entity' })
-  @ApiResponse({ status: 201, description: 'The entity has been successfully created.' })
+  @ApiResponse({
+    status: 201,
+    description: 'The entity has been successfully created.',
+  })
   create(@Body() createDto: CreateMasterDataDto) {
     return this.service.create(createDto);
   }
@@ -34,7 +40,10 @@ export abstract class MasterDataController<T extends MasterDataEntity> {
 
   @Patch(':id')
   @ApiOperation({ summary: 'Update entity' })
-  @ApiResponse({ status: 200, description: 'The entity has been successfully updated.' })
+  @ApiResponse({
+    status: 200,
+    description: 'The entity has been successfully updated.',
+  })
   @ApiResponse({ status: 404, description: 'Entity not found.' })
   update(@Param('id') id: string, @Body() updateDto: UpdateMasterDataDto) {
     return this.service.update(+id, updateDto);
@@ -42,7 +51,10 @@ export abstract class MasterDataController<T extends MasterDataEntity> {
 
   @Delete(':id')
   @ApiOperation({ summary: 'Delete entity' })
-  @ApiResponse({ status: 200, description: 'The entity has been successfully deleted.' })
+  @ApiResponse({
+    status: 200,
+    description: 'The entity has been successfully deleted.',
+  })
   @ApiResponse({ status: 404, description: 'Entity not found.' })
   remove(@Param('id') id: string) {
     return this.service.remove(+id);

@@ -1,4 +1,13 @@
-import { IsString, IsBoolean, IsOptional, IsNotEmpty, MaxLength, IsNumber, IsArray, ValidateNested } from 'class-validator';
+import {
+  IsArray,
+  IsBoolean,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsString,
+  MaxLength,
+  ValidateNested,
+} from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 
@@ -96,7 +105,7 @@ export class CreateProductDto {
 
   @IsNumber()
   @IsOptional()
-  @ApiProperty({ required: false, default: 0.00 })
+  @ApiProperty({ required: false, default: 0.0 })
   basePrice?: number;
 
   @IsBoolean()

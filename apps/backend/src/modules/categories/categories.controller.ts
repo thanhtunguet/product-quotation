@@ -1,5 +1,14 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Query,
+} from '@nestjs/common';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CategoriesService } from './categories.service';
 import { CreateCategoryDto, UpdateCategoryDto } from '../../dto/category.dto';
 
@@ -10,7 +19,10 @@ export class CategoriesController {
 
   @Post()
   @ApiOperation({ summary: 'Create a new category' })
-  @ApiResponse({ status: 201, description: 'The category has been successfully created.' })
+  @ApiResponse({
+    status: 201,
+    description: 'The category has been successfully created.',
+  })
   create(@Body() createCategoryDto: CreateCategoryDto) {
     return this.categoriesService.create(createCategoryDto);
   }
@@ -42,15 +54,24 @@ export class CategoriesController {
 
   @Patch(':id')
   @ApiOperation({ summary: 'Update category' })
-  @ApiResponse({ status: 200, description: 'The category has been successfully updated.' })
+  @ApiResponse({
+    status: 200,
+    description: 'The category has been successfully updated.',
+  })
   @ApiResponse({ status: 404, description: 'Category not found.' })
-  update(@Param('id') id: string, @Body() updateCategoryDto: UpdateCategoryDto) {
+  update(
+    @Param('id') id: string,
+    @Body() updateCategoryDto: UpdateCategoryDto
+  ) {
     return this.categoriesService.update(+id, updateCategoryDto);
   }
 
   @Delete(':id')
   @ApiOperation({ summary: 'Delete category' })
-  @ApiResponse({ status: 200, description: 'The category has been successfully deleted.' })
+  @ApiResponse({
+    status: 200,
+    description: 'The category has been successfully deleted.',
+  })
   @ApiResponse({ status: 404, description: 'Category not found.' })
   remove(@Param('id') id: string) {
     return this.categoriesService.remove(+id);
