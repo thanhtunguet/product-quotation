@@ -2,7 +2,11 @@
 // Copy this to your frontend project and adapt as needed
 
 // Base API configuration
-export const API_BASE_URL = new URL('/api', window.location.origin).href;
+const origin =
+  process.env.NODE_ENV === 'development'
+    ? 'http://localhost:3000'
+    : window.location.origin;
+export const API_BASE_URL = new URL('/api', origin).href;
 
 // Common interfaces
 export interface BaseEntity {

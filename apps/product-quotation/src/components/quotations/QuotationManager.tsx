@@ -1,11 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Table, Button, Modal, Typography, Space, Tag, message, Popconfirm, Alert, Card, Input, DatePicker, Select, Dropdown } from 'antd';
-import { PlusOutlined, EditOutlined, DeleteOutlined, ExclamationCircleOutlined, SearchOutlined, FilePdfOutlined, DownOutlined, EyeOutlined, DownloadOutlined, ExportOutlined, ImportOutlined, SyncOutlined } from '@ant-design/icons';
+import { PlusOutlined, EditOutlined, DeleteOutlined, ExclamationCircleOutlined, SearchOutlined, FilePdfOutlined, DownOutlined, EyeOutlined, DownloadOutlined, ExportOutlined, ImportOutlined, SyncOutlined, FileExcelOutlined } from '@ant-design/icons';
 import { apiClient, Quotation, CreateQuotationDto, QuotationStatus } from '../../services/api-client';
 import { enhancedApiClient } from '../../services/enhanced-api-client';
 import QuotationForm from './QuotationForm';
 import QuotationPDF from './QuotationPDF';
 import PDFGenerator from '../../utils/pdfGenerator';
+import ExcelExporter from '../../utils/excelExporter';
+import { addDemoDataToLocalStorage } from '../../utils/demoData';
 import moment from 'moment';
 import { useTranslation } from 'react-i18next';
 
@@ -44,6 +46,8 @@ const QuotationManager = () => {
   };
 
   useEffect(() => {
+    // Add demo data if no quotations exist
+    addDemoDataToLocalStorage();
     fetchQuotations();
   }, [searchTerm]);
 
@@ -232,6 +236,67 @@ const QuotationManager = () => {
     }
   };
 
+  const handleExcelExport = async (quotation: Quotation) => {
+    try {
+      setGeneratingPdf(true); // Reuse loading state
+      await ExcelExporter.exportQuotation(quotation, {
+        filename: `quotation-${quotation.quotationNumber}.xlsx`,
+        includeFormulas: true,
+        vietnameseLabels: true,
+      });
+      message.success('Excel file exported successfully');
+    } catch (error) {
+      console.error('Excel export error:', error);
+      message.error('Failed to export Excel file');
+    } finally {
+      setGeneratingPdf(false);
+    }
+  };
+
+  const handleExportAllQuotations = async () => {
+    try {
+      setLoading(true);
+      if (quotations.length === 0) {
+        message.warning('No quotations to export');
+        return;
+      }
+
+      await ExcelExporter.exportQuotationsSummary(quotations, {
+        filename: `quotations-summary-${moment().format('YYYY-MM-DD')}.xlsx`,
+        includeFormulas: true,
+        vietnameseLabels: true,
+      });
+      message.success('Quotations summary exported successfully');
+    } catch (error) {
+      console.error('Excel export error:', error);
+      message.error('Failed to export quotations summary');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleExportMultipleQuotations = async () => {
+    try {
+      setLoading(true);
+      if (quotations.length === 0) {
+        message.warning('No quotations to export');
+        return;
+      }
+
+      await ExcelExporter.exportMultipleQuotations(quotations, {
+        filename: `quotations-detailed-${moment().format('YYYY-MM-DD')}.xlsx`,
+        includeFormulas: true,
+        vietnameseLabels: true,
+      });
+      message.success('Detailed quotations exported successfully');
+    } catch (error) {
+      console.error('Excel export error:', error);
+      message.error('Failed to export detailed quotations');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const getStatusColor = (status: QuotationStatus) => {
     switch (status) {
       case QuotationStatus.DRAFT: return 'default';
@@ -324,42 +389,51 @@ const QuotationManager = () => {
       title: t('common.actions'),
       key: 'actions',
       render: (_, record: Quotation) => {
-        const pdfMenuItems = [
+        const exportMenuItems = [
           {
-            key: 'preview',
+            key: 'pdf-preview',
             label: 'Preview PDF',
             icon: <EyeOutlined />,
             onClick: () => handlePdfAction('preview', record),
           },
           {
-            key: 'download',
+            key: 'pdf-download',
             label: 'Download PDF',
-            icon: <DownloadOutlined />,
+            icon: <FilePdfOutlined />,
             onClick: () => handlePdfAction('download', record),
           },
           {
-            key: 'open',
-            label: 'Open in New Tab',
-            icon: <FilePdfOutlined />,
+            key: 'pdf-open',
+            label: 'Open PDF in New Tab',
+            icon: <DownloadOutlined />,
             onClick: () => handlePdfAction('open', record),
+          },
+          {
+            type: 'divider',
+          },
+          {
+            key: 'excel-export',
+            label: 'Export to Excel',
+            icon: <FileExcelOutlined />,
+            onClick: () => handleExcelExport(record),
           },
         ];
 
         return (
           <Space>
             <Dropdown
-              menu={{ items: pdfMenuItems }}
+              menu={{ items: exportMenuItems }}
               trigger={['click']}
               disabled={generatingPdf}
             >
               <Button
-                icon={<FilePdfOutlined />}
+                icon={<ExportOutlined />}
                 type="link"
                 size="small"
                 disabled={generatingPdf}
                 loading={generatingPdf && selectedQuotationForPdf?.id === record.id}
               >
-                {t('common.pdf')} <DownOutlined />
+                Export <DownOutlined />
               </Button>
             </Dropdown>
             <Button
@@ -413,16 +487,36 @@ const QuotationManager = () => {
             menu={{
               items: [
                 {
+                  key: 'excel-summary',
+                  label: 'Export Summary to Excel',
+                  icon: <FileExcelOutlined />,
+                  onClick: handleExportAllQuotations,
+                  disabled: loading || quotations.length === 0,
+                },
+                {
+                  key: 'excel-detailed',
+                  label: 'Export Detailed to Excel',
+                  icon: <FileExcelOutlined />,
+                  onClick: handleExportMultipleQuotations,
+                  disabled: loading || quotations.length === 0,
+                },
+                {
+                  type: 'divider',
+                },
+                {
                   key: 'export',
-                  label: 'Export Data',
+                  label: 'Export JSON Data',
                   icon: <ExportOutlined />,
                   onClick: handleExportData,
                 },
                 {
                   key: 'import',
-                  label: 'Import Data',
+                  label: 'Import JSON Data',
                   icon: <ImportOutlined />,
                   onClick: handleImportData,
+                },
+                {
+                  type: 'divider',
                 },
                 {
                   key: 'sync',

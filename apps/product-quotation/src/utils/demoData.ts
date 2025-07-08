@@ -1,0 +1,236 @@
+// Demo data for testing Excel export functionality
+import { Quotation, QuotationStatus } from '../services/api-client';
+
+export const createDemoQuotations = (): Quotation[] => {
+  const now = new Date().toISOString();
+  const validUntil = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(); // 30 days from now
+
+  return [
+    {
+      id: 1,
+      quotationNumber: 'QT000001',
+      customerName: 'Nguyễn Văn An',
+      companyName: 'Công ty TNHH Kinh Doanh ABC',
+      phoneNumber: '0901234567',
+      quotationDate: now,
+      validUntil: validUntil,
+      status: QuotationStatus.DRAFT,
+      totalAmount: 5500000,
+      notes: 'Khách hàng yêu cầu giao hàng trước ngày 15/01/2025',
+      quotationItems: [
+        {
+          id: 1,
+          quotationId: 1,
+          productId: 1,
+          quantity: 10,
+          unitPrice: 250000,
+          totalPrice: 2500000,
+          notes: 'Màu xanh, size L',
+          product: {
+            id: 1,
+            name: 'Áo thun cao cấp',
+            code: 'AT001',
+            sku: 'SKU001',
+            categoryId: 1,
+            basePrice: '250000',
+            isActive: true,
+            description: 'Áo thun cotton 100%, chất lượng cao, thiết kế hiện đại',
+            category: {
+              id: 1,
+              name: 'Thời trang',
+              code: 'TT',
+              isActive: true,
+              children: [],
+              createdAt: now,
+              updatedAt: now,
+            },
+            dynamicAttributes: [],
+            createdAt: now,
+            updatedAt: now,
+          },
+          createdAt: now,
+          updatedAt: now,
+        },
+        {
+          id: 2,
+          quotationId: 1,
+          productId: 2,
+          quantity: 5,
+          unitPrice: 600000,
+          totalPrice: 3000000,
+          notes: 'Màu đen, không kẻ sọc',
+          product: {
+            id: 2,
+            name: 'Quần âu công sở',
+            code: 'QA001',
+            sku: 'SKU002',
+            categoryId: 1,
+            basePrice: '600000',
+            isActive: true,
+            description: 'Quần âu công sở, chất liệu cao cấp, phù hợp môi trường văn phòng',
+            category: {
+              id: 1,
+              name: 'Thời trang',
+              code: 'TT',
+              isActive: true,
+              children: [],
+              createdAt: now,
+              updatedAt: now,
+            },
+            dynamicAttributes: [],
+            createdAt: now,
+            updatedAt: now,
+          },
+          createdAt: now,
+          updatedAt: now,
+        },
+      ],
+      createdAt: now,
+      updatedAt: now,
+    },
+    {
+      id: 2,
+      quotationNumber: 'QT000002',
+      customerName: 'Trần Thị Bình',
+      companyName: 'Cửa hàng thời trang XYZ',
+      phoneNumber: '0912345678',
+      quotationDate: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(), // 2 days ago
+      validUntil: new Date(Date.now() + 28 * 24 * 60 * 60 * 1000).toISOString(),
+      status: QuotationStatus.SENT,
+      totalAmount: 8800000,
+      notes: 'Đơn hàng số lượng lớn, có thể thương lượng giá',
+      quotationItems: [
+        {
+          id: 3,
+          quotationId: 2,
+          productId: 3,
+          quantity: 20,
+          unitPrice: 400000,
+          totalPrice: 8000000,
+          notes: 'Mix size S, M, L, XL',
+          product: {
+            id: 3,
+            name: 'Áo khoác denim',
+            code: 'AK001',
+            sku: 'SKU003',
+            categoryId: 1,
+            basePrice: '400000',
+            isActive: true,
+            description: 'Áo khoác jeans cao cấp, phong cách trẻ trung, hiện đại',
+            category: {
+              id: 1,
+              name: 'Thời trang',
+              code: 'TT',
+              isActive: true,
+              children: [],
+              createdAt: now,
+              updatedAt: now,
+            },
+            dynamicAttributes: [],
+            createdAt: now,
+            updatedAt: now,
+          },
+          createdAt: now,
+          updatedAt: now,
+        },
+        {
+          id: 4,
+          quotationId: 2,
+          productId: 4,
+          quantity: 4,
+          unitPrice: 200000,
+          totalPrice: 800000,
+          notes: 'Màu trắng và đen',
+          product: {
+            id: 4,
+            name: 'Giày thể thao',
+            code: 'GT001',
+            sku: 'SKU004',
+            categoryId: 2,
+            basePrice: '200000',
+            isActive: true,
+            description: 'Giày thể thao năng động, phù hợp mọi hoạt động',
+            category: {
+              id: 2,
+              name: 'Giày dép',
+              code: 'GD',
+              isActive: true,
+              children: [],
+              createdAt: now,
+              updatedAt: now,
+            },
+            dynamicAttributes: [],
+            createdAt: now,
+            updatedAt: now,
+          },
+          createdAt: now,
+          updatedAt: now,
+        },
+      ],
+      createdAt: now,
+      updatedAt: now,
+    },
+    {
+      id: 3,
+      quotationNumber: 'QT000003',
+      customerName: 'Lê Văn Cường',
+      companyName: '',
+      phoneNumber: '0923456789',
+      quotationDate: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(), // 5 days ago
+      validUntil: new Date(Date.now() + 25 * 24 * 60 * 60 * 1000).toISOString(),
+      status: QuotationStatus.ACCEPTED,
+      totalAmount: 1650000,
+      notes: '',
+      quotationItems: [
+        {
+          id: 5,
+          quotationId: 3,
+          productId: 5,
+          quantity: 3,
+          unitPrice: 550000,
+          totalPrice: 1650000,
+          notes: 'Size 42, màu nâu',
+          product: {
+            id: 5,
+            name: 'Giày da cao cấp',
+            code: 'GD001',
+            sku: 'SKU005',
+            categoryId: 2,
+            basePrice: '550000',
+            isActive: true,
+            description: 'Giày da thật, thiết kế sang trọng, phù hợp công việc',
+            category: {
+              id: 2,
+              name: 'Giày dép',
+              code: 'GD',
+              isActive: true,
+              children: [],
+              createdAt: now,
+              updatedAt: now,
+            },
+            dynamicAttributes: [],
+            createdAt: now,
+            updatedAt: now,
+          },
+          createdAt: now,
+          updatedAt: now,
+        },
+      ],
+      createdAt: now,
+      updatedAt: now,
+    },
+  ];
+};
+
+// Helper function to add demo data to localStorage
+export const addDemoDataToLocalStorage = (): void => {
+  const demoQuotations = createDemoQuotations();
+  const existingData = localStorage.getItem('product-quotation-quotations');
+  
+  if (!existingData || JSON.parse(existingData).length === 0) {
+    localStorage.setItem('product-quotation-quotations', JSON.stringify(demoQuotations));
+    localStorage.setItem('product-quotation-counter', '3');
+  }
+};
+
+export default { createDemoQuotations, addDemoDataToLocalStorage };
