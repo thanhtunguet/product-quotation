@@ -22,7 +22,9 @@ import {
   ExportOutlined,
   EyeOutlined,
   FileExcelOutlined,
+  FileOutlined,
   FilePdfOutlined,
+  FileTextOutlined,
   ImportOutlined,
   PlusOutlined,
   SyncOutlined,
@@ -40,6 +42,8 @@ import ExcelExporter from '../../utils/excelExporter';
 import { addDemoDataToLocalStorage } from '../../utils/demoData';
 import moment from 'moment';
 import { useTranslation } from 'react-i18next';
+import sheetIcon from '../../assets/sheets.png';
+import pdfIcon from '../../assets/pdf.png';
 
 const { Title } = Typography;
 const { Search } = Input;
@@ -450,55 +454,38 @@ const QuotationManager = () => {
     {
       title: t('common.actions'),
       key: 'actions',
-      width: 120,
+      className: 'flex justify-between',
+      width: 150,
       render: (_, record: Quotation) => {
-        const exportMenuItems = [
-          {
-            key: 'pdf-preview',
-            label: 'Preview PDF',
-            icon: <EyeOutlined />,
-            onClick: () => handlePdfAction('preview', record),
-          },
-          {
-            key: 'pdf-download',
-            label: 'Download PDF',
-            icon: <FilePdfOutlined />,
-            onClick: () => handlePdfAction('download', record),
-          },
-          {
-            key: 'pdf-open',
-            label: 'Open PDF in New Tab',
-            icon: <DownloadOutlined />,
-            onClick: () => handlePdfAction('open', record),
-          },
-          {
-            type: 'divider',
-          },
-          {
-            key: 'excel-export',
-            label: 'Export to Excel',
-            icon: <FileExcelOutlined />,
-            onClick: () => handleExcelExport(record),
-          },
-        ];
-
         return (
           <Space>
-            <Dropdown
-              menu={{ items: exportMenuItems }}
-              trigger={['click']}
+            <Button
+              icon={<EyeOutlined />}
+              onClick={() => handlePdfAction('preview', record)}
+              type="link"
+              size="small"
               disabled={generatingPdf}
-            >
-              <Button
-                icon={<ExportOutlined />}
-                type="link"
-                size="small"
-                disabled={generatingPdf}
-                loading={
-                  generatingPdf && selectedQuotationForPdf?.id === record.id
-                }
-              />
-            </Dropdown>
+              loading={
+                generatingPdf && selectedQuotationForPdf?.id === record.id
+              }
+            />
+            <Button
+              icon={<img width={24} src={pdfIcon} alt="PDF" />}
+              onClick={() => handlePdfAction('download', record)}
+              type="link"
+              size="small"
+              disabled={generatingPdf}
+              loading={
+                generatingPdf && selectedQuotationForPdf?.id === record.id
+              }
+            />
+            <Button
+              icon={<img width={24} src={sheetIcon} alt="Excel" />}
+              onClick={() => handleExcelExport(record)}
+              type="link"
+              size="small"
+              disabled={generatingPdf}
+            />
             <Button
               icon={<EditOutlined />}
               onClick={() => handleEdit(record)}
