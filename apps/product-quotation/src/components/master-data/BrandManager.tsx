@@ -1,14 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import {
-  Button,
-  message,
-  Modal,
-  Popconfirm,
-  Space,
-  Table,
-  Tag,
-  Typography,
-} from 'antd';
+import { Button, message, Modal, Popconfirm, Space, Table, Tag } from 'antd';
 import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons';
 import { useTranslation } from 'react-i18next';
 import {
@@ -172,7 +163,10 @@ const BrandManager = () => {
           showSizeChanger: true,
           showQuickJumper: true,
           pageSizeOptions: ['5', '10', '20', '50'],
-          showTotal: (total, range) => `${range[0]}-${range[1]} ${t('common.of')} ${total} ${t('common.items')}`,
+          showTotal: (total, range) =>
+            `${range[0]}-${range[1]} ${t('common.of')} ${total} ${t(
+              'common.items'
+            )}`,
           onChange: handlePaginationChange,
           onShowSizeChange: handlePaginationChange,
         }}

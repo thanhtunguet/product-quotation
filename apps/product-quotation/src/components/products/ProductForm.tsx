@@ -18,9 +18,15 @@ import {
   apiClient,
   Brand,
   Category,
+  Color,
   CreateProductDto,
   Manufacturer,
+  ManufacturingMethod,
+  Material,
+  PackagingType,
   Product,
+  ProductType,
+  Size,
 } from '../../services/api-client';
 
 const { TextArea } = Input;
@@ -46,12 +52,14 @@ const ProductForm: React.FC<ProductFormProps> = ({
   const [loading, setLoading] = useState(false);
 
   // Additional master data
-  const [materials, setMaterials] = useState<any[]>([]);
-  const [colors, setColors] = useState<any[]>([]);
-  const [sizes, setSizes] = useState<any[]>([]);
-  const [productTypes, setProductTypes] = useState<any[]>([]);
-  const [packagingTypes, setPackagingTypes] = useState<any[]>([]);
-  const [manufacturingMethods, setManufacturingMethods] = useState<any[]>([]);
+  const [materials, setMaterials] = useState<Material[]>([]);
+  const [colors, setColors] = useState<Color[]>([]);
+  const [sizes, setSizes] = useState<Size[]>([]);
+  const [productTypes, setProductTypes] = useState<ProductType[]>([]);
+  const [packagingTypes, setPackagingTypes] = useState<PackagingType[]>([]);
+  const [manufacturingMethods, setManufacturingMethods] = useState<
+    ManufacturingMethod[]
+  >([]);
 
   useEffect(() => {
     if (initialData) {
@@ -113,7 +121,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
     loadMasterData();
   }, []);
 
-  const handleSubmit = async (values: any) => {
+  const handleSubmit = async (values: CreateProductDto) => {
     setLoading(true);
     try {
       const productData: CreateProductDto = {
@@ -144,10 +152,21 @@ const ProductForm: React.FC<ProductFormProps> = ({
     }
   };
 
-  const transformCategoriesToTree = (categories: Category[]): any[] => {
+  interface TreeSelectNode {
+    value: number;
+    title: string;
+    key: number;
+    children: TreeSelectNode[];
+  }
+
+  const transformCategoriesToTree = (
+    categories: Category[]
+  ): TreeSelectNode[] => {
     const rootCategories = categories.filter((cat) => !cat.parentId);
 
-    const buildTree = (parentCategories: Category[]): any[] => {
+    const buildTree = (
+      parentCategories: Category[]
+    ): TreeSelectNode[] => {
       return parentCategories.map((cat) => ({
         value: cat.id,
         title: cat.name,
@@ -247,7 +266,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
               treeData={transformCategoriesToTree(categories)}
               showSearch
               filterTreeNode={(search, node) =>
-                node.title?.toLowerCase().includes(search.toLowerCase())
+                (node.title as string)?.toLowerCase().includes(search.toLowerCase())
               }
             />
           </Form.Item>

@@ -1,5 +1,5 @@
 import { message, Tree } from 'antd';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { apiClient, Category } from '../../services/api-client';
 
 const CategoryTree = () => {
@@ -10,11 +10,13 @@ const CategoryTree = () => {
       try {
         const data = await apiClient.getCategoryTree();
         setTreeData(Array.isArray(data) ? data : []);
-      } catch (error: any) {
+      } catch (error) {
         console.error('Failed to fetch category tree:', error);
         setTreeData([]);
         message.error(
-          `Failed to fetch categories: ${error.message || 'Unknown error'}`
+          `Failed to fetch categories: ${
+            (error as Error).message || 'Unknown error'
+          }`
         );
       }
     };
@@ -22,7 +24,13 @@ const CategoryTree = () => {
     fetchTreeData();
   }, []);
 
-  const transformToAntdTree = (categories: Category[]): any[] => {
+  interface TreeNode {
+    title: string;
+    key: number;
+    children: TreeNode[];
+  }
+
+  const transformToAntdTree = (categories: Category[]): TreeNode[] => {
     return categories.map((cat) => ({
       title: cat.name,
       key: cat.id,
@@ -33,7 +41,7 @@ const CategoryTree = () => {
   return (
     <Tree
       treeData={transformToAntdTree(treeData)}
-      onSelect={(keys) => console.log('Selected:', keys)}
+      onSelect={(keys: React.Key[]) => console.log('Selected:', keys)}
     />
   );
 };

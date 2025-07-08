@@ -176,14 +176,14 @@ const ProductSelectionModal: React.FC<ProductSelectionModalProps> = ({
       dataIndex: 'category',
       key: 'category',
       width: 120,
-      render: (category: any) => category?.name || '-',
+      render: (category: Product['category']) => category?.name || '-',
     },
     {
       title: t('common.brand'),
       dataIndex: 'brand',
       key: 'brand',
       width: 100,
-      render: (brand: any) => brand?.name || '-',
+      render: (brand: Product['brand']) => brand?.name || '-',
     },
     {
       title: t('common.basePrice'),
@@ -196,7 +196,7 @@ const ProductSelectionModal: React.FC<ProductSelectionModalProps> = ({
       title: t('common.quantity'),
       key: 'quantity',
       width: 100,
-      render: (_: any, record: ProductSelectionItem) => (
+      render: (_: unknown, record: ProductSelectionItem) => (
         <InputNumber
           min={1}
           value={record.quantity}
@@ -210,7 +210,7 @@ const ProductSelectionModal: React.FC<ProductSelectionModalProps> = ({
       title: t('common.unitPrice'),
       key: 'unitPrice',
       width: 120,
-      render: (_: any, record: ProductSelectionItem) => (
+      render: (_: unknown, record: ProductSelectionItem) => (
         <InputNumber
           min={0}
           step={0.01}
@@ -227,7 +227,7 @@ const ProductSelectionModal: React.FC<ProductSelectionModalProps> = ({
       title: t('common.total'),
       key: 'total',
       width: 100,
-      render: (_: any, record: ProductSelectionItem) => {
+      render: (_: unknown, record: ProductSelectionItem) => {
         const total = record.quantity * record.unitPrice;
         return (
           <Tag color={selectedRowKeys.includes(record.id) ? 'blue' : 'default'}>

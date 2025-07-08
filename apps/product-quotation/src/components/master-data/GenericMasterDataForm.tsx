@@ -24,7 +24,7 @@ const GenericMasterDataForm: React.FC<GenericMasterDataFormProps> = ({
 
   useEffect(() => {
     if (initialData) {
-      const formValues: any = {
+      const formValues: Partial<MasterDataEntity> & { hexCode?: string } = {
         name: initialData.name,
         code: initialData.code,
         description: initialData.description,
@@ -40,7 +40,7 @@ const GenericMasterDataForm: React.FC<GenericMasterDataFormProps> = ({
     }
   }, [initialData, form, hasHexCode]);
 
-  const handleSubmit = (values: any) => {
+  const handleSubmit = (values: CreateMasterDataDto & { hexCode?: string }) => {
     const data: CreateMasterDataDto | UpdateMasterDataDto = {
       name: values.name,
       code: values.code,
@@ -50,7 +50,7 @@ const GenericMasterDataForm: React.FC<GenericMasterDataFormProps> = ({
 
     // Add hexCode for colors
     if (hasHexCode && values.hexCode) {
-      (data as any).hexCode = values.hexCode;
+      (data as Color).hexCode = values.hexCode;
     }
 
     onSubmit(data);

@@ -17,7 +17,7 @@ const ProductList = () => {
     {
       title: 'Action',
       key: 'action',
-      render: (text: any, record: Product) => (
+      render: (text: string, record: Product) => (
         <span>
           <Link to={`/products/${record.id}/edit`}>Edit</Link>
         </span>

@@ -132,7 +132,14 @@ const QuotationForm: React.FC<QuotationFormProps> = ({
     return `QT-${year}${month}${day}-${hours}${minutes}${seconds}`;
   };
 
-  const handleSubmit = async (values: any) => {
+  const handleSubmit = async (values: {
+    customerName: string;
+    companyName?: string;
+    phoneNumber: string;
+    quotationDate: moment.Moment;
+    validUntil?: moment.Moment;
+    notes?: string;
+  }) => {
     setLoading(true);
     try {
       if (quotationItems.length === 0) {
@@ -179,7 +186,7 @@ const QuotationForm: React.FC<QuotationFormProps> = ({
       dataIndex: 'quantity',
       key: 'quantity',
       width: 140,
-      render: (quantity: number, _: any, index: number) => (
+      render: (quantity: number, _: QuotationItemDto, index: number) => (
         <div className="flex items-center gap-1">
           <Button
             size="small"
@@ -210,7 +217,7 @@ const QuotationForm: React.FC<QuotationFormProps> = ({
       dataIndex: 'unitPrice',
       key: 'unitPrice',
       width: 120,
-      render: (price: number, _: any, index: number) => (
+      render: (price: number, _: QuotationItemDto, index: number) => (
         <InputNumber
           value={price}
           onChange={(value) => updateItemPrice(index, value || 0)}
@@ -227,14 +234,14 @@ const QuotationForm: React.FC<QuotationFormProps> = ({
       title: t('common.total'),
       key: 'total',
       width: 120,
-      render: (_: any, record: QuotationItemDto) =>
+      render: (_: unknown, record: QuotationItemDto) =>
         `$${(record.quantity * record.unitPrice).toFixed(2)}`,
     },
     {
       title: t('common.notes'),
       dataIndex: 'notes',
       key: 'notes',
-      render: (notes: string, _: any, index: number) => (
+      render: (notes: string, _: QuotationItemDto, index: number) => (
         <Input.TextArea
           value={notes}
           onChange={(e) => updateItemNotes(index, e.target.value)}
@@ -248,7 +255,7 @@ const QuotationForm: React.FC<QuotationFormProps> = ({
       title: t('common.actions'),
       key: 'actions',
       width: 80,
-      render: (_: any, __: any, index: number) => (
+      render: (_: unknown, __: QuotationItemDto, index: number) => (
         <Button
           icon={<DeleteOutlined />}
           onClick={() => removeItem(index)}

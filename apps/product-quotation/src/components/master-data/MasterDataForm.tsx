@@ -28,7 +28,7 @@ const MasterDataForm: React.FC<MasterDataFormProps> = ({
     }
   }, [initialData, form]);
 
-  const handleSubmit = (values: any) => {
+  const handleSubmit = (values: CreateMasterDataDto | UpdateMasterDataDto) => {
     onSubmit(values);
   };
 

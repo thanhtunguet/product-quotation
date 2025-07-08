@@ -17,7 +17,6 @@ import {
   Tabs,
   Tag,
   Tree,
-  Typography,
 } from 'antd';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -48,12 +47,14 @@ const CategoryManager = () => {
       ]);
       setCategories(Array.isArray(flatData) ? flatData : []);
       setTreeData(Array.isArray(treeData) ? treeData : []);
-    } catch (error: any) {
+    } catch (error) {
       console.error('Failed to fetch categories:', error);
       setCategories([]);
       setTreeData([]);
       message.error(
-        `${t('categories.fetchError')}: ${error.message || 'Unknown error'}`
+        `${t('categories.fetchError')}: ${
+          (error as Error).message || 'Unknown error'
+        }`
       );
     } finally {
       setLoading(false);
@@ -70,10 +71,12 @@ const CategoryManager = () => {
       await fetchCategories();
       setIsModalVisible(false);
       message.success(t('categories.createSuccess'));
-    } catch (error: any) {
+    } catch (error) {
       console.error('Failed to create category:', error);
       message.error(
-        `${t('categories.createError')}: ${error.message || 'Unknown error'}`
+        `${t('categories.createError')}: ${
+          (error as Error).message || 'Unknown error'
+        }`
       );
     }
   };
@@ -87,10 +90,12 @@ const CategoryManager = () => {
       setIsModalVisible(false);
       setEditingCategory(null);
       message.success(t('categories.updateSuccess'));
-    } catch (error: any) {
+    } catch (error) {
       console.error('Failed to update category:', error);
       message.error(
-        `${t('categories.updateError')}: ${error.message || 'Unknown error'}`
+        `${t('categories.updateError')}: ${
+          (error as Error).message || 'Unknown error'
+        }`
       );
     }
   };
@@ -100,10 +105,12 @@ const CategoryManager = () => {
       await apiClient.deleteCategory(id);
       await fetchCategories();
       message.success(t('categories.deleteSuccess'));
-    } catch (error: any) {
+    } catch (error) {
       console.error('Failed to delete category:', error);
       message.error(
-        `${t('categories.deleteError')}: ${error.message || 'Unknown error'}`
+        `${t('categories.deleteError')}: ${
+          (error as Error).message || 'Unknown error'
+        }`
       );
     }
   };
@@ -123,7 +130,13 @@ const CategoryManager = () => {
     setPageSize(size);
   };
 
-  const transformToAntdTree = (categories: Category[]): any[] => {
+  const transformToAntdTree = (
+    categories: Category[]
+  ): {
+    title: JSX.Element;
+    key: number;
+    children: { title: JSX.Element; key: number; children: Category[] }[];
+  }[] => {
     return categories.map((cat) => ({
       title: (
         <div className="flex justify-between items-center p-2 min-h-8">
@@ -204,7 +217,7 @@ const CategoryManager = () => {
       title: t('common.actions'),
       key: 'actions',
       width: 100,
-      render: (_: any, record: Category) => (
+      render: (_: unknown, record: Category) => (
         <Space>
           <Button
             icon={<EditOutlined />}

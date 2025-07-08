@@ -31,7 +31,7 @@ const CategoryForm: React.FC<CategoryFormProps> = ({
     }
   }, [initialData, form]);
 
-  const handleSubmit = (values: any) => {
+  const handleSubmit = (values: CreateCategoryDto | UpdateCategoryDto) => {
     const data = {
       ...values,
       parentId: values.parentId || undefined,

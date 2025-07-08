@@ -22,9 +22,7 @@ import {
   ExportOutlined,
   EyeOutlined,
   FileExcelOutlined,
-  FileOutlined,
   FilePdfOutlined,
-  FileTextOutlined,
   ImportOutlined,
   PlusOutlined,
   SyncOutlined,
@@ -76,10 +74,10 @@ const QuotationManager = () => {
         searchTerm || undefined
       );
       setQuotations(Array.isArray(result) ? result : []);
-    } catch (error: any) {
+    } catch (error) {
       console.error('Failed to fetch quotations:', error);
       setQuotations([]); // Set to empty array on error
-      setApiError(`${t('quotations.fetchError')}: ${error.message}`);
+      setApiError(`${t('quotations.fetchError')}: ${(error as Error).message}`);
       message.error(t('quotations.fetchError'));
     } finally {
       setLoading(false);
@@ -99,7 +97,7 @@ const QuotationManager = () => {
       setQuotations((prev) => [...prev, newQuotation]);
       setIsModalVisible(false);
       message.success(t('quotations.createSuccess'));
-    } catch (error: any) {
+    } catch (error) {
       console.error('Failed to create quotation:', error);
       message.error(t('quotations.createError'));
     }
@@ -121,7 +119,7 @@ const QuotationManager = () => {
       setIsModalVisible(false);
       setEditingQuotation(null);
       message.success(t('quotations.updateSuccess'));
-    } catch (error: any) {
+    } catch (error) {
       console.error('Failed to update quotation:', error);
       message.error(t('quotations.updateError'));
     }
@@ -132,7 +130,7 @@ const QuotationManager = () => {
       await enhancedApiClient.deleteQuotation(id);
       setQuotations((prev) => prev.filter((quotation) => quotation.id !== id));
       message.success(t('quotations.deleteSuccess'));
-    } catch (error: any) {
+    } catch (error) {
       console.error('Failed to delete quotation:', error);
       message.error(t('quotations.deleteError'));
     }
@@ -442,13 +440,14 @@ const QuotationManager = () => {
         text: status,
         value: status,
       })),
-      onFilter: (value: any, record: Quotation) => record.status === value,
+      onFilter: (value: string | number | boolean, record: Quotation) =>
+        record.status === value,
     },
     {
       title: t('quotations.items'),
       dataIndex: 'quotationItems',
       key: 'quotationItems',
-      render: (quotationItems: any[]) =>
+      render: (quotationItems: Quotation['quotationItems']) =>
         `${quotationItems?.length || 0} ${t('quotations.itemsCount')}`,
     },
     {

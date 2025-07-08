@@ -77,17 +77,18 @@ const GenericMasterDataManager: React.FC<GenericMasterDataManagerProps> = ({
 
       const result = await api.getAll();
       setData(result);
-    } catch (error: any) {
+    } catch (error) {
+      const errorMessage = (error as Error).message;
       console.error(`Failed to fetch ${entityName}s:`, error);
       if (
-        error.message?.includes('fetch') ||
-        error.message?.includes('API Error: 404')
+        errorMessage?.includes('fetch') ||
+        errorMessage?.includes('API Error: 404')
       ) {
         setApiError(
           `${title} API is not yet implemented in the backend. This feature will be available once the backend developer implements the ${apiEndpoint} endpoints.`
         );
       } else {
-        setApiError(`Failed to fetch ${entityName}s: ${error.message}`);
+        setApiError(`Failed to fetch ${entityName}s: ${errorMessage}`);
       }
       message.error(`Failed to fetch ${entityName}s`);
     } finally {
@@ -110,11 +111,12 @@ const GenericMasterDataManager: React.FC<GenericMasterDataManagerProps> = ({
       setData((prev) => [...prev, newItem]);
       setIsModalVisible(false);
       message.success(`${entityName} created successfully`);
-    } catch (error: any) {
+    } catch (error) {
+      const errorMessage = (error as Error).message;
       console.error(`Failed to create ${entityName}:`, error);
       if (
-        error.message?.includes('fetch') ||
-        error.message?.includes('API Error: 404')
+        errorMessage?.includes('fetch') ||
+        errorMessage?.includes('API Error: 404')
       ) {
         message.error(`${title} API is not yet implemented in the backend`);
       } else {
@@ -139,11 +141,12 @@ const GenericMasterDataManager: React.FC<GenericMasterDataManagerProps> = ({
       setIsModalVisible(false);
       setEditingItem(null);
       message.success(`${entityName} updated successfully`);
-    } catch (error: any) {
+    } catch (error) {
+      const errorMessage = (error as Error).message;
       console.error(`Failed to update ${entityName}:`, error);
       if (
-        error.message?.includes('fetch') ||
-        error.message?.includes('API Error: 404')
+        errorMessage?.includes('fetch') ||
+        errorMessage?.includes('API Error: 404')
       ) {
         message.error(`${title} API is not yet implemented in the backend`);
       } else {
@@ -162,11 +165,12 @@ const GenericMasterDataManager: React.FC<GenericMasterDataManagerProps> = ({
       await api.delete(id);
       setData((prev) => prev.filter((item) => item.id !== id));
       message.success(`${entityName} deleted successfully`);
-    } catch (error: any) {
+    } catch (error) {
+      const errorMessage = (error as Error).message;
       console.error(`Failed to delete ${entityName}:`, error);
       if (
-        error.message?.includes('fetch') ||
-        error.message?.includes('API Error: 404')
+        errorMessage?.includes('fetch') ||
+        errorMessage?.includes('API Error: 404')
       ) {
         message.error(`${title} API is not yet implemented in the backend`);
       } else {
@@ -327,7 +331,8 @@ const GenericMasterDataManager: React.FC<GenericMasterDataManagerProps> = ({
           showSizeChanger: true,
           showQuickJumper: true,
           pageSizeOptions: ['5', '10', '20', '50'],
-          showTotal: (total, range) => `${range[0]}-${range[1]} of ${total} items`,
+          showTotal: (total, range) =>
+            `${range[0]}-${range[1]} of ${total} items`,
           onChange: handlePaginationChange,
           onShowSizeChange: handlePaginationChange,
         }}

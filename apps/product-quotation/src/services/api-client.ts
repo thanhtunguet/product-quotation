@@ -121,7 +121,7 @@ export interface ExcelImportResultDto {
     row: number;
     field: string;
     message: string;
-    value: any;
+    value: string | number | boolean | null;
   }>;
   createdProductIds: number[];
 }
@@ -185,7 +185,7 @@ export interface CreateProductDto {
   packagingTypeId?: number;
   imageUrl?: string;
   description?: string;
-  basePrice?: string;
+  basePrice?: number;
   isActive?: boolean;
   dynamicAttributes?: ProductDynamicAttributeDto[];
 }

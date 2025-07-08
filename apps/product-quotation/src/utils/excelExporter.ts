@@ -170,7 +170,7 @@ export class ExcelExporter {
   private static addHeaderSection(
     worksheet: ExcelJS.Worksheet,
     quotation: Quotation,
-    labels: any,
+    labels: Record<string, string>,
     startRow: number
   ): void {
     // Company Header
@@ -231,7 +231,7 @@ export class ExcelExporter {
 
   private static addItemsTableHeader(
     worksheet: ExcelJS.Worksheet,
-    labels: any,
+    labels: Record<string, string>,
     startRow: number
   ): void {
     const headers = [
@@ -394,7 +394,7 @@ export class ExcelExporter {
 
   private static addTotalsSection(
     worksheet: ExcelJS.Worksheet,
-    labels: any,
+    labels: Record<string, string>,
     startRow: number,
     itemsStartRow: number,
     itemsEndRow: number,
@@ -469,7 +469,7 @@ export class ExcelExporter {
 
   private static addTermsSection(
     worksheet: ExcelJS.Worksheet,
-    labels: any,
+    labels: Record<string, string>,
     startRow: number
   ): void {
     worksheet.getCell(startRow, 2).value = labels.termsAndConditions;
