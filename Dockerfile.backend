@@ -7,12 +7,9 @@ WORKDIR /app
 RUN addgroup -g 1001 -S nodejs && \
     adduser -S nestjs -u 1001
 
-COPY apps/backend/package.json ./
-
-RUN yarn install --frozen-lockfile --production --network-timeout 600000
-
 # Copy the built application (includes package.json with runtime deps)
 COPY apps/backend/dist/ ./
+RUN yarn install --frozen-lockfile --production --network-timeout 600000
 
 # Change ownership to non-root user
 RUN chown -R nestjs:nodejs /app
