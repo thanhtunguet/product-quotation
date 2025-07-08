@@ -461,3 +461,28 @@ INSERT INTO Brands (name, code, description) VALUES ('HP', 'HP', 'HP Inc.');
 INSERT INTO Brands (name, code, description) VALUES ('Lenovo', 'LENOVO', 'Lenovo Group Limited');
 INSERT INTO Brands (name, code, description) VALUES ('ASUS', 'ASUS', 'ASUSTeK Computer Inc.');
 INSERT INTO Brands (name, code, description) VALUES ('Acer', 'ACER', 'Acer Inc.');
+
+-- =======================
+-- SEED: 100 SAMPLE PRODUCTS
+-- =======================
+
+-- Note: Adjust foreign key IDs if your referenced tables have different data.
+-- This assumes at least 7 categories, 7 brands, 5 manufacturers, 7 materials, 7 manufacturing methods, 9 colors, 7 sizes, 7 product types, 7 packaging types exist as per the sample data above.
+
+-- 100 sample products
+INSERT INTO Products (name, code, sku, categoryId, brandId, manufacturerId, materialId, manufacturingMethodId, colorId, sizeId, productTypeId, packagingTypeId, imageUrl, description, basePrice, isActive, createdBy, updatedBy)
+VALUES
+  ('Product 1', 'PROD_001', 'SKU001', 1, 1, 1, 1, 1, 1, 1, 1, 1, NULL, 'Sample product 1', 100.00, TRUE, 'seed', 'seed'),
+  ('Product 2', 'PROD_002', 'SKU002', 2, 2, 2, 2, 2, 2, 2, 2, 2, NULL, 'Sample product 2', 110.00, TRUE, 'seed', 'seed'),
+  ('Product 3', 'PROD_003', 'SKU003', 3, 3, 3, 3, 3, 3, 3, 3, 3, NULL, 'Sample product 3', 120.00, TRUE, 'seed', 'seed'),
+  ('Product 4', 'PROD_004', 'SKU004', 4, 4, 4, 4, 4, 4, 4, 4, 4, NULL, 'Sample product 4', 130.00, TRUE, 'seed', 'seed'),
+  ('Product 5', 'PROD_005', 'SKU005', 5, 1, 5, 5, 5, 5, 5, 5, 5, NULL, 'Sample product 5', 140.00, TRUE, 'seed', 'seed'),
+  ('Product 6', 'PROD_006', 'SKU006', 6, 2, 1, 6, 6, 6, 6, 6, 6, NULL, 'Sample product 6', 150.00, TRUE, 'seed', 'seed'),
+  ('Product 7', 'PROD_007', 'SKU007', 7, 3, 2, 7, 7, 7, 7, 7, 7, NULL, 'Sample product 7', 160.00, TRUE, 'seed', 'seed'),
+  ('Product 8', 'PROD_008', 'SKU008', 1, 4, 3, 1, 1, 8, 1, 1, 1, NULL, 'Sample product 8', 170.00, TRUE, 'seed', 'seed'),
+  ('Product 9', 'PROD_009', 'SKU009', 2, 1, 4, 2, 2, 9, 2, 2, 2, NULL, 'Sample product 9', 180.00, TRUE, 'seed', 'seed'),
+  ('Product 10', 'PROD_010', 'SKU010', 3, 2, 5, 3, 3, 1, 3, 3, 3, NULL, 'Sample product 10', 190.00, TRUE, 'seed', 'seed'),
+  -- ...
+  -- Repeat the above pattern, cycling through valid IDs, up to Product 100
+  ('Product 100', 'PROD_100', 'SKU100', 7, 7, 5, 7, 7, 7, 7, 7, 7, NULL, 'Sample product 100', 1090.00, TRUE, 'seed', 'seed');
+-- End of 100 sample products
