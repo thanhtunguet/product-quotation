@@ -105,5 +105,6 @@
         "linter": "eslint"
       }
     }
-  }
+  },
+  "neverConnectToCloud": true
 }
