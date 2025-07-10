@@ -10,8 +10,16 @@
     "welcome": "Chào mừng bạn đến với hệ thống quản lý báo giá sản phẩm. Hãy sử dụng menu bên để quản lý sản phẩm, báo giá và dữ liệu nền.",
     "totalProducts": "Tổng số sản phẩm",
     "activeQuotations": "Báo giá còn hiệu lực",
+    "totalQuotations": "Tổng số báo giá",
+    "totalValue": "Tổng giá trị",
     "categories": "Danh mục",
-    "brands": "Thương hiệu"
+    "brands": "Thương hiệu",
+    "manufacturers": "Nhà sản xuất",
+    "quotationTrends": "Xu hướng báo giá (30 ngày)",
+    "quotationsByStatus": "Báo giá theo trạng thái",
+    "productsByCategory": "Sản phẩm theo danh mục",
+    "quotationCount": "Số lượng báo giá",
+    "productCount": "Số lượng sản phẩm"
   },
   "masterData": {
     "title": "Quản lý dữ liệu nền",

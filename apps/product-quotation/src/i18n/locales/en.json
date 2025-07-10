@@ -10,8 +10,16 @@
     "welcome": "Welcome to the Product Quotation Management System. Use the navigation menu to manage your products, quotations, and master data.",
     "totalProducts": "Total Products",
     "activeQuotations": "Active Quotations",
+    "totalQuotations": "Total Quotations",
+    "totalValue": "Total Value",
     "categories": "Categories",
-    "brands": "Brands"
+    "brands": "Brands",
+    "manufacturers": "Manufacturers",
+    "quotationTrends": "Quotation Trends (30 Days)",
+    "quotationsByStatus": "Quotations by Status",
+    "productsByCategory": "Products by Category",
+    "quotationCount": "Quotation Count",
+    "productCount": "Product Count"
   },
   "masterData": {
     "title": "Master Data Management",
