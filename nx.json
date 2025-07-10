@@ -92,7 +92,7 @@
     "default": {
       "runner": "@nx/workspace/tasks-runners/default"
     }
-  }
+  },
   "generators": {
     "@nx/react": {
       "application": {
